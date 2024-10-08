@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>My Page</title>
+  <link rel="stylesheet" href="/css/mypage.css">
+</head>
+<body>
+<header>
+  <nav>
+    <ul>
+      <li><a href="/">홈</a></li>
+      <li><a href="/demo/logout">로그아웃</a></li>
+    </ul>
+  </nav>
+</header>
+
+<section>
+  <h1>My Page</h1>
+
+  <!-- 사용자 정보 표시 -->
+  <div>
+    <p><strong>이메일:</strong> <span th:text="${session.loggedInUser.memberEmail}"></span></p>
+    <p><strong>이름:</strong> <span th:text="${session.loggedInUser.memberName}"></span></p>
+  </div>
+
+  <div>
+    <a href="/edit-profile">프로필 수정</a>
+  </div>
+</section>
+</body>
+</html>

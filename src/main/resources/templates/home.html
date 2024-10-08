@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sample Layout</title>
+    <link rel="stylesheet" th:href="@{/css/home.css}">
+</head>
+<body>
+<!-- 상단 바 -->
+<div class="top-bar">
+
+    <div>
+        <!-- -->
+    </div>
+    <div class="auth-links">
+        <ul>
+            <!-- 로그인 여부에 따라 다른 버튼 표시 -->
+            <li th:if="${session.loggedInUser == null}">
+                <a href="/demo/login">로그인</a>
+            </li>
+            <li th:if="${session.loggedInUser == null}">
+                <a href="/demo/signup">회원가입</a>
+            </li>
+
+            <li th:if="${session.loggedInUser != null}">
+                <a href="/demo/mypage">마이페이지</a>
+            </li>
+            <li th:if="${session.loggedInUser != null}">
+                <a href="/demo/logout">로그아웃</a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<!-- 네비게이션 바 -->
+<div class="nav-bar">
+    <a href="/main1">메인1</a>
+    <a href="/main2">메인2</a>
+    <a href="/main3">메인3</a>
+    <a href="/main4">메인4</a>
+</div>
+
+<!-- 좌우 -->
+<div class="container">
+    <!-- 사이드바 -->
+    <div class="sidebar">
+        <ul>
+            <li><a href="#" onclick="loadContent('/product/product')">전체</a></li>
+            <li><a href="#" onclick="loadContent('/product/electronics')">가전제품</a></li>
+            <li><a href="#" onclick="loadContent('/product/devices')">전자기기</a></li>
+            <li><a href="#" onclick="loadContent('/content4')">항목 4</a></li>
+        </ul>
+    </div>
+
+    <!-- 메인 -->
+    <div class="content" id="mainContent">
+
+        <a href="/product/upload">상품등록</a>
+        <h2>기본 콘텐츠</h2>
+        <p>여기에 선택된 항목의 내용이 표시됩니다.</p>
+    </div>
+</div>
+
+<!--동적으로 콘텐츠 로드 -->
+<script>
+    function loadContent(url) {
+        fetch(url)
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('mainContent').innerHTML = html;
+        })
+        .catch(error => console.error('Error loading content:', error));
+    }
+</script>
+</body>
+</html>
