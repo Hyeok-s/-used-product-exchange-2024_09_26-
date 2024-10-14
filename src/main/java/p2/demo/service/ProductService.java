@@ -84,5 +84,21 @@ public class ProductService {
         return productRepository.findByPtype(type);
     }
 
+    public List<ProductEntity> getProductsByState(String state){
+        return productRepository.findByPstate(state);
+    }
 
+    public ProductEntity findById(Long id) {
+        return productRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid product ID: " + id));
+    }
+    // 상태 업데이트
+    public void updateProductState(Long id, String newState) {
+        ProductEntity product = findById(id);
+        product.setPState(newState);  // 상태 변경
+        productRepository.save(product);
+    }
+
+    public List<ProductEntity> getPstateO(){
+        return productRepository.findByPstateO();
+    }
 }

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<link rel="stylesheet" th:href="@{/css/home.css}">
+<head>
+  <meta charset="UTF-8">
+  <title>승인 대기 중인 제품</title>
+</head>
+<body>
+<!-- 좌우 -->
+<div class="container">
+  <!-- 사이드바 -->
+  <div class="sidebar">
+    <ul>
+      <li><a href="#" onclick="loadContent('/Admin/nproduct')">승인대기</a></li>
+      <li><a href="#" onclick="loadContent('/Admin/oproduct')">승인완료</a></li>
+      <li><a href="#" onclick="loadContent('/Admin/fproduct')">승인취소</a></li>
+      <li><a href="#" onclick="loadContent('/Admin/pproduct')">판매완료</a></li>
+    </ul>
+  </div>
+
+  <!-- 메인 -->
+  <div class="content" id="mainContent">
+    <p>관리자 페이지 메인</p>
+  </div>
+</div>
+<script>
+  function loadContent(url) {
+      fetch(url)
+      .then(response => response.text())
+      .then(html => {
+          document.getElementById('mainContent').innerHTML = html;
+      })
+      .catch(error => console.error('Error loading content:', error));
+  }
+</script>
+</body>
+</html>

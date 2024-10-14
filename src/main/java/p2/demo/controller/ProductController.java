@@ -4,10 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import p2.demo.dto.ProductDTO;
 import p2.demo.entity.ProductEntity;
@@ -17,7 +14,6 @@ import org.springframework.ui.Model;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
-import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -30,7 +26,7 @@ public class ProductController {
         model.addAttribute("productDTO", new ProductDTO());
         return "upload";
     }
-
+    //글쓰기
     @PostMapping("/product/upload")
     public String uploadProduct(@ModelAttribute("productDTO") ProductDTO productDTO,
                                 @RequestParam("pic") MultipartFile pic,
@@ -46,7 +42,7 @@ public class ProductController {
 
     @GetMapping("/product/product")
     public String productForm(Model model) {
-        model.addAttribute("products", productService.getAllProducts());
+        model.addAttribute("products", productService.getPstateO());
         return "product";
     }
 
@@ -63,5 +59,13 @@ public class ProductController {
         model.addAttribute("products", productService.getProductsByType("전자기기"));
         return "product";
     }*/
+
+    // 제품 ID로 해당 제품의 상세 정보를 조회
+    @GetMapping("/product/productDetail/{id}")
+    public String productDetail(@PathVariable("id") Long id, Model model) {
+        ProductEntity product = productService.findById(id);
+        model.addAttribute("product", product);
+        return "productDetail";
+    }
 
 }

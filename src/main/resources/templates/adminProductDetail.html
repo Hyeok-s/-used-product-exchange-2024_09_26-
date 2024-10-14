@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>제품 상세 정보</title>
+</head>
+<body>
+<h1>제품 상세 정보</h1>
+<img th:src="@{/uploads/} + ${product.pic}" alt="Product Image" width="200">
+<p><strong>상품명:</strong> <span th:text="${product.pName}">상품명</span></p>
+<p><strong>가격:</strong> <span th:text="${product.pPrice}">상품가격</span></p>
+<p><strong>설명:</strong> <span th:text="${product.pContent}">상품설명</span></p>
+<p><strong>상태:</strong> <span th:text="${product.pState}" id="productState">상태</span></p>
+
+<!-- 수락 및 거절 버튼 -->
+<button onclick="updateProductState('O')">수락</button>
+<button onclick="updateProductState('F')">거절</button>
+
+<script>
+    function updateProductState(newState) {
+        const productId = [[${product.pId}]];  // 제품 ID를 가져옴
+        console.log('Updating product with ID:', productId, 'to state:', newState);  // 추가된 로그
+
+        fetch('/Admin/updateProductState/' + productId + '/' + newState, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Response:', data);  // 추가된 로그
+            if (data.success) {
+                document.getElementById('productState').textContent = newState;  // 상태 업데이트
+            } else {
+                alert('상태 업데이트에 실패했습니다.');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+</script>
+
+</body>
+</html>

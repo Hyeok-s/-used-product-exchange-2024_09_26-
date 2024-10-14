@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>문의하기</title>
+</head>
+<body>
+
+<h1>문의하기</h1>
+
+<form th:action="@{/inquiry}" th:object="${inquiryDTO}" method="post">
+  <label for="aTitle">제목:</label>
+  <input type="text" id="aTitle" th:field="*{aTitle}" required>
+  <br>
+
+  <label for="aContent">내용:</label>
+  <textarea id="aContent" th:field="*{aContent}" required></textarea>
+  <br>
+
+  <input type="hidden" th:field="*{memberId}" th:value="${#authentication.principal.id}">
+
+  <button type="submit">제출</button>
+</form>
+
+</body>
+</html>

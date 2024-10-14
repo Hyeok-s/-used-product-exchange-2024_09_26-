@@ -49,7 +49,6 @@ public class MemberController {
         }
     }
 
-
     //로그인
     @GetMapping("/demo/mypage")
     public String mypage() {

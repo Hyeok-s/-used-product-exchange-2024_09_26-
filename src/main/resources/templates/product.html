@@ -1,27 +1,51 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>Product List</title>
-</head>
-<body>
-<h1>상품 목록</h1>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<table>
-  <tr>
-    <th>사진</th>
-    <th>이름</th>
-    <th>설명</th> <!-- 설명 컬럼 추가 -->
-    <th>가격</th>
-    <th>타입</th>
-  </tr>
-  <tr th:each="product : ${products}">
-    <td><img th:src="@{/uploads/} + ${product.pic}" alt="Product Image" width="100"></td>
-    <td th:text="${product.pName}">Name</td>
-    <td th:text="${product.pContent}">Description</td>
-    <td th:text="${product.pPrice}">Price</td>
-    <td th:text="${product.pType}">Type</td>
-  </tr>
-</table>
+  <!-- Google Fonts -->
+  <link href='http://fonts.googleapis.com/css?family=Titillium+Web:400,200,300,700,600' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Roboto+Condensed:400,700,300' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Raleway:400,100' rel='stylesheet' type='text/css'>
+
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+  <!-- css -->
+  <link rel="stylesheet" href="/css/style.css">
+
+</head>
+
+<body>
+
+<div class="single-product-area">
+  <div class="container">
+    <div class="row">
+      <div th:each="product : ${products}" class="col-md-3 col-sm-6">
+        <div class="single-shop-product">
+          <div class="product-upper">
+            <a th:href="@{'/product/productDetail/' + ${product.pId}}"><img th:src="@{/uploads/} + ${product.pic}" alt="" width="100"></a>
+          </div>
+          <h2><a href="#" th:text="${product.pName}">상품명</a></h2>
+          <div class="product-carousel-price">
+            <ins th:text="'$' + ${product.pPrice}">상품가격</ins>
+          </div>
+          <div class="product-option-shop">
+            <a class="add_to_cart_button" th:href="@{'/product/productDetail/' + ${product.pId}}">상세보기</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 
 </body>
 </html>

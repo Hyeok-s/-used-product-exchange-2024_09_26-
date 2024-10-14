@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>제품 상세 정보</title>
+</head>
+<body>
+<h1>제품 상세 정보</h1>
+
+
+<img th:src="@{/uploads/} + ${product.pic}" alt="Product Image" width="200">
+<p><strong>상품명:</strong> <span th:text="${product.pName}">상품명</span></p>
+
+
+
+<form action="/order/submit" method="post">
+  <label for="name">이름:</label>
+  <input type="text" id="name" name="name" th:value="${userName}" readonly><br>
+
+  <label for="phone">휴대폰 번호:</label>
+  <input type="text" id="phone" name="phone" th:value="${userPhone}"><br>
+
+  <label for="email">이메일:</label>
+  <input type="email" id="email" name="email" th:value="${userEmail}" readonly><br>
+  <label for="deliveryStatus">배송지:</label>
+  <input type="text" id="deliveryStatus" name="deliveryStatus"><br>
+
+  <label for="shippingMemo">배송 메모:</label>
+  <textarea id="shippingMemo" name="shippingMemo"></textarea><br>
+
+  <label for="paymentMethod">결제 방법:</label>
+  <select id="paymentMethod" name="paymentMethod">
+    <option value="card">카드 결제</option>
+    <option value="kakao">카카오페이 결제</option>
+  </select><br>
+  <input type="hidden" name="productId" th:value="${product.pId}" />
+  <button type="submit">구매</button>
+</form>
+
+
+</body>
+</html>

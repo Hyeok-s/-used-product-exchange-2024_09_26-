@@ -1,49 +1,97 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" >
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" >
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sample Layout</title>
-    <link rel="stylesheet" th:href="@{/css/home.css}">
+
+    <!-- Google Fonts -->
+    <link href='http://fonts.googleapis.com/css?family=Titillium+Web:400,200,300,700,600' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Roboto+Condensed:400,700,300' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Raleway:400,100' rel='stylesheet' type='text/css'>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+    <!-- css -->
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+
 </head>
-<body>
+<body onload="loadContent('/product/product')">
 <!-- 상단 바 -->
-<div class="top-bar">
+<div class="header-area">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="user-menu">
+                    <ul>
+                        <!-- 로그인 여부에 따라 다른 버튼 표시 -->
+                        <li th:if="${session.loggedInUser == null}">
+                            <a href="/demo/login"><i class="fa fa-user"></i>로그인</a>
+                        </li>
+                        <li th:if="${session.loggedInUser == null}">
+                            <a href="/demo/signup"><i class="fa fa-heart"></i>회원가입</a>
+                        </li>
 
-    <div>
-        <!-- -->
-    </div>
-    <div class="auth-links">
-        <ul>
-            <!-- 로그인 여부에 따라 다른 버튼 표시 -->
-            <li th:if="${session.loggedInUser == null}">
-                <a href="/demo/login">로그인</a>
-            </li>
-            <li th:if="${session.loggedInUser == null}">
-                <a href="/demo/signup">회원가입</a>
-            </li>
-
-            <li th:if="${session.loggedInUser != null}">
-                <a href="/demo/mypage">마이페이지</a>
-            </li>
-            <li th:if="${session.loggedInUser != null}">
-                <a href="/demo/logout">로그아웃</a>
-            </li>
-        </ul>
+                        <li th:if="${session.loggedInUser != null}">
+                            <a href="/demo/mypage"><i class="fa fa-user"></i>마이페이지</a>
+                        </li>
+                        <li th:if="${session.loggedInUser != null}">
+                            <a href="/demo/logout"><i class="fa fa-user"></i>로그아웃</a>
+                        </li>
+                        <li th:if="${session.loggedInUser != null and session.loggedInUser.memberRole == 'admin'}">
+                            <a href="/Admin/admin"><i class="fa fa-user"></i>관리자페이지</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+
+<!-- 상단 밑 사진 등 바 -->
+<div class="site-branding-area">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="logo">
+                    <h1><a href="index.html">T<span>est</span></a></h1>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="shopping-item">
+                    <a href="/product/upload"><i class="fa fa-pencil-square-o">-upload</i> <span class="product-count">0</span></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <!-- 네비게이션 바 -->
-<div class="nav-bar">
-    <a href="/main1">메인1</a>
-    <a href="/main2">메인2</a>
-    <a href="/main3">메인3</a>
-    <a href="/main4">메인4</a>
+<div class="mainmenu-area">
+    <div class="container">
+        <div class="row">
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="#">메인1</a></li>
+                    <li><a href="#" onclick="loadContent('/ask')">메인2</a></li>
+                    <li><a href="#">메인3</a></li>
+                    <li><a href="#">메인4</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
 </div>
 
-<!-- 좌우 -->
-<div class="container">
-    <!-- 사이드바 -->
+
+<!-- 사이드바 -->
+<div class="scontainer">
     <div class="sidebar">
         <ul>
             <li><a href="#" onclick="loadContent('/product/product')">전체</a></li>
@@ -54,15 +102,10 @@
     </div>
 
     <!-- 메인 -->
-    <div class="content" id="mainContent">
-
-        <a href="/product/upload">상품등록</a>
-        <h2>기본 콘텐츠</h2>
-        <p>여기에 선택된 항목의 내용이 표시됩니다.</p>
+    <div class= "mainContent" id="mainContent">
     </div>
 </div>
 
-<!--동적으로 콘텐츠 로드 -->
 <script>
     function loadContent(url) {
         fetch(url)
@@ -73,5 +116,6 @@
         .catch(error => console.error('Error loading content:', error));
     }
 </script>
+
 </body>
 </html>

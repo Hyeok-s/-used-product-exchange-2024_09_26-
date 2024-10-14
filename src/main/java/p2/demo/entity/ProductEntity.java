@@ -35,15 +35,15 @@ public class ProductEntity {
     private String pic;
 
     @Column
-    private Character pState;
+    private String pState;
 
     {
-        this.pState = 'N';
+        this.pState = "N";
     }
 
 
     // MemberEntity와 다대일 관계 설정
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "member_id", referencedColumnName = "id")// 외래 키 설정
     private MemberEntity member;
 

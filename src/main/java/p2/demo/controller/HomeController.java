@@ -9,4 +9,5 @@ public class HomeController {
     public String home() {
         return "home";  // home.html 템플릿을 반환
     }
+
 }

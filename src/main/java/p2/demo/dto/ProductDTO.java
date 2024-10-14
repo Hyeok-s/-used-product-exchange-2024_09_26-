@@ -14,7 +14,7 @@ public class ProductDTO {
     private Integer pPrice;
     private String pType;
     private Long member_id;
-    private Character pState;
+    private String pState;
 
 
     public static ProductDTO toProductDTO(ProductEntity productEntity) {
