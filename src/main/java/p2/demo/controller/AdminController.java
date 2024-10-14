@@ -5,10 +5,10 @@ import org.slf4j.LoggerFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import p2.demo.dto.ProductDTO;
+import p2.demo.entity.AskEntity;
 import p2.demo.entity.ProductEntity;
 import p2.demo.service.ProductService;
+import p2.demo.service.AskService;
 import org.springframework.ui.Model;
 
 import jakarta.servlet.http.HttpSession;
@@ -22,6 +22,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AdminController {
     private final ProductService productService;
+    private final AskService askService;
 
     //관리자 대기 게시물
     @GetMapping("/Admin/nproduct")
@@ -79,6 +80,26 @@ public class AdminController {
         return response;
     }
 
+    @GetMapping("/Admin/askList")
+    public String getAskList(Model model) {
+        List<AskEntity> askList = askService.getAllAsks();
+        model.addAttribute("askList", askList);
+        return "ask-list";  // askList.html로 이동
+    }
+
+    @GetMapping("/Admin/askDetail/{id}")
+    public String getAskDetail(@PathVariable Long id, Model model) {
+        AskEntity ask = askService.getAskById(id);
+        model.addAttribute("ask", ask);
+        return "askDetail";  // askDetail.html로 이동
+    }
+
+    @PostMapping("/Admin/askDetail/{id}")
+    public String submitAnswer(@PathVariable Long id, @RequestParam("aReturn") String aReturn) {
+        askService.submitAnswer(id, aReturn);
+        askService.setAskState(id);
+        return "redirect:/Admin/askList";
+    }
 
 
 }

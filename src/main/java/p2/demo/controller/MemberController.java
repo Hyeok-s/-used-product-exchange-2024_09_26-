@@ -2,20 +2,22 @@ package p2.demo.controller;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import p2.demo.dto.MemberDTO;
+import p2.demo.entity.MemberEntity;
 import p2.demo.service.MemberService;
+import p2.demo.repository.MemberRepository;
+import org.springframework.http.HttpStatus;
 
 @Controller
 @RequiredArgsConstructor
 public class MemberController {
 
     private final MemberService memberService;
+    private final MemberRepository memberRepository;
 
     @GetMapping("/demo/signup")
     public String signupForm(Model model) {
@@ -42,7 +44,7 @@ public class MemberController {
         if (memberDTO != null) {
             // 로그인 성공 시 홈으로 리다이렉트
             session.setAttribute("loggedInUser", memberDTO);
-            return "home"; // 로그인 성공 페이지
+            return "redirect:/"; // 로그인 성공 페이지
         } else {
             // 로그인 실패 시 로그인 페이지로 리다이렉트
             return "redirect:/member/login?error=true";
@@ -61,4 +63,8 @@ public class MemberController {
         session.invalidate(); // 세션 무효화
         return "redirect:/";
     }
+
+
+
+
 }

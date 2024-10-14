@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>문의 리스트</title>
+</head>
+<body>
+<h2>문의 리스트</h2>
+<table>
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th>제목</th>
+    <th>작성자</th>
+    <th>작성일</th>
+    <th>보기</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="ask : ${askList}">
+    <td th:text="${ask.id}"></td>
+    <td th:text="${ask.aTitle}"></td>
+    <td th:text="${ask.member.memberName}"></td>
+    <td th:text="${ask.aTime}"></td>
+    <td><a th:href="@{'/Admin/askDetail/' + ${ask.id}}">보기</a></td>
+  </tr>
+  </tbody>
+</table>
+</body>
+</html>

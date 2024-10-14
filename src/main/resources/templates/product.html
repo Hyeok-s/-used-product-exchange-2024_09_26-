@@ -37,7 +37,23 @@
             <ins th:text="'$' + ${product.pPrice}">상품가격</ins>
           </div>
           <div class="product-option-shop">
+            <!-- 로그인 여부와 찜 상태에 따라 버튼 표시 -->
             <a class="add_to_cart_button" th:href="@{'/product/productDetail/' + ${product.pId}}">상세보기</a>
+
+            <div th:if="${user != null}">
+              <!-- 찜 상태에 따라 버튼 표시 -->
+              <button th:if="${product.isLikedByUser}"
+                      class="btn btn-danger"
+                      th:onclick="'removeFromWishlist(' + ${product.pId} + ');'">♡ 취소</button>
+              <button th:unless="${product.isLikedByUser}"
+                      class="btn btn-primary"
+                      th:onclick="'addToWishlist(' + ${product.pId} + ');'">♡ 찜하기</button>
+            </div>
+
+            <div th:if="${user == null}">
+              <!-- 로그인되지 않은 경우 로그인 페이지로 리다이렉트 -->
+              <a href="/login" class="btn btn-warning">♡ 로그인 후 찜하기</a>
+            </div>
           </div>
         </div>
       </div>
@@ -45,7 +61,32 @@
   </div>
 </div>
 
+<!-- JS to handle wishlist actions -->
+<script>
+  function addToWishlist(productId) {
+    fetch(`/wishlist/add?productId=${productId}`, {
+      method: 'POST'
+    })
+    .then(response => response.text())
+    .then(data => {
+      alert('상품이 찜 목록에 추가되었습니다.');
+      location.reload(); // 페이지 새로고침으로 상태 업데이트
+    })
+    .catch(error => console.error('Error:', error));
+  }
 
+  function removeFromWishlist(productId) {
+    fetch(`/wishlist/remove?productId=${productId}`, {
+      method: 'DELETE'
+    })
+    .then(response => response.text())
+    .then(data => {
+      alert('상품이 찜 목록에서 삭제되었습니다.');
+      location.reload(); // 페이지 새로고침으로 상태 업데이트
+    })
+    .catch(error => console.error('Error:', error));
+  }
+</script>
 
 </body>
 </html>

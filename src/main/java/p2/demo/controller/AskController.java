@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import p2.demo.dto.AskDTO;
+import p2.demo.dto.MemberDTO;
 import p2.demo.service.AskService;
 
 @Controller
@@ -22,10 +23,20 @@ public class AskController {
         return "ask";
     }
 
-    @PostMapping("/ask")
-    public String submitInquiry(@ModelAttribute AskDTO askDTO,
-                                HttpSession session) {
-        askService.saveInquiry(askDTO);
-        return "redirect:/inquiry";
+    @PostMapping("/ask/submit")
+    public String submitAsk(@ModelAttribute("askDTO") AskDTO askDTO, HttpSession session, Model model) {
+        try {
+            MemberDTO loggedInUser = (MemberDTO) session.getAttribute("loggedInUser");
+            if (loggedInUser != null) {
+                askService.saveAsk(askDTO, loggedInUser);
+                return "redirect:/";
+            } else {
+                model.addAttribute("errorMessage", "로그인이 필요합니다.");
+                return "redirect:/demo/signup";
+            }
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "redirect:/ask";
+        }
     }
 }

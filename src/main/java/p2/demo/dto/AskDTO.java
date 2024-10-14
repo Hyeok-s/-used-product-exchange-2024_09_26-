@@ -11,8 +11,7 @@ public class AskDTO {
     private Long id;
     private String aTitle;
     private String aContent;
-    private String aReturn;
     private LocalDateTime aTime;
-    private LocalDateTime rTime;
+    private String pState;
     private Long memberId;
 }

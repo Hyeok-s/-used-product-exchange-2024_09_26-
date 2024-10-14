@@ -20,17 +20,17 @@ public class AskEntity {
     @Column(nullable = false)
     private String aContent;
 
-    @Column
-    private String aReturn;  // 답변 내용, nullable
-
     @Column(nullable = false)
     private LocalDateTime aTime;  // 문의 시간
 
     @Column
-    private LocalDateTime rTime;  // 답변 시간, nullable
+    private String aState;
+    {
+        this.aState = "N";
+    }
 
     @ManyToOne
-    @JoinColumn(name = "member_id", nullable = false)
+    @JoinColumn(name = "member_id", referencedColumnName = "id")
     private MemberEntity member;  // 외래키로 members 테이블 참조
 
 }

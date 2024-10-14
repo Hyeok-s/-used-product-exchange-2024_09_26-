@@ -10,17 +10,20 @@ import p2.demo.dto.ProductDTO;
 import p2.demo.entity.ProductEntity;
 import p2.demo.service.ProductService;
 import org.springframework.ui.Model;
+import p2.demo.service.WishlistService;
 
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
 public class ProductController {
     private final ProductService productService;
+    private final WishlistService wishlistService;
     private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
-
+    //글쓰기 페이지
     @GetMapping("/product/upload")
     public String uploadForm(Model model) {
         model.addAttribute("productDTO", new ProductDTO());
@@ -39,11 +42,29 @@ public class ProductController {
             return "redirect:/";
         }
     }
-
+    // 게시물 목록
     @GetMapping("/product/product")
-    public String productForm(Model model) {
-        model.addAttribute("products", productService.getPstateO());
-        return "product";
+    public String productForm(Model model, HttpSession session) {
+        // 현재 로그인된 사용자 정보를 세션에서 가져오기
+        Long memberId = (Long) session.getAttribute("memberId");
+
+        // 상품 목록 가져오기
+        List<ProductDTO> products = productService.getPstateO();
+
+        // 사용자가 로그인했을 때에만 찜 상태 확인
+        if (memberId != null) {
+            for (ProductDTO product : products) {
+                // 현재 사용자가 이 상품을 찜했는지 여부 확인
+                boolean isLiked = wishlistService.isProductLikedByUser(memberId, product.getPId());
+                product.setLikedByUser(isLiked);  // 상품 DTO에 찜 상태 설정
+            }
+        }
+
+        // 모델에 상품 목록과 사용자 정보를 추가
+        model.addAttribute("products", products);
+        model.addAttribute("user", memberId != null ? memberId : null); // 로그인 여부 판단
+
+        return "product"; // 해당 HTML 파일로 이동
     }
 
     // 가전제품만 조회
