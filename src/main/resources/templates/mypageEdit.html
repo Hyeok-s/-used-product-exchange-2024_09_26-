@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Edit Profile</title>
+  <link rel="stylesheet" href="/css/mypage.css">
+</head>
+<body>
+<header>
+  <nav>
+    <ul>
+      <li><a href="/">홈</a></li>
+      <li><a href="/demo/logout">로그아웃</a></li>
+    </ul>
+  </nav>
+</header>
+
+<section>
+  <h1>Edit Profile</h1>
+
+  <!-- 사용자 정보 수정 폼 -->
+  <form action="/demo/edit" method="post">
+    <label for="memberName">이름:</label>
+    <input type="text" id="memberName" name="memberName" th:value="${loggedInUser.memberName}">
+
+    <label for="memberAge">나이:</label>
+    <input type="number" id="memberAge" name="memberAge" th:value="${loggedInUser.memberAge}">
+
+    <label for="memberPhone">전화번호:</label>
+    <input type="text" id="memberPhone" name="memberPhone" th:value="${loggedInUser.memberPhone}">
+
+    <label for="memberAddress">주소:</label>
+    <input type="text" id="memberAddress" name="memberAddress" th:value="${loggedInUser.memberAddress}">
+
+    <!-- 비밀번호 변경 필드 -->
+    <label for="password">새 비밀번호:</label>
+    <input type="password" id="password" name="password">
+
+    <button type="submit">저장</button>
+  </form>
+</section>
+</body>
+</html>

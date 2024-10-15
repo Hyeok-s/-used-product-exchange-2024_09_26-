@@ -15,7 +15,7 @@
   </thead>
   <tbody>
   <tr th:each="product : ${products}">
-    <td><a th:href="@{'/Admin/productDetail/' + ${product.pId}}"><img th:src="@{/uploads/} + ${product.pic}" alt="Product Image" width="100"></a></td>
+    <td><a th:href="@{'/Admin/productDetail/' + ${product.id}}"><img th:src="@{/uploads/} + ${product.pic}" alt="Product Image" width="100"></a></td>
     <td th:text="${product.pName}">상품명</td>
     <td th:text="${product.pPrice}">상품가격</td>
   </tr>

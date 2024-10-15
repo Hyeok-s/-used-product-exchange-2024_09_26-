@@ -33,6 +33,7 @@ public class ProductService {
     @Value("${file.upload-dir}")
     private String uploadDir;
 
+    //새로운 상품 저장
     public void saveProduct(ProductDTO productDTO, MultipartFile pic, HttpSession session) throws IOException {
         MemberDTO loggedInUser = (MemberDTO) session.getAttribute("loggedInUser");
 
@@ -76,18 +77,22 @@ public class ProductService {
         }
     }
 
+    //모든 상품 가져오기
     public List<ProductEntity> getAllProducts() {
         return productRepository.findAll();
     }
 
+    //상품 종류 가져오기
     public List<ProductEntity> getProductsByType(String type) {
         return productRepository.findByPtype(type);
     }
 
+    //상품 상태가져오기
     public List<ProductEntity> getProductsByState(String state){
         return productRepository.findByPstate(state);
     }
 
+    //id가져오기
     public ProductEntity findById(Long id) {
         return productRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid product ID: " + id));
     }
@@ -98,6 +103,7 @@ public class ProductService {
         productRepository.save(product);
     }
 
+    //O인상품 가져오기
     public List<ProductEntity> getPstateO(){
         return productRepository.findByPstateO();
     }

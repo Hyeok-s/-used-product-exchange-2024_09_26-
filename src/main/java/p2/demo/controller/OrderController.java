@@ -25,8 +25,8 @@ public class OrderController {
     private ProductService productService;
 
     // 제품 ID를 받아서 주문 폼을 표시
-    @GetMapping("/order/{pId}")
-    public String orderForm(@PathVariable("pId") Long pId, Model model, HttpSession session) {
+    @GetMapping("/order/{id}")
+    public String orderForm(@PathVariable("id") Long pId, Model model, HttpSession session) {
         // 현재 로그인된 사용자 정보 가져오기
         MemberDTO loggedInUser = (MemberDTO) session.getAttribute("loggedInUser");
 

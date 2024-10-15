@@ -13,7 +13,7 @@ public class ProductEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long pId;
+    private Long id;
 
     @Column
     @NonNull
@@ -41,10 +41,17 @@ public class ProductEntity {
         this.pState = "N";
     }
 
-
     // MemberEntity와 다대일 관계 설정
     @ManyToOne
     @JoinColumn(name = "member_id", referencedColumnName = "id")// 외래 키 설정
     private MemberEntity member;
+
+    @Transient //이 필드는 데이터베이스에 저장x
+    private boolean likedStatus;
+    {
+        this.likedStatus=false;
+    }
+
+
 
 }

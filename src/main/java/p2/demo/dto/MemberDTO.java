@@ -14,6 +14,7 @@ public class MemberDTO {
     private String memberName;
     private Integer memberAge;
     private String memberAddress;
+    private Integer memberPhone;
     private String memberRole;
 
     // MemberEntity를 MemberDTO로 변환
@@ -25,6 +26,7 @@ public class MemberDTO {
         memberDTO.setMemberPassword(memberEntity.getMemberPassword());
         memberDTO.setMemberAge(memberEntity.getMemberAge());
         memberDTO.setMemberAddress(memberEntity.getMemberAddress());
+        memberDTO.setMemberPhone(memberEntity.getMemberPhone());
         memberDTO.setMemberRole(memberEntity.getMemberRole());
         return memberDTO;
     }

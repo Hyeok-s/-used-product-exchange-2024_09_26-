@@ -30,30 +30,21 @@
       <div th:each="product : ${products}" class="col-md-3 col-sm-6">
         <div class="single-shop-product">
           <div class="product-upper">
-            <a th:href="@{'/product/productDetail/' + ${product.pId}}"><img th:src="@{/uploads/} + ${product.pic}" alt="" width="100"></a>
+            <a th:href="@{'/product/productDetail/' + ${product.id}}"><img th:src="@{/uploads/} + ${product.pic}" alt="" width="100"></a>
           </div>
           <h2><a href="#" th:text="${product.pName}">상품명</a></h2>
           <div class="product-carousel-price">
             <ins th:text="'$' + ${product.pPrice}">상품가격</ins>
           </div>
           <div class="product-option-shop">
-            <!-- 로그인 여부와 찜 상태에 따라 버튼 표시 -->
-            <a class="add_to_cart_button" th:href="@{'/product/productDetail/' + ${product.pId}}">상세보기</a>
-
-            <div th:if="${user != null}">
-              <!-- 찜 상태에 따라 버튼 표시 -->
-              <button th:if="${product.isLikedByUser}"
-                      class="btn btn-danger"
-                      th:onclick="'removeFromWishlist(' + ${product.pId} + ');'">♡ 취소</button>
-              <button th:unless="${product.isLikedByUser}"
-                      class="btn btn-primary"
-                      th:onclick="'addToWishlist(' + ${product.pId} + ');'">♡ 찜하기</button>
-            </div>
-
-            <div th:if="${user == null}">
-              <!-- 로그인되지 않은 경우 로그인 페이지로 리다이렉트 -->
-              <a href="/login" class="btn btn-warning">♡ 로그인 후 찜하기</a>
-            </div>
+            <a class="add_to_cart_button" th:href="@{'/product/productDetail/' + ${product.id}}">상세보기</a>
+            <!-- 찜하기 버튼 -->
+            <form th:action="@{'/product/wishlist/' + ${product.id}}" method="post">
+              <button id="wishlist-btn">
+                <span th:if="${product.likedStatus}">찜 취소</span>
+                <span th:if="${!product.likedStatus}">찜하기</span>
+              </button>
+            </form>
           </div>
         </div>
       </div>
@@ -61,32 +52,6 @@
   </div>
 </div>
 
-<!-- JS to handle wishlist actions -->
-<script>
-  function addToWishlist(productId) {
-    fetch(`/wishlist/add?productId=${productId}`, {
-      method: 'POST'
-    })
-    .then(response => response.text())
-    .then(data => {
-      alert('상품이 찜 목록에 추가되었습니다.');
-      location.reload(); // 페이지 새로고침으로 상태 업데이트
-    })
-    .catch(error => console.error('Error:', error));
-  }
-
-  function removeFromWishlist(productId) {
-    fetch(`/wishlist/remove?productId=${productId}`, {
-      method: 'DELETE'
-    })
-    .then(response => response.text())
-    .then(data => {
-      alert('상품이 찜 목록에서 삭제되었습니다.');
-      location.reload(); // 페이지 새로고침으로 상태 업데이트
-    })
-    .catch(error => console.error('Error:', error));
-  }
-</script>
 
 </body>
 </html>

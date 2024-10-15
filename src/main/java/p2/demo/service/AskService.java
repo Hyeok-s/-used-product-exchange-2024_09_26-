@@ -23,6 +23,7 @@ public class AskService {
     private final MemberRepository memberRepository;
     private final AnswerRepository answerRepository;
 
+    //질문저장
     public void saveAsk(AskDTO askDTO, MemberDTO loggedInUser) {
         AskEntity askEntity = new AskEntity();
         askEntity.setATitle(askDTO.getATitle());
@@ -48,7 +49,7 @@ public class AskService {
                 .orElseThrow(() -> new IllegalArgumentException("Invalid ask ID: " + id));
     }
 
-
+    //답장저장
     public void submitAnswer(Long id, String aReturn) {
         AnswerEntity answerEntity = new AnswerEntity();
         answerEntity.setAReturn(aReturn);
@@ -60,6 +61,7 @@ public class AskService {
         answerRepository.save(answerEntity);
     }
 
+    //질문 상태변경
     public void setAskState(Long id){
         AskEntity ask = askRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid product ID: " + id));;
         ask.setAState("P");  // 상태 변경

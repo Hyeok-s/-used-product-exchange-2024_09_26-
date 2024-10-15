@@ -33,6 +33,6 @@ public class OrderEntity {
     private MemberEntity buyer;  // users 테이블과의 관계
 
     @ManyToOne
-    @JoinColumn(name = "product_id", referencedColumnName = "pId")
+    @JoinColumn(name = "product_id", referencedColumnName = "id")
     private ProductEntity product;  // product 테이블과의 관계
 }

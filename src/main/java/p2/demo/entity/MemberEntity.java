@@ -36,11 +36,14 @@ public class MemberEntity {
 
     @Column
     @NonNull
+    private Integer memberPhone;
+
+    @Column
+    @NonNull
     private String memberRole;
 
     {
         this.memberRole="user";
     }
-
 
 }

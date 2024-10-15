@@ -1,5 +1,6 @@
 package p2.demo.service;
 
+import lombok.RequiredArgsConstructor;
 import p2.demo.dto.OrderDTO;
 import p2.demo.entity.MemberEntity;
 import p2.demo.entity.OrderEntity;
@@ -7,19 +8,18 @@ import p2.demo.entity.ProductEntity;
 import p2.demo.repository.MemberRepository;
 import p2.demo.repository.OrderRepository;
 import p2.demo.repository.ProductRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class OrderService {
-    @Autowired
-    private OrderRepository orderRepository;
 
-    @Autowired
-    private MemberRepository memberRepository;
+    private final OrderRepository orderRepository;
 
-    @Autowired
-    private ProductRepository productRepository;
+    private final MemberRepository memberRepository;
+
+    private final ProductRepository productRepository;
 
     // 주문을 저장하는 메서드
     public void saveOrder(OrderDTO orderDTO) {

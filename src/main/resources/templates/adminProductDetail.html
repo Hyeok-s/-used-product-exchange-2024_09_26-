@@ -18,7 +18,7 @@
 
 <script>
     function updateProductState(newState) {
-        const productId = [[${product.pId}]];  // 제품 ID를 가져옴
+        const productId = [[${product.id}]];  // 제품 ID를 가져옴
         console.log('Updating product with ID:', productId, 'to state:', newState);  // 추가된 로그
 
         fetch('/Admin/updateProductState/' + productId + '/' + newState, {
