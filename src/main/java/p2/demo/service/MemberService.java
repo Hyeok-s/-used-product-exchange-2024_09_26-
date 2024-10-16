@@ -20,7 +20,7 @@ public class MemberService {
         memberEntity.setMemberEmail(memberDTO.getMemberEmail());
         memberEntity.setMemberPassword(memberDTO.getMemberPassword());
         memberEntity.setMemberName(memberDTO.getMemberName());
-        memberEntity.setMemberAge(memberDTO.getMemberAge());
+        memberEntity.setMemberBir(memberDTO.getMemberBir());
         memberEntity.setMemberAddress(memberDTO.getMemberAddress());
         memberRepository.save(memberEntity);
     }
@@ -43,15 +43,21 @@ public class MemberService {
     public MemberEntity findById(Long id) {
         return memberRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid member ID: " + id));
     }
-    //정보 수정
-    public void updateMember(MemberDTO memberDTO) {
-        MemberEntity memberEntity = memberRepository.findById(memberDTO.getId()).orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
-        memberEntity.setMemberName(memberDTO.getMemberName());
-        memberEntity.setMemberAge(memberDTO.getMemberAge());
-        memberEntity.setMemberPhone(memberDTO.getMemberPhone());
-        memberEntity.setMemberAddress(memberDTO.getMemberAddress());
-        memberEntity.setMemberPassword(memberDTO.getMemberPassword());
-        memberRepository.save(memberEntity);  // 변경 사항을 DB에 저장
+
+    // 주소 수정
+    public void updateAddress(Long memberId, String newAddress) {
+        MemberEntity member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
+        member.setMemberAddress(newAddress);
+        memberRepository.save(member);
+    }
+
+    // 비밀번호 수정
+    public void updatePassword(Long memberId, String newPassword) {
+        MemberEntity member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
+        member.setMemberPassword(newPassword); // 암호화 로직 추가 가능
+        memberRepository.save(member);
     }
 
 }

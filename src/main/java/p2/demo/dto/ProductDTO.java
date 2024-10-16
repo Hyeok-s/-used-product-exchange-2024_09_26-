@@ -14,5 +14,5 @@ public class ProductDTO {
     private String pType;
     private Long member_id;
     private String pState;
-
+    private Integer counts;
 }

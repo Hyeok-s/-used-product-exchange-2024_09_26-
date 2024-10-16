@@ -12,7 +12,7 @@ public class MemberDTO {
     private String memberEmail;
     private String memberPassword;
     private String memberName;
-    private Integer memberAge;
+    private Integer memberBir;
     private String memberAddress;
     private Integer memberPhone;
     private String memberRole;
@@ -24,7 +24,7 @@ public class MemberDTO {
         memberDTO.setMemberEmail(memberEntity.getMemberEmail());
         memberDTO.setMemberName(memberEntity.getMemberName());
         memberDTO.setMemberPassword(memberEntity.getMemberPassword());
-        memberDTO.setMemberAge(memberEntity.getMemberAge());
+        memberDTO.setMemberBir(memberEntity.getMemberBir());
         memberDTO.setMemberAddress(memberEntity.getMemberAddress());
         memberDTO.setMemberPhone(memberEntity.getMemberPhone());
         memberDTO.setMemberRole(memberEntity.getMemberRole());

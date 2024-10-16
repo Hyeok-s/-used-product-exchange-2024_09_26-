@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org" >
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -19,7 +19,11 @@
 
     <!-- css -->
     <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="/static/css/style.css">
+    <script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+    <style>
+
+    </style>
+
 
 </head>
 <body onload="loadContent('/product/product')">
@@ -37,7 +41,9 @@
                         <li th:if="${session.loggedInUser == null}">
                             <a href="/demo/signup"><i class="fa fa-heart"></i>회원가입</a>
                         </li>
-
+                        <li th:if="${session.loggedInUser == null}">
+                            <a href="/demo/test"><i class="fa fa-heart"></i>테스트</a>
+                        </li>
                         <li th:if="${session.loggedInUser != null}">
                             <a href="/demo/mypage"><i class="fa fa-user"></i>마이페이지</a>
                         </li>
@@ -72,7 +78,6 @@
     </div>
 </div>
 
-
 <!-- 네비게이션 바 -->
 <div class="mainmenu-area">
     <div class="container">
@@ -89,20 +94,58 @@
     </div>
 </div>
 
-
 <!-- 사이드바 -->
 <div class="scontainer">
     <div class="sidebar">
-        <ul>
-            <li><a href="#" onclick="loadContent('/product/product')">전체</a></li>
-            <li><a href="#" onclick="loadContent('/product/electronics')">가전제품</a></li>
-            <li><a href="#" onclick="loadContent('/product/devices')">전자기기</a></li>
-            <li><a href="#" onclick="loadContent('/content4')">항목 4</a></li>
+        <ul class="menu">
+            <li><a href="#">전체</a></li>
+            <li>
+                <a href="#">디지털/가전</a>
+                <ul class="sub">
+                    <li><a href="#">가전제품</a></li>
+                    <li><a href="#">전자기기</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#">의류</a>
+                <ul class="sub">
+                    <li><a href="#">유아의류</a></li>
+                    <li><a href="#">남성의류</a></li>
+                    <li><a href="#">여성의류</a></li>
+                    <li><a href="#">신발</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#">도서</a>
+                <ul class="sub">
+                    <li><a href="#">남성패션잡화</a></li>
+                    <li><a href="#">여성패션잡화</a></li>
+                    <li><a href="#">유아도서</a></li>
+                    <li><a href="#">소설/만화책</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#">취미</a>
+                <ul class="sub">
+                    <li><a href="#">미용용품</a></li>
+                    <li><a href="#">스포츠용품</a></li>
+                    <li><a href="#">게임</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#">반려용품</a>
+                <ul class="sub">
+                    <li><a href="#">고양이</a></li>
+                    <li><a href="#">강아지</a></li>
+                    <li><a href="#">기타동물</a></li>
+                </ul>
+            </li>
         </ul>
     </div>
 
     <!-- 메인 -->
-    <div class= "mainContent" id="mainContent">
+    <div class="mainContent" id="mainContent">
+        <!-- 여기에 콘텐츠가 로드됩니다. -->
     </div>
 </div>
 
@@ -113,9 +156,17 @@
         .then(html => {
             document.getElementById('mainContent').innerHTML = html;
         })
-        .catch(error => console.error('Error loading content:', error));
+        .catch(err => console.warn('Something went wrong.', err));
     }
+    $(document).ready(function() {
+        $(".sub").hide(); // 기본적으로 서브 메뉴 숨기기
+        $(".menu li").click(function(event) {
+          // 서브 메뉴 토글
+          $(this).children(".sub").slideToggle("fast");
+          // 클릭된 메뉴를 제외한 다른 서브 메뉴는 숨기기
+          $(".sub").not($(this).children(".sub")).slideUp("fast");
+        });
+    });
 </script>
-
 </body>
 </html>

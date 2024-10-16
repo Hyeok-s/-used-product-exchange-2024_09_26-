@@ -33,6 +33,15 @@
       })
       .catch(error => console.error('Error loading content:', error));
   }
+    $(document).ready(function() {
+      $(".sub").hide(); // 기본적으로 서브 메뉴 숨기기
+      $(".menu li").click(function(event) {
+          // 서브 메뉴 토글
+          $(this).children(".sub").slideToggle("fast");
+          // 클릭된 메뉴를 제외한 다른 서브 메뉴는 숨기기
+          $(".sub").not($(this).children(".sub")).slideUp("fast");
+      });
+  });
 </script>
 </body>
 </html>

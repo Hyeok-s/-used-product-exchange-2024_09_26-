@@ -1,17 +1,3 @@
-.floatleft { float: left }
-.floatright { float: right }
-.alignleft {
-    float: left;
-    margin-right: 15px;
-}
-.alignright {
-    float: right;
-    margin-left: 15px;
-}
-.aligncenter {
-    display: block;
-    margin: 0 auto 15px;
-}
 a:focus { outline: 0px solid }
 img {
     max-width: 100%;
@@ -81,7 +67,6 @@ width: 100%;
 z-index: 999;}
 
 
-
 .logo h1 {
     font-size: 40px;
     margin: 40px 0;font-weight: 400;
@@ -104,10 +89,7 @@ z-index: 999;}
 .shopping-item a {
     color: #666;
 }
-.cart-amunt {
-    color: #1abc9c;
-    font-weight: 700;
-}
+
 .product-count {
     background: none repeat scroll 0 0 #1abc9c;
     border-radius: 50%;
@@ -134,7 +116,7 @@ z-index: 999;}
 .shopping-item:hover a {
     color: #fff;text-decoration: none
 }
-.shopping-item:hover .cart-amunt {
+.shopping-item:hover {
     color: #fff;
 }
 .shopping-item:hover .product-count {
@@ -142,18 +124,18 @@ z-index: 999;}
 }
 
 
-.mainmenu-area ul.navbar-nav li a {
+ul.navbar-nav li a {
     color: #fff;
     font-size: 16px;
     font-weight: 700;
     padding: 20px;
 }
 
-.mainmenu-area ul.navbar-nav li:hover a, .mainmenu-area ul.navbar-nav li.active a {background: #222}
-.mainmenu-area .nav > li > a:focus {color: #000}
+ul.navbar-nav li:hover a,ul.navbar-nav li.active a {background: #222}
+.nav > li > a:focus {color: #000}
 
 .slider-area {clear: both}
-.slider-area, .promo-area, .brands-area, .maincontent-area, .footer-top-area, .product-widget-area, .product-breadcroumb-area, .single-product-area {position: relative;overflow: hidden}
+.slider-area, .promo-area, .brands-area, .footer-top-area, .product-widget-area, .single-product-area {position: relative;overflow: hidden}
 .zigzag-bottom {}
 .slide-text-wrapper {
   height: 700px;
@@ -213,22 +195,6 @@ z-index: 9;
   z-index: -1;
 }
 
-
-.readmore {
-    background: none repeat scroll 0 0 #1abc9c;
-    color: #fff;
-    border: 1px solid #1abc9c;
-    display: inline-block;
-    font-size: 20px;
-    margin-top: 15px;
-    padding: 10px 20px;
-    text-transform: uppercase;
-}
-
-
-.readmore:hover {background: #222;text-decoration: none;color: #fff;border: 1px solid #fff}
-
-
 .promo-area {
   background: none repeat scroll 0 0 #1abc9c;
   color: #fff;
@@ -256,7 +222,7 @@ z-index: 9;
 .single-promo:hover {color: #fff;background: #222;border-color: #222}
 
 .section-title {
-  font-family: "Raleway",sans-serif;
+  font-family: "Rale way",sans-serif;
   font-size: 50px;
   font-weight: 100;
   margin-bottom: 50px;
@@ -370,10 +336,8 @@ z-index: 9;
   padding: 1px 10px;
 }
 
-.maincontent-area {padding-bottom: 170px}
-
 .product-wid-title {
-  font-family: raleway;
+  font-family: rale way;
   font-size: 30px;
   font-weight: 100;
   margin-bottom: 40px;
@@ -438,7 +402,7 @@ padding: 35px 0 180px;}
   color: #1abc9c;
 }
 .footer-wid-title {
-  font-family: raleway;
+  font-family: rale way;
   font-size: 30px;
   font-weight: 100;color: #fff
 }
@@ -486,6 +450,7 @@ padding: 35px 0 180px;}
     padding: 10px;
     width: 100%;
 }
+
 .newsletter-form input[type="submit"] {
     background: none repeat scroll 0 0 #1abc9c;
     border: medium none;
@@ -499,6 +464,7 @@ padding: 35px 0 180px;}
 .newsletter-form {
     margin-top: 25px;
 }
+
 a {color: #1abc9c}
 a:hover, a:focus {color: #17a78b}
 .footer-bottom-area {
@@ -508,22 +474,15 @@ a:hover, a:focus {color: #17a78b}
 }
 
 
-.slide-bulletz {
-    bottom: 30px;
-    left: 0;
-    position: absolute;
-    text-align: center;
-    width: 100%;
-    z-index: 99;
-}
 ol.slide-indicators {
-left: inherit;
-list-style: outside none none;
-margin: 0;
-padding: 0;
-position: relative;
-width: 100%;
+    left: inherit;
+    list-style: outside none none;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    width: 100%;
 }
+
 ol.slide-indicators li {
 background: none repeat scroll 0 0 #222;
 border: medium none;
@@ -534,6 +493,7 @@ height: 10px;
 margin: 0 0 0 5px;
 width: 10px;
 }
+
 ol.slide-indicators li.active {
 background: none repeat scroll 0 0 #fff;
 height: 10px;
@@ -563,7 +523,7 @@ width: 10px;
 .product-big-title-area {background: url(img/crossword.png) repeat scroll 0 0 #1ABC9C}
 
 .product-bit-title h2 {
-  font-family: raleway;
+  font-family: rale way;
   font-size: 50px;
   font-weight: 200;
   margin: 0;
@@ -605,23 +565,14 @@ input[type="submit"]:hover, button[type=submit]:hover {background-color: #222}
     margin-bottom: 10px;
     width: 100%;
 }
-.thubmnail-recent {
-    margin-bottom: 30px;
-    overflow: hidden;
-}
+
 .recent-thumb {
     float: left;
     height: auto;
     margin-right: 15px;
     width: 63px;
 }
-.thubmnail-recent > h2 {
-    font-size: 20px;
-    margin-bottom: 10px;
-}
-.thubmnail-recent > h2 a {
-    color: #222;
-}
+
 .product-sidebar-price > ins {
     color: #1abc9c;
     font-weight: 700;
@@ -640,22 +591,7 @@ input[type="submit"]:hover, button[type=submit]:hover {background-color: #222}
 .single-sidebar a {
     display: block;
 }
-.product-breadcroumb {
-    margin-bottom: 20px;
-}
-.product-breadcroumb > a {
-    margin-right: 31px;
-    position: relative;
-}
-.product-breadcroumb > a::before {
-    content: "/";
-    position: absolute;
-    right: -20px;
-    top: 2px;
-}
-.product-breadcroumb > a:last-child::before {
-    display: none;
-}
+
 .product-main-img {
     margin-bottom: 20px;
 }
@@ -857,8 +793,7 @@ div.cart-collaterals ul.products li.product {
 .cart_totals table th {
     background: none repeat scroll 0 0 #f4f4f4;
 }
-.onsale {
-}
+
 div.cart-collaterals ul.products li.product .onsale {
     background: none repeat scroll 0 0 #1abc9c;
     color: #fff;
@@ -1018,33 +953,27 @@ div.cart-collaterals ul.products li.product:hover .add_to_cart_button{background
 }
 
 
-
-
 .scontainer {
     display: flex;
     width: 100%;
     margin: 0 auto;
 }
 
-/* 사이드바 스타일링 */
 .sidebar {
     width: 20%;
     background-color: #f4f4f4;
     padding: 20px;
     box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-    height: 100vh; /* 사이드바를 전체 화면 높이로 설정 */
 }
-
 .sidebar ul {
-    list-style: none;
+    list-style-type: none;
     padding: 0;
 }
-
-.sidebar ul li {
+.sidebar li {
     margin-bottom: 10px;
+    position: relative;
 }
-
-.sidebar ul li a {
+.sidebar a {
     text-decoration: none;
     color: #333;
     font-weight: bold;
@@ -1053,12 +982,11 @@ div.cart-collaterals ul.products li.product:hover .add_to_cart_button{background
     background-color: #eee;
     border-radius: 5px;
 }
-
-.sidebar ul li a:hover {
+.sidebar ul:hover > a {
     background-color: #1abc9c;
     color: white;
 }
-
-
-
+.sub a {
+    padding-left: 20px; /* 서브 메뉴의 들여쓰기 */
+}
 

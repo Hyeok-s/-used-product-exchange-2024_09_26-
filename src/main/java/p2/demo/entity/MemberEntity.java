@@ -29,7 +29,7 @@ public class MemberEntity {
 
     @Column
     @NonNull
-    private Integer memberAge;
+    private Integer memberBir;
 
     @Column
     private String memberAddress;

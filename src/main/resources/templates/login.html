@@ -1,17 +1,47 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>로그인</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Form</title>
+  <link rel="stylesheet" href="/css/loginsignup.css">
 </head>
 <body>
-<h1>로그인</h1>
-<form action="/demo/login" method="post">
-  이메일: <input type="email" name="email" /><br/>
-  비밀번호: <input type="password" name="password" /><br/>
-  <button type="submit">로그인</button>
-</form>
-<p th:if="${param.error}">
-  로그인 실패! 이메일 또는 비밀번호를 확인하세요.
-</p>
+<!-- 상단 밑 사진 등 바 -->
+<div class="site-branding-area">
+  <div class="container">
+    <div class="row">
+      <div class="logo">
+        <h1><a href="/" th:href="@{/}"><span>Home</span></a></h1> <!-- Home 클릭 시 /로 이동 -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="App">
+  <!-- Form Panel -->
+  <div class="Panel FormPanel">
+    <h2 id="form-heading">Sign in</h2>
+    <div class="Social">
+      <a href="#">G</a>
+      <a href="#">F</a>
+    </div>
+    <p>Or use your email account</p>
+    <form id="auth-form" action="/demo/login" method="post" th:action="@{/demo/login}">
+      <input type="email" name="email" placeholder="Email" required>
+      <input type="password" name="password" placeholder="Password" required>
+    </form>
+    <a href="#">Forgot your password?</a>
+    <button id="form-button" type="submit" form="auth-form">Sign in</button> <!-- 로그인 폼 전송 -->
+  </div>
+
+  <!-- Action Panel -->
+  <div class="Panel ActionPanel">
+    <h2 id="action-heading">Hello friend!</h2>
+    <p id="action-paragraph">Enter your personal details and start your journey with us</p>
+    <button id="action-button" th:onclick="|location.href='@{/demo/signup}'|">Sign up!</button>
+  </div>
+</div>
+
 </body>
 </html>

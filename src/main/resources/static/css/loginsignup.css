@@ -1,0 +1,167 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat:400,700');
+
+.site-branding-area {
+  padding: 15px 0;
+  width: 55vw;
+  max-width: 800px;
+  min-width: 750px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+    overflow: hidden;
+    position: relative;
+}
+
+.logo h1 a {
+  font-size: 2rem; /* 글씨 크기 키움 */
+}
+
+:root {
+  --bg: #F0F4F3;
+  --theme: #3AB19B;
+  --theme-dark: #2F947D;
+  --theme-two: #FFFFFF;
+  --text: #697a79;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><g transform="scale(0.8 0.8) translate(5 5)"><circle cx="50" cy="50" r="50" fill="%23FBCD44"/></g></svg>'),
+    url('data:image/svg+xml;utf8,<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><g transform="scale(0.8 0.8) translate(5 5)"><path d="M 0 80 l 100 -80 v 100 z" fill="%23E35E6A"/></g></svg>'), var(--bg);
+  background-repeat: no-repeat;
+  background-position: bottom -150px left -70px, top -120px right -100px;
+  background-size: 300px, 380px, 100%;
+  font-family: 'Montserrat', sans-serif;
+  color: var(--text);
+  padding: 1rem 0;
+}
+
+
+
+.App {
+  max-width: 800px;
+  width: 90vw;
+  min-height: 600px;
+  background: var(--theme-two);
+  border-radius: 20px;
+  box-shadow: 0 2px 5px -6px var(--text), 0 0 30px -50px var(--text);
+  display: flex;
+  overflow: hidden;
+  position: relative;
+
+}
+
+.Panel {
+  width: 50%;
+  padding: 3rem;
+  transition: transform 0.7s cubic-bezier(.63,.39,.54,.91);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.FormPanel {
+  z-index: 2;
+  border-radius: 20px 0 0 20px;
+  background-color: #e5d2d2;
+}
+
+.ActionPanel {
+  z-index: 1;
+  border-radius: 0 20px 20px 0;
+  background-color: var(--theme);
+  color: white;
+  transition: all 0.7s cubic-bezier(.63,.39,.54,.91);
+}
+
+.ActionPanel.hidden {
+  transform: translateX(-100%);
+  opacity: 0;
+  visibility: hidden;
+}
+
+.Panel h2 {
+  font-size: 1.9rem;
+  text-align: center;
+}
+
+.Panel p {
+  font-size: 1.2rem;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.Social {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.Social a {
+  margin: 0 10px;
+  font-size: 1.5rem;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.Social a:hover {
+  color: var(--theme);
+}
+
+input {
+  width: 100%;
+  margin: 0.5rem 0;
+  padding: 0.8rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+button {
+  margin-top: 1rem;
+  padding: 0.5rem 1.5rem;
+  background-color: #a7bbb8;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: var(--theme-dark);
+}
+
+a {
+  text-decoration: none;
+  color: var(--theme);
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .App {
+    flex-direction: column;
+  }
+  .site-branding-area{
+    min-width: 550px;
+  }
+  .Panel {
+    width: 100%;
+  }
+}

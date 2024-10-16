@@ -35,8 +35,13 @@ public class ProductEntity {
     private String pic;
 
     @Column
-    private String pState;
+    private Integer counts;
+    {
+        this.counts=0;
+    }
 
+    @Column
+    private String pState;
     {
         this.pState = "N";
     }

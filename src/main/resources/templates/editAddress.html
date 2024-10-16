@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Edit Address</title>
+  <link rel="stylesheet" href="/css/mypage.css">
+</head>
+<body>
+<header>
+  <nav>
+    <ul>
+      <li><a href="/">홈</a></li>
+      <li><a href="/demo/logout">로그아웃</a></li>
+    </ul>
+  </nav>
+</header>
+
+<section>
+  <h1>Edit Address</h1>
+
+  <!-- 주소 수정 폼 -->
+  <form action="/demo/edit-address" method="post">
+    <label for="memberAddress">새 주소:</label>
+    <input type="text" id="memberAddress" name="memberAddress" th:value="${session.loggedInUser.memberAddress}">
+    <button type="submit">저장</button>
+  </form>
+</section>
+</body>
+</html>

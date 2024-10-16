@@ -21,14 +21,18 @@
   <div>
     <p><strong>이메일:</strong> <span th:text="${session.loggedInUser.memberEmail}"></span></p>
     <p><strong>이름:</strong> <span th:text="${session.loggedInUser.memberName}"></span></p>
-    <p><strong>나이:</strong> <span th:text="${session.loggedInUser.memberAge}"></span></p>
+    <p><strong>생년월일:</strong> <span th:text="${session.loggedInUser.memberBir}"></span></p>
     <p><strong>전화번호:</strong> <span th:text="${session.loggedInUser.memberPhone}"></span></p>
-    <p><strong>주소:</strong> <span th:text="${session.loggedInUser.memberAddress}"></span></p>
+
+    <!-- 주소 수정 링크 -->
+    <p><strong>주소:</strong> <span th:text="${session.loggedInUser.memberAddress}"></span>
+      <a href="/demo/edit-address">주소 수정</a>
+    </p>
+
+    <!-- 비밀번호 수정 링크 -->
+      <a href="/demo/edit-password">비밀번호 수정</a>
   </div>
 
-  <div>
-    <a href="/demo/edit">프로필 수정</a>
-  </div>
 </section>
 </body>
 </html>

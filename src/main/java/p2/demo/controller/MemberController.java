@@ -38,6 +38,12 @@ public class MemberController {
         return "login";
     }
 
+    //테스트
+    @GetMapping("/demo/test")
+    public String lForm() {
+        return "mypageEdit";
+    }
+
     //로그인
     @PostMapping("/demo/login")
     public String login(@RequestParam("email") String email,
@@ -66,32 +72,47 @@ public class MemberController {
         return "redirect:/";
     }
 
-    //마이페이지 수정폼
-    @GetMapping("/demo/edit")
-    public String showEditForm(HttpSession session, Model model) {
+    // 주소 수정 폼으로 이동
+    @GetMapping("/demo/edit-address")
+    public String showEditAddressForm(Model model, HttpSession session) {
         MemberDTO loggedInUserDTO = (MemberDTO) session.getAttribute("loggedInUser");
         if (loggedInUserDTO != null) {
             model.addAttribute("loggedInUser", loggedInUserDTO);
-            return "mypageEdit";  // 수정 페이지로 이동
         }
-        return "redirect:/login";  // 로그인하지 않았다면 로그인 페이지로 리다이렉트
+        return "editAddress";
     }
 
-    //마이페이지 수정
-    @PostMapping("/demo/edit")
-    public String updateProfile(@ModelAttribute MemberDTO memberDTO, HttpSession session) {
+    // 비밀번호 수정 폼으로 이동
+    @GetMapping("/demo/edit-password")
+    public String showEditPasswordForm(Model model, HttpSession session) {
         MemberDTO loggedInUserDTO = (MemberDTO) session.getAttribute("loggedInUser");
         if (loggedInUserDTO != null) {
-            loggedInUserDTO.setMemberName(memberDTO.getMemberName());
-            loggedInUserDTO.setMemberAge(memberDTO.getMemberAge());
-            loggedInUserDTO.setMemberPhone(memberDTO.getMemberPhone());
-            loggedInUserDTO.setMemberAddress(memberDTO.getMemberAddress());
-            loggedInUserDTO.setMemberPassword(memberDTO.getMemberPassword());
-
-            memberService.updateMember(loggedInUserDTO);  // 서비스에서 사용자 정보 업데이트 처리
-            session.setAttribute("loggedInUser", loggedInUserDTO);  // 세션 정보 갱신
+            model.addAttribute("loggedInUser", loggedInUserDTO);
         }
-        return "redirect:/demo/mypage";  // 수정 후 마이페이지로 이동
+        return "editPassword";
+    }
+
+    // 주소 수정 처리
+    @PostMapping("/demo/edit-address")
+    public String updateAddress(@RequestParam("memberAddress") String newAddress, HttpSession session) {
+        MemberDTO loggedInUserDTO = (MemberDTO) session.getAttribute("loggedInUser");
+        if (loggedInUserDTO != null) {
+            memberService.updateAddress(loggedInUserDTO.getId(), newAddress);
+            loggedInUserDTO.setMemberAddress(newAddress);
+            session.setAttribute("loggedInUser", loggedInUserDTO);  // 세션 갱신
+        }
+        return "redirect:/demo/mypage";
+    }
+
+    // 비밀번호 수정 처리
+    @PostMapping("/demo/edit-password")
+    public String updatePassword(@RequestParam("memberPassword") String newPassword, HttpSession session) {
+        MemberDTO loggedInUserDTO = (MemberDTO) session.getAttribute("loggedInUser");
+        if (loggedInUserDTO != null) {
+            memberService.updatePassword(loggedInUserDTO.getId(), newPassword);
+            session.setAttribute("loggedInUser", loggedInUserDTO);  // 세션 갱신
+        }
+        return "redirect:/demo/mypage";
     }
 
 }
