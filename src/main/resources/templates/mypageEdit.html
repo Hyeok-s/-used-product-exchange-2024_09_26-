@@ -1,239 +1,68 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>상품 등록</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <style>
-    body {
-      font-family: 'Apple SD Gothic Neo', sans-serif;
-      background: linear-gradient(to right, #f7f8f9, #e9ecef);
-      padding: 20px;
-    }
-
-    h2 {
-      text-align: center;
-      color: #343a40;
-      margin-bottom: 30px;
-    }
-
-    form {
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 20px;
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    label {
-      font-weight: bold;
-      color: #495057;
-    }
-
-    input[type="text"], input[type="number"], textarea, select {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 15px;
-      border: 1px solid #ced4da;
-      border-radius: 5px;
-      font-size: 16px;
-      transition: all 0.2s ease;
-    }
-
-    input[type="text"]:focus, input[type="number"]:focus, textarea:focus, select:focus {
-      border-color: #80bdff;
-      box-shadow: 0 0 8px rgba(0, 123, 255, 0.25);
-      outline: none;
-    }
-
-    .file-input {
-      position: relative;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background-color: #f1f3f5;
-      border: 2px dashed #ced4da;
-      border-radius: 10px;
-      padding: 40px;
-      margin-bottom: 15px;
-      cursor: pointer;
-    }
-
-    .file-input:hover {
-      background-color: #e9ecef;
-    }
-
-    .file-input i {
-      font-size: 50px;
-      color: #adb5bd;
-    }
-
-    .file-input span {
-      margin-left: 10px;
-      font-size: 18px;
-      color: #6c757d;
-    }
-
-    .file-input input[type="file"] {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      left: 0;
-      opacity: 0;
-      cursor: pointer;
-    }
-
-    button[type="submit"] {
-      width: 100%;
-      padding: 10px;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      font-size: 18px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-
-    button[type="submit"]:hover {
-      background-color: #0056b3;
-    }
-
-    a {
-      display: block;
-      text-align: center;
-      margin-top: 15px;
-      color: #007bff;
-      text-decoration: none;
-      font-size: 16px;
-    }
-
-    a:hover {
-      text-decoration: underline;
-    }
-
-    .price-input {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .price-input input {
-      flex: 1;
-    }
-
-    .price-input span {
-      margin-left: 10px;
-      font-size: 18px;
-      color: #495057;
-    }
-  </style>
+  <title>My Page</title>
+  <link rel="stylesheet" href="/css/mypage.css">
 </head>
 <body>
-<h2>상품 등록</h2>
+<header>
 
-<form id="productForm" th:action="@{/product/upload}" method="post" enctype="multipart/form-data">
-  <label for="pName">상품명:</label>
-  <input type="text" id="pName" name="pName" placeholder="상품명을 입력하세요" required>
+</header>
 
-  <label for="pContent">상품 설명:</label>
-  <textarea id="pContent" name="pContent" rows="5" placeholder="상품 설명을 입력하세요" required></textarea>
-
-  <label for="pPrice">가격:</label>
-  <div class="price-input">
-    <input type="text" id="pPrice" name="pPrice" placeholder="가격을 입력하세요" required>
-    <span>원</span>
-  </div>
-
-  <label for="pType1">카테고리:</label>
-  <select id="pType1" name="pType1" required>
-    <option value="">카테고리를 선택하세요</option>
-    <option value="디지털/가전">디지털/가전</option>
-    <option value="의류">의류</option>
-    <option value="도서">도서</option>
-    <option value="취미">취미</option>
-    <option value="반려용품">반려용품</option>
-    <option value="기타물품">기타물품</option>
-  </select>
-
-  <label for="pType2">세부 카테고리:</label>
-  <select id="pType2" name="pType2" required>
-    <option value="">먼저 상위 카테고리를 선택하세요</option>
-  </select>
-
-  <label for="pic">사진 업로드:</label>
-  <div class="file-input">
-    <i class="fas fa-upload"></i>
-    <span>이미지를 선택하세요</span>
-    <input type="file" id="pic" name="pic" accept="image/*">
-  </div>
-
-  <button type="submit">상품 등록</button>
-</form>
-
-<a href="/product/product">상품 목록으로 돌아가기</a>
-
-<script>
-  // 숫자에 쉼표 추가하는 함수
-  function formatPrice(value) {
-    return value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  }
-
-  // 쉼표를 제거하는 함수
-  function unformatPrice(value) {
-    return value.replace(/,/g, "");
-  }
-
-  // 가격 입력 도중 쉼표 자동 추가
-  $('#pPrice').on('input', function() {
-    let value = $(this).val();
-    value = unformatPrice(value); // 입력 값에서 쉼표 제거
-    if (!isNaN(value) && value !== "") {
-      $(this).val(formatPrice(value)); // 쉼표 추가된 값으로 설정
-    }
-  });
-
-  // 폼 제출 시 쉼표 제거한 숫자 값으로 변환
-  $('#productForm').on('submit', function() {
-    let formattedPrice = $('#pPrice').val();
-    $('#pPrice').val(unformatPrice(formattedPrice)); // 쉼표 제거 후 제출
-  });
-
-  // 카테고리별 세부 카테고리 설정
-  const categoryMap = {
-    '디지털/가전': ['가전제품', '전자기기'],
-    '의류': ['유아의류', '남성의류', '여성의류', '신발'],
-    '도서': ['남성패션잡화', '여성패션잡화', '유아도서', '소설/만화책'],
-    '취미': ['미용용품', '스포츠용품', '게임'],
-    '반려용품': ['고양이', '강아지', '기타동물'],
-    '기타물품': ['기타물품']
-  };
-
-  $('#pType1').on('change', function() {
-    const selectedCategory = $(this).val();
-    const $pType2 = $('#pType2');
-
-    $pType2.empty(); // 이전 옵션 제거
-    if (selectedCategory && categoryMap[selectedCategory]) {
-      categoryMap[selectedCategory].forEach(function(subCategory) {
-        $pType2.append(`<option value="${subCategory}">${subCategory}</option>`);
-      });
-    } else {
-      $pType2.append('<option value="">먼저 상위 카테고리를 선택하세요</option>');
-    }
-  });
-
-  // 파일 선택 시 파일명 표시
-  $('.file-input input[type="file"]').change(function(e) {
-    const fileName = e.target.files[0].name;
-    $(this).siblings('span').text(fileName);
-  });
-</script>
-
+<body>
+  <input type="text" id="sample6_postcode" placeholder="우편번호" readonly>
+  <input type="button" onclick="sample6_execDaumPostcode()" value="우편번호 찾기"><br>
+  <input type="text" id="sample6_address" placeholder="주소" readonly><br>
+  <input type="text" id="sample6_extraAddress" placeholder="참고항목" style="display:none">
+  <input type="text" id="sample6_detailAddress" placeholder="상세주소">
 </body>
-</html>
+<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script>
+  function sample6_execDaumPostcode() {
+      new daum.Postcode({
+          oncomplete: function(data) {
+              // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+
+              // 각 주소의 노출 규칙에 따라 주소를 조합한다.
+              // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+              var addr = ''; // 주소 변수
+              var extraAddr = ''; // 참고항목 변수
+
+              //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+              if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+                  addr = data.roadAddress;
+              } else { // 사용자가 지번 주소를 선택했을 경우(J)
+                  addr = data.jibunAddress;
+              }
+
+              // 사용자가 선택한 주소가 도로명 타입일때 참고항목을 조합한다.
+              if(data.userSelectedType === 'R'){
+                  // 법정동명이 있을 경우 추가한다. (법정리는 제외)
+                  // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
+                  if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
+                      extraAddr += data.bname;
+                  }
+                  // 건물명이 있고, 공동주택일 경우 추가한다.
+                  if(data.buildingName !== '' && data.apartment === 'Y'){
+                      extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                  }
+                  // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
+                  if(extraAddr !== ''){
+                      extraAddr = ' (' + extraAddr + ')';
+                  }
+                  // 조합된 참고항목을 해당 필드에 넣는다.
+                  document.getElementById("sample6_extraAddress").value = extraAddr;
+
+              } else {
+                  document.getElementById("sample6_extraAddress").value = '';
+              }
+
+              // 우편번호와 주소 정보를 해당 필드에 넣는다.
+              document.getElementById('sample6_postcode').value = data.zonecode;
+              document.getElementById("sample6_address").value = addr;
+              // 커서를 상세주소 필드로 이동한다.
+              document.getElementById("sample6_detailAddress").focus();
+          }
+      }).open();
+  }
+</script>

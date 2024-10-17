@@ -11,7 +11,8 @@ public class ProductDTO {
     private String pName;
     private String pContent;
     private Integer pPrice;
-    private String pType;
+    private String pType1;
+    private String pType2;
     private Long member_id;
     private String pState;
     private Integer counts;

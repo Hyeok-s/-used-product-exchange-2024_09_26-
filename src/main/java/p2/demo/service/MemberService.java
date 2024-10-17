@@ -15,14 +15,15 @@ public class MemberService {
     private final MemberRepository memberRepository;
 
     //회원가입 저장
-    public void save(MemberDTO memberDTO) {
+    public MemberEntity save(MemberDTO memberDTO) {
         MemberEntity memberEntity = new MemberEntity();
         memberEntity.setMemberEmail(memberDTO.getMemberEmail());
         memberEntity.setMemberPassword(memberDTO.getMemberPassword());
         memberEntity.setMemberName(memberDTO.getMemberName());
         memberEntity.setMemberBir(memberDTO.getMemberBir());
         memberEntity.setMemberAddress(memberDTO.getMemberAddress());
-        memberRepository.save(memberEntity);
+        memberEntity.setMemberPhone(memberDTO.getMemberPhone());
+        return memberRepository.save(memberEntity);
     }
 
     //로그인 정보 확인

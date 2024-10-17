@@ -17,6 +17,9 @@ public class MemberDTO {
     private Integer memberPhone;
     private String memberRole;
 
+    //address회원가입시 필요
+    private AddressDTO address;
+
     // MemberEntity를 MemberDTO로 변환
     public static MemberDTO toMemberDTO(MemberEntity memberEntity) {
         MemberDTO memberDTO = new MemberDTO();

@@ -2,10 +2,9 @@ package p2.demo.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import p2.demo.entity.AskEntity;
-
+import p2.demo.entity.AddressEntity;
 
 @Repository
-public interface AskRepository extends JpaRepository<AskEntity, Long> {
+public interface AddressRepository extends JpaRepository<AddressEntity, Long> {
 
 }

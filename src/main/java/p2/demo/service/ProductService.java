@@ -44,7 +44,8 @@ public class ProductService {
             productEntity.setPName(productDTO.getPName());
             productEntity.setPContent(productDTO.getPContent());
             productEntity.setPPrice(productDTO.getPPrice());
-            productEntity.setPType(productDTO.getPType());
+            productEntity.setPType1(productDTO.getPType1());
+            productEntity.setPType2(productDTO.getPType2());
             Long memberId = loggedInUser.getId();
             MemberEntity memberEntity = memberRepository.findById(memberId).orElse(null);
 
@@ -83,8 +84,12 @@ public class ProductService {
     }
 
     //상품 종류 가져오기
-    public List<ProductEntity> getProductsByType(String type) {
-        return productRepository.findByPtype(type);
+    public List<ProductEntity> getProductsByType1(String type1) {
+        return productRepository.findByPtype1(type1);
+    }
+
+    public List<ProductEntity> getProductsByType2(String type2) {
+        return productRepository.findByPtype2(type2);
     }
 
     //상품 상태가져오기

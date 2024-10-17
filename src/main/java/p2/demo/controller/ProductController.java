@@ -45,7 +45,7 @@ public class ProductController {
                                 HttpSession session, Model model) {
         try {//로그인 된사용자 인지 확인
             productService.saveProduct(productDTO, pic, session);
-            return "redirect:/product/product";
+            return "redirect:/";
         } catch (IllegalStateException | IOException e) {
             model.addAttribute("errorMessage", e.getMessage());
             return "redirect:/";
@@ -71,19 +71,25 @@ public class ProductController {
         return "product";
     }
 
-    // 가전제품만 조회
-    @GetMapping("/product/electronics")
-    public String getElectronicsProducts(Model model) {
-        model.addAttribute("products", productService.getProductsByType("가전제품"));
-        return "product";
+
+    // 카테고리에 따른 상품 목록 로드
+    @GetMapping("/product/category/{category}")
+    public String getProductsByCategory1(@PathVariable("category") String category, Model model) {
+        category = category.replace("_", "/");
+        List<ProductEntity> products = productService.getProductsByType1(category);
+        model.addAttribute("products", products);
+        return "product";  // 이 페이지는 카테고리별로 필터된 상품 리스트를 보여주는 HTML 조각
     }
-/*
-    // 전자기기만 조회
-    @GetMapping("/products/devices")
-    public String getDevicesProducts(Model model) {
-        model.addAttribute("products", productService.getProductsByType("전자기기"));
-        return "product";
-    }*/
+
+    // 서브 카테고리에 따른 상품 목록 로드
+    @GetMapping("/product/subcategory/{subcategory}")
+    public String getProductsByCategory2(@PathVariable("subcategory") String subcategory, Model model) {
+        subcategory = subcategory.replace("_", "/");
+        List<ProductEntity> products = productService.getProductsByType2(subcategory);
+        model.addAttribute("products", products);
+        return "product";  // 이 페이지는 카테고리별로 필터된 상품 리스트를 보여주는 HTML 조각
+    }
+
 
     // 제품 ID로 해당 제품의 상세 정보를 조회
     @GetMapping("/product/productDetail/{id}")

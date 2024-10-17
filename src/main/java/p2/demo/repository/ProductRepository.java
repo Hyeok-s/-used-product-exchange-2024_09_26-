@@ -12,13 +12,18 @@ import java.util.Optional;
 public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
     List<ProductEntity> findAll();
 
-    @Query("SELECT p FROM ProductEntity p WHERE p.pType = ?1 AND p.pState = 'O'")
-    List<ProductEntity> findByPtype(String pType);
+    @Query("SELECT p FROM ProductEntity p WHERE p.pType1 = ?1 AND p.pState = 'O'")
+    List<ProductEntity> findByPtype1(String pType1);
+
+    @Query("SELECT p FROM ProductEntity p WHERE p.pType2 = ?1 AND p.pState = 'O'")
+    List<ProductEntity> findByPtype2(String pType2);
 
     @Query("SELECT p FROM ProductEntity p WHERE p.pState = ?1")
     List<ProductEntity> findByPstate(String pState);
 
     @Query("select p from ProductEntity p Where p.pState = 'O'")
     List<ProductEntity> findByPstateO();
+
+
 }
 

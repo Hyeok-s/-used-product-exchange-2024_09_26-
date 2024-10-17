@@ -6,8 +6,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import p2.demo.dto.AddressDTO;
 import p2.demo.dto.MemberDTO;
 import p2.demo.entity.MemberEntity;
+import p2.demo.service.AddressService;
 import p2.demo.service.MemberService;
 import p2.demo.repository.MemberRepository;
 import org.springframework.http.HttpStatus;
@@ -18,6 +20,7 @@ public class MemberController {
 
     private final MemberService memberService;
     private final MemberRepository memberRepository;
+    private final AddressService addressService;
 
     //회원가입폼
     @GetMapping("/demo/signup")
@@ -25,10 +28,15 @@ public class MemberController {
         model.addAttribute("memberDTO", new MemberDTO());  // 빈 MemberDTO 객체를 추가
         return "signup";
     }
+
     //회원가입
     @PostMapping("/demo/signup")
     public String signup(@ModelAttribute("memberDTO") MemberDTO memberDTO) {
-        memberService.save(memberDTO);
+        System.out.println(memberDTO.getAddress().getPostcode());
+        MemberEntity savedMember = memberService.save(memberDTO);
+        AddressDTO addressDTO = memberDTO.getAddress();
+
+        addressService.save(addressDTO, savedMember);
         return "redirect:/";
     }
 

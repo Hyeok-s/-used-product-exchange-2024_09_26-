@@ -29,7 +29,11 @@ public class ProductEntity {
 
     @Column
     @NonNull
-    private String pType;
+    private String pType1;
+
+    @Column
+    @NonNull
+    private String pType2;
 
     @Column
     private String pic;

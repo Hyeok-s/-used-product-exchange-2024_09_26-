@@ -98,58 +98,59 @@
 <div class="scontainer">
     <div class="sidebar">
         <ul class="menu">
-            <li><a href="#">전체</a></li>
+            <li><a href="#" onclick="loadContent('/product/product')">전체</a></li>
             <li>
-                <a href="#">디지털/가전</a>
+                <a href="#" onclick="loadContentByCategory('/product/category/', '디지털/가전')">디지털/가전</a>
                 <ul class="sub">
-                    <li><a href="#">가전제품</a></li>
-                    <li><a href="#">전자기기</a></li>
+                    <li><a href="#" onclick="loadContentBySubCategory('/product/subcategory/', '가전제품')">> 가전제품</a></li>
+                    <li><a href="#" onclick="loadContentBySubCategory('/product/subcategory/', '전자기기')">> 전자기기</a></li>
                 </ul>
             </li>
             <li>
-                <a href="#">의류</a>
+                <a href="#" onclick="loadContentByCategory('/product/category/', '의류')">의류</a>
                 <ul class="sub">
-                    <li><a href="#">유아의류</a></li>
-                    <li><a href="#">남성의류</a></li>
-                    <li><a href="#">여성의류</a></li>
-                    <li><a href="#">신발</a></li>
+                    <li><a href="#" onclick="loadContentBySubCategory('/product/subcategory/', '유아의류')">> 유아의류</a></li>
+                    <li><a href="#" onclick="loadContentBySubCategory('/product/subcategory/', '남성의류')">> 남성의류</a></li>
+                    <li><a href="#" onclick="loadContentBySubCategory('/product/subcategory/', '여성의류')">> 여성의류</a></li>
+                    <li><a href="#" onclick="loadContentBySubCategory('/product/subcategory/', '신발')">> 신발</a></li>
                 </ul>
             </li>
             <li>
-                <a href="#">도서</a>
+                <a href="#" onclick="loadContentByCategory('/product/category/', '도서')">도서</a>
                 <ul class="sub">
-                    <li><a href="#">남성패션잡화</a></li>
-                    <li><a href="#">여성패션잡화</a></li>
-                    <li><a href="#">유아도서</a></li>
-                    <li><a href="#">소설/만화책</a></li>
+                    <li><a href="#" onclick="loadContentBySubCategory('/product/subcategory/', '남성패션잡화')">> 남성패션잡화</a></li>
+                    <li><a href="#" onclick="loadContentBySubCategory('/product/subcategory/', '여성패션잡화')">> 여성패션잡화</a></li>
+                    <li><a href="#" onclick="loadContentBySubCategory('/product/subcategory/', '유아도서')">> 유아도서</a></li>
+                    <li><a href="#" onclick="loadContentBySubCategory('/product/subcategory/', '소설/만화책')">> 소설/만화책</a></li>
                 </ul>
             </li>
             <li>
-                <a href="#">취미</a>
+                <a href="#" onclick="loadContentByCategory('/product/category/', '취미')">취미</a>
                 <ul class="sub">
-                    <li><a href="#">미용용품</a></li>
-                    <li><a href="#">스포츠용품</a></li>
-                    <li><a href="#">게임</a></li>
+                    <li><a href="#" onclick="loadContentBySubCategory('/product/subcategory/', '미용용품')">> 미용용품</a></li>
+                    <li><a href="#" onclick="loadContentBySubCategory('/product/subcategory/', '스포츠용품')">> 스포츠용품</a></li>
+                    <li><a href="#" onclick="loadContentBySubCategory('/product/subcategory/', '게임')">> 게임</a></li>
                 </ul>
             </li>
             <li>
-                <a href="#">반려용품</a>
+                <a href="#" onclick="loadContentByCategory('/product/category/', '반려용품')">반려용품</a>
                 <ul class="sub">
-                    <li><a href="#">고양이</a></li>
-                    <li><a href="#">강아지</a></li>
-                    <li><a href="#">기타동물</a></li>
+                    <li><a href="#" onclick="loadContentBySubCategory('/product/subcategory/', '고양이')">> 고양이</a></li>
+                    <li><a href="#" onclick="loadContentBySubCategory('/product/subcategory/', '강아지')">> 강아지</a></li>
+                    <li><a href="#" onclick="loadContentBySubCategory('/product/subcategory/', '기타동물')">> 기타동물</a></li>
                 </ul>
             </li>
+            <li><a href="#" onclick="loadContent('/product/product')">기타 용품</a></li>
         </ul>
     </div>
 
     <!-- 메인 -->
     <div class="mainContent" id="mainContent">
-        <!-- 여기에 콘텐츠가 로드됩니다. -->
     </div>
 </div>
 
 <script>
+    // 전체 products
     function loadContent(url) {
         fetch(url)
         .then(response => response.text())
@@ -158,13 +159,73 @@
         })
         .catch(err => console.warn('Something went wrong.', err));
     }
+
+     // 대분류에 따라 URL을 받아 로드하는 함수
+    function loadContentByCategory(url, category) {
+        category = category.replace(/\//g, '_');
+        url = url + category;
+        console.log(url);
+        fetch(url)
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('mainContent').innerHTML = html;
+        })
+        .catch(err => console.warn('Something went wrong.', err));
+    }
+
+    // 소분류에 따라 URL을 받아 로드하는 함수
+    function loadContentBySubCategory(url, subcategory) {
+        subcategory = subcategory.replace(/\//g, '_');
+        url = url + subcategory;
+        console.log(url);
+        fetch(url)
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('mainContent').innerHTML = html;
+        })
+        .catch(err => console.warn('Something went wrong.', err));
+    }
+</script>
+<script>
     $(document).ready(function() {
         $(".sub").hide(); // 기본적으로 서브 메뉴 숨기기
-        $(".menu li").click(function(event) {
-          // 서브 메뉴 토글
-          $(this).children(".sub").slideToggle("fast");
-          // 클릭된 메뉴를 제외한 다른 서브 메뉴는 숨기기
-          $(".sub").not($(this).children(".sub")).slideUp("fast");
+
+        // 대분류 클릭 시
+        $(".menu > li > a").click(function(event) {
+            // 기본 링크 기능 방지
+            event.preventDefault();
+
+            // 모든 대분류 메뉴에서 active 클래스 제거
+            $(".menu > li > a").removeClass("active");
+
+            // 클릭한 대분류 메뉴 항목에 active 클래스 추가
+            $(this).addClass("active");
+
+            // 서브 메뉴가 열려 있으면 닫기
+            let $subMenu = $(this).siblings(".sub");
+            if ($subMenu.is(":visible")) {
+                $subMenu.slideUp("fast");
+            } else {
+                // 모든 서브 메뉴 닫기
+                $(".sub").slideUp("fast");
+                // 클릭한 메뉴의 서브 메뉴 열기
+                $subMenu.slideDown("fast");
+            }
+
+            // 소분류의 active 클래스 제거
+            $(".sub > li > a").removeClass("active"); // 소분류 색상 초기화
+        });
+
+        // 소분류 클릭 시
+        $(".sub > li > a").click(function(event) {
+            // 기본 링크 기능 방지
+            event.preventDefault();
+
+            // 모든 소분류 메뉴에서 active 클래스 제거
+            $(".sub > li > a").removeClass("active");
+
+            // 클릭한 소분류 메뉴 항목에 active 클래스 추가
+            $(this).addClass("active");
         });
     });
 </script>

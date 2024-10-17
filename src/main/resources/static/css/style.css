@@ -990,3 +990,18 @@ div.cart-collaterals ul.products li.product:hover .add_to_cart_button{background
     padding-left: 20px; /* 서브 메뉴의 들여쓰기 */
 }
 
+
+.menu > li > a {
+    color: black; /* 기본 글자 색상 */
+    text-decoration: none; /* 기본 링크 밑줄 제거 */
+}
+
+.menu > li > a.active {
+    color: #3498db; /* 클릭된 메뉴 항목의 색상 */
+}
+
+.sub > li > a.active {
+    color: #e74c3c; /* 소분류 클릭 시 색상 */
+}
+
+
