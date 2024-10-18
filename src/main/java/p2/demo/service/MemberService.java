@@ -21,7 +21,6 @@ public class MemberService {
         memberEntity.setMemberPassword(memberDTO.getMemberPassword());
         memberEntity.setMemberName(memberDTO.getMemberName());
         memberEntity.setMemberBir(memberDTO.getMemberBir());
-        memberEntity.setMemberAddress(memberDTO.getMemberAddress());
         memberEntity.setMemberPhone(memberDTO.getMemberPhone());
         return memberRepository.save(memberEntity);
     }
@@ -44,15 +43,7 @@ public class MemberService {
     public MemberEntity findById(Long id) {
         return memberRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid member ID: " + id));
     }
-
-    // 주소 수정
-    public void updateAddress(Long memberId, String newAddress) {
-        MemberEntity member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
-        member.setMemberAddress(newAddress);
-        memberRepository.save(member);
-    }
-
+    
     // 비밀번호 수정
     public void updatePassword(Long memberId, String newPassword) {
         MemberEntity member = memberRepository.findById(memberId)

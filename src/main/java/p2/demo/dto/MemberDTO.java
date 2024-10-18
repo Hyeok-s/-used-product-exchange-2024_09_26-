@@ -13,7 +13,6 @@ public class MemberDTO {
     private String memberPassword;
     private String memberName;
     private Integer memberBir;
-    private String memberAddress;
     private Integer memberPhone;
     private String memberRole;
 
@@ -28,7 +27,6 @@ public class MemberDTO {
         memberDTO.setMemberName(memberEntity.getMemberName());
         memberDTO.setMemberPassword(memberEntity.getMemberPassword());
         memberDTO.setMemberBir(memberEntity.getMemberBir());
-        memberDTO.setMemberAddress(memberEntity.getMemberAddress());
         memberDTO.setMemberPhone(memberEntity.getMemberPhone());
         memberDTO.setMemberRole(memberEntity.getMemberRole());
         return memberDTO;

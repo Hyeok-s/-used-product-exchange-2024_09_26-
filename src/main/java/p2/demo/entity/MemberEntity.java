@@ -32,9 +32,6 @@ public class MemberEntity {
     private Integer memberBir;
 
     @Column
-    private String memberAddress;
-
-    @Column
     @NonNull
     private Integer memberPhone;
 

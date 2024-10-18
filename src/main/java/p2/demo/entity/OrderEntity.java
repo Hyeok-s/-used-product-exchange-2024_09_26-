@@ -17,16 +17,19 @@ public class OrderEntity {
     private Long id;
 
     @Column(nullable = false)
-    private String shippingAddress;
+    private String deliveryStatus;
+    {
+        this.deliveryStatus="w";
+    }
 
     @Column(nullable = true)
-    private String shippingMemo;
+    private String shoppingMemo;
 
     @Column(nullable = false)
     private String paymentMethod;
 
     @Column(nullable = false)
-    private String deliveryStatus = "Pending"; // 기본값은 'Pending'
+    private String shoppingAddress;
 
     @ManyToOne
     @JoinColumn(name = "member_id", referencedColumnName = "id")

@@ -7,10 +7,10 @@ import lombok.Setter;
 @Setter
 public class OrderDTO {
     private Long id;
-    private String shippingAddress;
-    private String shippingMemo;
+    private String shoppingMemo;
     private String paymentMethod;
     private String deliveryStatus;
+    private String shoppingAddress;
     private Long buyerId;
     private Long productId;
 }

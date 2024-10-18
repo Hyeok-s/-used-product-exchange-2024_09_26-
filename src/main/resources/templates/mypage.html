@@ -14,25 +14,36 @@
   </nav>
 </header>
 
-<section>
   <h1>My Page</h1>
 
   <!-- 사용자 정보 표시 -->
   <div>
-    <p><strong>이메일:</strong> <span th:text="${session.loggedInUser.memberEmail}"></span></p>
-    <p><strong>이름:</strong> <span th:text="${session.loggedInUser.memberName}"></span></p>
-    <p><strong>생년월일:</strong> <span th:text="${session.loggedInUser.memberBir}"></span></p>
-    <p><strong>전화번호:</strong> <span th:text="${session.loggedInUser.memberPhone}"></span></p>
+    <p><strong>이메일:</strong> <span th:text="${member.memberEmail}"></span></p>
+    <p><strong>이름:</strong> <span th:text="${member.memberName}"></span></p>
+    <p><strong>생년월일:</strong> <span th:text="${member.memberBir}"></span></p>
+    <p><strong>전화번호:</strong> <span th:text="${member.memberPhone}"></span></p>
 
     <!-- 주소 수정 링크 -->
-    <p><strong>주소:</strong> <span th:text="${session.loggedInUser.memberAddress}"></span>
-      <a href="/demo/edit-address">주소 수정</a>
-    </p>
+    <h2>주소 정보</h2>
+    <ul>
+      <li th:each="address : ${addresses}">
+          <p>주소: [[${address.address}]], [[${address.detailAddress}]]</p>
+          <a th:href="@{/demo/edit-address/{id}(id=${address.id})}">주소 수정</a>
+          <form th:action="@{/demo/delete-address}" method="post">
+            <input type="hidden" name="id" th:value="${address.id}">
+            <button type="submit">삭제</button>
+          </form>
+      </li>
+    </ul>
+    <a href="/demo/add-address">주소 추가</a>
 
     <!-- 비밀번호 수정 링크 -->
       <a href="/demo/edit-password">비밀번호 수정</a>
   </div>
 
-</section>
+    <!-- 내 게시글 -->
+
+
+
 </body>
 </html>
