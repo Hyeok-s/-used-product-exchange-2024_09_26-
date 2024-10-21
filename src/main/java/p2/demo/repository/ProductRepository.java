@@ -24,6 +24,8 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
     @Query("select p from ProductEntity p Where p.pState = 'O'")
     List<ProductEntity> findByPstateO();
 
+    //로그인한 id와 상태의 조회
+    List<ProductEntity> findBypStateAndMemberId(String state, Long memberId);
 
 }
 

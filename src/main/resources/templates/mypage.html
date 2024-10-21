@@ -1,9 +1,118 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+  <meta charset="UTF-8">
   <title>My Page</title>
   <link rel="stylesheet" href="/css/mypage.css">
 </head>
+<style>
+  * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+}
+
+header {
+  background-color: #f4f4f4;
+  padding: 10px 0;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+}
+
+header ul {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+}
+
+header ul li {
+  margin: 0 15px;
+}
+
+header ul li a {
+  text-decoration: none;
+  color: #333;
+  font-weight: bold;
+}
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+}
+
+.left-section, .right-section, .center-section {
+  border: 1px solid #ddd;
+  padding: 20px;
+  width: 30%;
+}
+
+.left-section {
+  background-color: #f9f9f9;
+}
+
+.right-section {
+  background-color: #f9f9f9;
+}
+
+.center-section {
+  background-color: #ffffff;
+}
+
+.menu {
+  list-style: none;
+}
+
+.menu li {
+  margin: 10px 0;
+}
+
+.menu a {
+  text-decoration: none;
+  color: #007bff;
+  cursor: pointer;
+}
+
+.menu-content {
+  margin-top: 20px;
+}
+
+h1, h2 {
+  text-align: center;
+}
+
+h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+h2 {
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+.user-info p {
+  margin-bottom: 10px;
+}
+
+button {
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+</style>
 <body>
 <header>
   <nav>
@@ -14,36 +123,80 @@
   </nav>
 </header>
 
-  <h1>My Page</h1>
+<main class="container">
+  <section class="left-section">
+    <h2>내 게시물</h2>
+    <ul class="menu">
+      <li><a href="#" onclick="loadContent('N')">승인 대기</a></li>
+      <li><a href="#" onclick="loadContent('O')">승인 완료</a></li>
+      <li><a href="#" onclick="loadContent('NP')">승인 거부</a></li>
+      <li><a href="#" onclick="loadContent('P')">판매 완료</a></li>
+    </ul>
+    <div id="menu1" class="menu-content">
+      <!-- 게시물 내용 -->
+    </div>
+  </section>
 
-  <!-- 사용자 정보 표시 -->
-  <div>
-    <p><strong>이메일:</strong> <span th:text="${member.memberEmail}"></span></p>
-    <p><strong>이름:</strong> <span th:text="${member.memberName}"></span></p>
-    <p><strong>생년월일:</strong> <span th:text="${member.memberBir}"></span></p>
-    <p><strong>전화번호:</strong> <span th:text="${member.memberPhone}"></span></p>
+  <section class="center-section">
+    <h1>My Page</h1>
 
-    <!-- 주소 수정 링크 -->
-    <h2>주소 정보</h2>
-    <ul>
-      <li th:each="address : ${addresses}">
+    <!-- 사용자 정보 표시 -->
+    <div class="user-info">
+      <p><strong>이메일:</strong> <span th:text="${member.memberEmail}"></span></p>
+      <p><strong>이름:</strong> <span th:text="${member.memberName}"></span></p>
+      <p><strong>생년월일:</strong> <span th:text="${member.memberBir}"></span></p>
+      <p><strong>전화번호:</strong> <span th:text="${member.memberPhone}"></span></p>
+
+      <!-- 주소 수정 링크 -->
+      <h2>주소 정보</h2>
+      <ul>
+        <li th:each="address : ${addresses}">
           <p>주소: [[${address.address}]], [[${address.detailAddress}]]</p>
           <a th:href="@{/demo/edit-address/{id}(id=${address.id})}">주소 수정</a>
           <form th:action="@{/demo/delete-address}" method="post">
             <input type="hidden" name="id" th:value="${address.id}">
             <button type="submit">삭제</button>
           </form>
-      </li>
-    </ul>
-    <a href="/demo/add-address">주소 추가</a>
+        </li>
+      </ul>
+      <a href="/demo/add-address">주소 추가</a>
 
-    <!-- 비밀번호 수정 링크 -->
+      <!-- 비밀번호 수정 링크 -->
       <a href="/demo/edit-password">비밀번호 수정</a>
-  </div>
+    </div>
+  </section>
 
-    <!-- 내 게시글 -->
+  <section class="right-section">
+    <h2>구매 게시물</h2>
+    <ul class="menu">
+      <li><a href="#" onclick="loadContent1('w')">배송 전</a></li>
+      <li><a href="#" onclick="loadContent1('ing')">배송 중</a></li>
+      <li><a href="#" onclick="loadContent1('f')">배송 완료</a></li>
+    </ul>
+    <div id="menu2" class="menu-content">
+      <!-- 게시물 내용 -->
+    </div>
+  </section>
+</main>
 
-
+<script>
+  function loadContent(status) {
+      fetch(`/mypage/product/${status}`)
+          .then(response => response.text())  // 서버로부터 HTML 템플릿을 받음
+          .then(data => {
+              document.getElementById("menu1").innerHTML = data;
+          })
+          .catch(error => console.log('Error:', error));
+  }
+    function loadContent1(status) {
+      fetch(`/mypage/order/${status}`)
+          .then(response => response.text())  // 서버로부터 HTML 템플릿을 받음
+          .then(data => {
+              document.getElementById("menu2").innerHTML = data;
+          })
+          .catch(error => console.log('Error:', error));
+  }
+</script>
 
 </body>
 </html>

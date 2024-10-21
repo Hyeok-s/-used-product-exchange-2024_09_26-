@@ -13,6 +13,8 @@ import p2.demo.repository.ProductRepository;
 
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class OrderService {
@@ -40,5 +42,10 @@ public class OrderService {
 
         // 주문 저장
         orderRepository.save(orderEntity);
+    }
+
+    //로그인 id와 상태로 가져오기
+    public List<OrderEntity> getOrdersByStatusAndMemberId(String state, Long memberId) {
+        return orderRepository.findByDeliveryStatusAndBuyerId(state, memberId);
     }
 }

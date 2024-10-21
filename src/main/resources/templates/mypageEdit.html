@@ -1,68 +1,209 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+  <meta charset="UTF-8">
   <title>My Page</title>
   <link rel="stylesheet" href="/css/mypage.css">
 </head>
+<style>
+  * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+}
+
+header {
+  background-color: #f4f4f4;
+  padding: 10px 0;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+}
+
+header ul {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+}
+
+header ul li {
+  margin: 0 15px;
+}
+
+header ul li a {
+  text-decoration: none;
+  color: #333;
+  font-weight: bold;
+}
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+}
+
+.left-section, .right-section, .center-section {
+  border: 1px solid #ddd;
+  padding: 20px;
+  width: 30%;
+}
+
+.left-section {
+  background-color: #f9f9f9;
+}
+
+.right-section {
+  background-color: #f9f9f9;
+}
+
+.center-section {
+  background-color: #ffffff;
+}
+
+.menu {
+  list-style: none;
+}
+
+.menu li {
+  margin: 10px 0;
+}
+
+.menu a {
+  text-decoration: none;
+  color: #007bff;
+  cursor: pointer;
+}
+
+.menu-content {
+  margin-top: 20px;
+}
+
+h1, h2 {
+  text-align: center;
+}
+
+h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+h2 {
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+.user-info p {
+  margin-bottom: 10px;
+}
+
+button {
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+</style>
 <body>
 <header>
-
+  <nav>
+    <ul>
+      <li><a href="/">홈</a></li>
+      <li><a href="/demo/logout">로그아웃</a></li>
+    </ul>
+  </nav>
 </header>
 
-<body>
-  <input type="text" id="sample6_postcode" placeholder="우편번호" readonly>
-  <input type="button" onclick="sample6_execDaumPostcode()" value="우편번호 찾기"><br>
-  <input type="text" id="sample6_address" placeholder="주소" readonly><br>
-  <input type="text" id="sample6_extraAddress" placeholder="참고항목" style="display:none">
-  <input type="text" id="sample6_detailAddress" placeholder="상세주소">
-</body>
-<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<main class="container">
+  <section class="left-section">
+    <h2>내 게시물</h2>
+    <ul class="menu">
+      <li><a href="#menu1">승인 전</a></li>
+      <li><a href="#menu2">승인 완료</a></li>
+    </ul>
+    <div id="menu1" class="menu-content">
+      <h3>승인 전 게시물</h3>
+      <!-- 게시물 내용 -->
+    </div>
+    <div id="menu2" class="menu-content" style="display:none;">
+      <h3>승인 완료 게시물</h3>
+      <!-- 게시물 내용 -->
+    </div>
+  </section>
+
+  <section class="center-section">
+    <h1>My Page</h1>
+
+    <!-- 사용자 정보 표시 -->
+    <div class="user-info">
+      <p><strong>이메일:</strong> <span th:text="${member.memberEmail}"></span></p>
+      <p><strong>이름:</strong> <span th:text="${member.memberName}"></span></p>
+      <p><strong>생년월일:</strong> <span th:text="${member.memberBir}"></span></p>
+      <p><strong>전화번호:</strong> <span th:text="${member.memberPhone}"></span></p>
+
+      <!-- 주소 수정 링크 -->
+      <h2>주소 정보</h2>
+      <ul>
+        <li th:each="address : ${addresses}">
+          <p>주소: [[${address.address}]], [[${address.detailAddress}]]</p>
+          <a th:href="@{/demo/edit-address/{id}(id=${address.id})}">주소 수정</a>
+          <form th:action="@{/demo/delete-address}" method="post">
+            <input type="hidden" name="id" th:value="${address.id}">
+            <button type="submit">삭제</button>
+          </form>
+        </li>
+      </ul>
+      <a href="/demo/add-address">주소 추가</a>
+
+      <!-- 비밀번호 수정 링크 -->
+      <a href="/demo/edit-password">비밀번호 수정</a>
+    </div>
+  </section>
+
+  <section class="right-section">
+    <h2>구매 게시물</h2>
+    <ul class="menu">
+      <li><a href="#menu3">배송 전</a></li>
+      <li><a href="#menu4">배송 중</a></li>
+    </ul>
+    <div id="menu3" class="menu-content">
+      <h3>배송 전 게시물</h3>
+      <!-- 게시물 내용 -->
+    </div>
+    <div id="menu4" class="menu-content" style="display:none;">
+      <h3>배송 중 게시물</h3>
+      <!-- 게시물 내용 -->
+    </div>
+  </section>
+</main>
+
 <script>
-  function sample6_execDaumPostcode() {
-      new daum.Postcode({
-          oncomplete: function(data) {
-              // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+  // 메뉴 탭 전환 로직
+  const menus = document.querySelectorAll('.menu a');
+  const contents = document.querySelectorAll('.menu-content');
 
-              // 각 주소의 노출 규칙에 따라 주소를 조합한다.
-              // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
-              var addr = ''; // 주소 변수
-              var extraAddr = ''; // 참고항목 변수
+  menus.forEach(menu => {
+    menu.addEventListener('click', function(e) {
+      e.preventDefault();
+      const targetId = this.getAttribute('href');
 
-              //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
-              if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
-                  addr = data.roadAddress;
-              } else { // 사용자가 지번 주소를 선택했을 경우(J)
-                  addr = data.jibunAddress;
-              }
+      // 모든 콘텐츠를 숨김
+      contents.forEach(content => content.style.display = 'none');
 
-              // 사용자가 선택한 주소가 도로명 타입일때 참고항목을 조합한다.
-              if(data.userSelectedType === 'R'){
-                  // 법정동명이 있을 경우 추가한다. (법정리는 제외)
-                  // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
-                  if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
-                      extraAddr += data.bname;
-                  }
-                  // 건물명이 있고, 공동주택일 경우 추가한다.
-                  if(data.buildingName !== '' && data.apartment === 'Y'){
-                      extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
-                  }
-                  // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
-                  if(extraAddr !== ''){
-                      extraAddr = ' (' + extraAddr + ')';
-                  }
-                  // 조합된 참고항목을 해당 필드에 넣는다.
-                  document.getElementById("sample6_extraAddress").value = extraAddr;
-
-              } else {
-                  document.getElementById("sample6_extraAddress").value = '';
-              }
-
-              // 우편번호와 주소 정보를 해당 필드에 넣는다.
-              document.getElementById('sample6_postcode').value = data.zonecode;
-              document.getElementById("sample6_address").value = addr;
-              // 커서를 상세주소 필드로 이동한다.
-              document.getElementById("sample6_detailAddress").focus();
-          }
-      }).open();
-  }
+      // 클릭한 메뉴에 해당하는 콘텐츠만 보여줌
+      document.querySelector(targetId).style.display = 'block';
+    });
+  });
 </script>
+
+</body>
+</html>

@@ -71,127 +71,12 @@ public class MemberController {
         }
     }
 
-    //마이페이지
-    @GetMapping("/demo/mypage")
-    public String mypage(HttpSession session, Model model) {
-        MemberDTO loggedInUserDTO = (MemberDTO) session.getAttribute("loggedInUser");
-        if (loggedInUserDTO != null) {
-            MemberEntity member = new MemberEntity();
-            member.setMemberEmail(loggedInUserDTO.getMemberEmail());
-            member.setMemberName(loggedInUserDTO.getMemberName());
-            member.setMemberBir(loggedInUserDTO.getMemberBir());
-            member.setMemberPhone(loggedInUserDTO.getMemberPhone());
-
-            List<AddressEntity> addresses = addressService.getAddressesByMemberId(loggedInUserDTO.getId());
-            //List<ProductEntity> myProduct = productService.get~~;
-            //List<ProductEntity> buyProduct =
-
-            model.addAttribute("member", member);
-            model.addAttribute("addresses", addresses);
-        }
-        return "mypage";
-    }
-
-    // 주소 추가 페이지 (get 방식)
-    @GetMapping("/demo/add-address")
-    public String addAddressForm(Model model) {
-        model.addAttribute("addressDTO", new AddressDTO());
-        return "addAddress";  // addAddress.html 로 이동
-    }
-
-    // 주소 추가 처리 (post 방식)
-    @PostMapping("/demo/add-address")
-    public String addAddress(@ModelAttribute("addressDTO") AddressDTO addressDTO,
-                             HttpSession session){
-        MemberDTO loggedInUserDTO = (MemberDTO) session.getAttribute("loggedInUser");
-        MemberEntity admemberEntity = new MemberEntity();
-        admemberEntity.setId(loggedInUserDTO.getId());
-        addressService.save(addressDTO, admemberEntity);
-        return "redirect:/demo/mypage";
-    }
-
-    // 주소 수정 페이지 (get 방식)
-    @GetMapping("/demo/edit-address/{id}")
-    public String editAddressForm(@PathVariable("id") Long id, Model model) {
-        AddressDTO addressDTO = new AddressDTO();
-        addressDTO.setId(id);
-        model.addAttribute("addressDTO", addressDTO);
-        return "editAddress";
-    }
-
-
-    // 주소 수정 처리 (post 방식)
-    @PostMapping("/demo/update-address")
-    public String updateAddress(@ModelAttribute("addressDTO") AddressDTO addressDTO) {
-        addressService.updateAddress(addressDTO);
-        return "redirect:/demo/mypage";
-    }
-
-
-
-
-    // 주소 삭제 처리
-    @PostMapping("/demo/delete-address")
-    public String deleteAddress(@RequestParam("id") Long id) {
-        addressService.deleteAddress(id);
-        return "redirect:/demo/mypage";
-    }
-
-
-
-
     //로그아웃
     @GetMapping("/demo/logout")
     public String logout(HttpSession session) {
         session.invalidate(); // 세션 무효화
         return "redirect:/";
     }
-
-    // 주소 수정 폼으로 이동 (GET 요청)
-    @GetMapping("/demo/edit-address")
-    public String editAddressForm(HttpSession session, Model model) {
-        MemberDTO loggedInUserDTO = (MemberDTO) session.getAttribute("loggedInUser");
-
-        if (loggedInUserDTO != null) {
-            Long memberId = loggedInUserDTO.getId();
-            // memberId를 이용하여 해당 사용자의 주소 목록 가져오기
-            List<AddressEntity> addresses = addressService.getAddressesByMemberId(memberId);
-            model.addAttribute("addresses", addresses);
-        }
-
-        return "edit-address"; // 주소 수정 폼 HTML로 이동
-    }
-
-    // 주소 추가, 수정, 삭제 처리 (POST 요청)
-    /*@PostMapping("/demo/edit-address")
-    public String updateAddress(
-            @RequestParam(value = "action", required = true) String action,
-            @ModelAttribute AddressEntity address,
-            HttpSession session){
-        MemberDTO loggedInUserDTO = (MemberDTO) session.getAttribute("loggedInUser");
-
-        if (loggedInUserDTO != null) {
-            Long memberId = loggedInUserDTO.getId();
-            MemberEntity memberGetId = new MemberEntity();
-            memberGetId.setId(memberId);
-            if ("add".equals(action)) {
-                // 주소 추가
-                address.setMember(memberGetId);
-                addressService.addAddress(address);
-            } else if ("update".equals(action)) {
-                // 주소 수정
-                address.setMember(memberGetId);
-                addressService.updateAddress(address);
-            } else if ("delete".equals(action)) {
-                // 주소 삭제
-                addressService.deleteAddress(address.getId());
-            }
-        }
-
-        return "redirect:/demo/mypage";
-    }
-*/
-
 
     // 비밀번호 수정 폼으로 이동
     @GetMapping("/demo/edit-password")

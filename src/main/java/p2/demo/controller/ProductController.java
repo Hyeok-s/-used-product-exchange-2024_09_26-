@@ -93,9 +93,15 @@ public class ProductController {
 
     // 제품 ID로 해당 제품의 상세 정보를 조회
     @GetMapping("/product/productDetail/{id}")
-    public String productDetail(@PathVariable("id") Long id, Model model) {
+    public String productDetail(@PathVariable("id") Long id, Model model, HttpSession session) {
+        MemberDTO loggedInUserDTO = (MemberDTO) session.getAttribute("loggedInUser");
         ProductEntity product = productService.findById(id);
         model.addAttribute("product", product);
+        boolean mine = false;
+        if(loggedInUserDTO.getId() == product.getMember().getId()){
+            mine = true;
+        }
+        model.addAttribute("mine", mine);
         return "productDetail";
     }
 
@@ -120,4 +126,44 @@ public class ProductController {
         return "redirect:/";
     }
 
+    //제품수정 폼
+    @GetMapping("/product/update/{id}")
+    public String editProduct(@PathVariable Long id, Model model) {
+        ProductEntity product = productService.findById(id);
+        ProductDTO productDTO = new ProductDTO();
+
+        productDTO.setId(product.getId());
+        productDTO.setPName(product.getPName());
+        productDTO.setPContent(product.getPContent());
+        productDTO.setPPrice(product.getPPrice());
+        productDTO.setPType1(product.getPType1());
+        productDTO.setPType2(product.getPType2());
+
+        model.addAttribute("productDTO", productDTO);
+        return "editProduct"; // 수정 페이지의 HTML 파일 이름
+    }
+
+    //제품 수정 완료
+    @PostMapping("/product/update")
+    public String updateProduct(@ModelAttribute ProductDTO productDTO, @RequestParam("pic") MultipartFile pic, Model model) {
+        try {//로그인 된사용자 인지 확인
+            productService.updateProduct(productDTO, pic);
+            return "redirect:/";
+        } catch (IllegalStateException | IOException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "redirect:/";
+        }
+    }
+
+    //제품삭제
+    @PostMapping("/product/delete/{id}")
+    public String deleteProduct(@PathVariable Long id, Model model) {
+        try {
+            productService.deleteProduct(id);
+            return "redirect:/"; // 삭제 후 메인 페이지로 리다이렉트
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", "제품 삭제 중 오류가 발생했습니다.");
+            return "redirect:/product/" + id; // 오류 발생 시 제품 상세 페이지로 리다이렉트
+        }
+    }
 }

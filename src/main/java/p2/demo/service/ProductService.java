@@ -13,6 +13,7 @@ import p2.demo.repository.MemberRepository;
 import p2.demo.repository.ProductRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import p2.demo.repository.WishlistRepository;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,6 +29,7 @@ import java.util.stream.Collectors;
 public class ProductService {
     private final ProductRepository productRepository;
     private final MemberRepository memberRepository;
+    private final WishlistRepository wishlistRepository;
     private static final Logger logger = LoggerFactory.getLogger(ProductService.class);
 
     @Value("${file.upload-dir}")
@@ -78,11 +80,6 @@ public class ProductService {
         }
     }
 
-    //모든 상품 가져오기
-    public List<ProductEntity> getAllProducts() {
-        return productRepository.findAll();
-    }
-
     //상품 종류 가져오기
     public List<ProductEntity> getProductsByType1(String type1) {
         return productRepository.findByPtype1(type1);
@@ -97,10 +94,11 @@ public class ProductService {
         return productRepository.findByPstate(state);
     }
 
-    //id가져오기
+    //아이디로 가져오기
     public ProductEntity findById(Long id) {
         return productRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid product ID: " + id));
     }
+
     // 상태 업데이트
     public void updateProductState(Long id, String newState) {
         ProductEntity product = findById(id);
@@ -112,4 +110,66 @@ public class ProductService {
     public List<ProductEntity> getPstateO(){
         return productRepository.findByPstateO();
     }
+
+    //로그인 id와 상태로 가져오기
+    public List<ProductEntity> getProductsByStatusAndMemberId(String state, Long memberId) {
+        return productRepository.findBypStateAndMemberId(state, memberId);
+    }
+
+    //상품정보 업데이트
+    public void updateProduct(ProductDTO productDTO, MultipartFile pic) throws IOException {
+
+        ProductEntity productEntity = productRepository.findById(productDTO.getId())
+                .orElseThrow(() -> new IllegalArgumentException("상품을 찾을 수 없습니다."));
+
+        productEntity.setPName(productDTO.getPName());
+        productEntity.setPContent(productDTO.getPContent());
+        productEntity.setPPrice(productDTO.getPPrice());
+        productEntity.setPType1(productDTO.getPType1());
+        productEntity.setPType2(productDTO.getPType2());
+        productEntity.setCounts(0);
+        productEntity.setPState("N");
+
+        //사진
+        if (pic != null && !pic.isEmpty()) {
+            //이전 사진 삭제
+            String oldFileName = productEntity.getPic();
+            if (oldFileName != null && !oldFileName.isEmpty()) {
+                Path oldFilePath = Paths.get(uploadDir + File.separator + oldFileName);
+                Files.deleteIfExists(oldFilePath);  // 기존 파일 삭제
+            }
+            // 랜덤한 이름으로 파일 저장
+            String fileName = UUID.randomUUID() + "_" + pic.getOriginalFilename();
+            Path savePath = Paths.get(uploadDir + File.separator + fileName);
+
+            // 디렉토리 없으면 생성
+            if (!Files.exists(Paths.get(uploadDir))) {
+                Files.createDirectories(Paths.get(uploadDir));
+            }
+
+            pic.transferTo(savePath.toFile());
+
+            productEntity.setPic(fileName);  // 파일 이름 저장
+        }
+        productRepository.save(productEntity);
+
+    }
+
+    // 제품 삭제 서비스
+    public void deleteProduct(Long id) {
+        ProductEntity product = productRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 제품을 찾을 수 없습니다."));
+
+        // 파일 삭제
+        String picPath = uploadDir + File.separator + product.getPic();
+        File picFile = new File(picPath);
+
+        if (picFile.exists()) {
+            picFile.delete(); // 기존 이미지 파일 삭제
+        }
+        // 제품 삭제
+        wishlistRepository.deleteByProductId(id);
+        productRepository.delete(product);
+    }
+
 }
