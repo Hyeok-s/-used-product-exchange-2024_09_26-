@@ -31,7 +31,7 @@ public class OrderController {
 
     // 제품 ID를 받아서 주문 폼을 표시
     @GetMapping("/order/{id}")
-    public String orderForm(@PathVariable("id") Long pId, Model model, HttpSession session) {
+    public String orderForm(@PathVariable("id") Long id, Model model, HttpSession session) {
         // 현재 로그인된 사용자 정보 가져오기
         MemberDTO loggedInUser = (MemberDTO) session.getAttribute("loggedInUser");
         if (loggedInUser != null) {
@@ -41,7 +41,7 @@ public class OrderController {
             List<AddressEntity> addresses = addressService.getAddressesByMemberId(loggedInUser.getId());
             model.addAttribute("addresses",addresses);
             // 제품 정보 가져오기
-            ProductEntity product = productService.findById(pId);
+            ProductEntity product = productService.findById(id);
             model.addAttribute("product", product);
             model.addAttribute("order", new OrderDTO());
             return "order";  // 주문 폼 페이지
@@ -59,9 +59,27 @@ public class OrderController {
 
             orderDTO.setBuyerId(loggedInUser.getId());
             orderService.saveOrder(orderDTO);  // 주문 정보 저장
-            productService.updateProductState(productId, "P");
+            productService.updateProductState(productId, "C");
 
         }
         return "redirect:/";  // 성공 페이지로 리다이렉트
     }
+
+    //구매 확인 처리
+    @GetMapping("/order/finish/{id}")
+    public String finishOrder(@PathVariable("id") Long id){
+        orderService.updateOrderDeliveryStatus(id, "d");
+        productService.updateProductState(id, "P");
+        return "redirect:/demo/mypage";
+    }
+
+    //주문 취소
+    @GetMapping("/order/cancel/{orderId}/{productId}")
+    public String cancelOrder(@PathVariable("orderId") Long orderId, @PathVariable("productId") Long productId){
+        orderService.deleteOrder(orderId);
+        productService.updateProductState(productId, "O");
+        return "redirect:/demo/mypage";
+    }
+
+
 }

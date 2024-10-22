@@ -127,8 +127,8 @@ public class ProductController {
     }
 
     //제품수정 폼
-    @GetMapping("/product/update/{id}")
-    public String editProduct(@PathVariable Long id, Model model) {
+    @GetMapping("/product/update/{id}/{check}")
+    public String editProduct(@PathVariable Long id, @PathVariable int check, Model model) {
         ProductEntity product = productService.findById(id);
         ProductDTO productDTO = new ProductDTO();
 
@@ -140,15 +140,24 @@ public class ProductController {
         productDTO.setPType2(product.getPType2());
 
         model.addAttribute("productDTO", productDTO);
+        model.addAttribute("check", check);
         return "editProduct"; // 수정 페이지의 HTML 파일 이름
     }
 
     //제품 수정 완료
-    @PostMapping("/product/update")
-    public String updateProduct(@ModelAttribute ProductDTO productDTO, @RequestParam("pic") MultipartFile pic, Model model) {
-        try {//로그인 된사용자 인지 확인
+    @PostMapping("/product/update/{check}")
+    public String updateProduct(@ModelAttribute ProductDTO productDTO,@PathVariable int check, @RequestParam("pic") MultipartFile pic, Model model) {
+        try {
             productService.updateProduct(productDTO, pic);
-            return "redirect:/";
+            if(check == 1){
+                return "redirect:/";
+            }
+            else if(check == 2){
+                return "redirect:/demo/mypage";
+            }
+            else{
+                return "redirect:/";
+            }
         } catch (IllegalStateException | IOException e) {
             model.addAttribute("errorMessage", e.getMessage());
             return "redirect:/";
@@ -158,6 +167,7 @@ public class ProductController {
     //제품삭제
     @PostMapping("/product/delete/{id}")
     public String deleteProduct(@PathVariable Long id, Model model) {
+
         try {
             productService.deleteProduct(id);
             return "redirect:/"; // 삭제 후 메인 페이지로 리다이렉트

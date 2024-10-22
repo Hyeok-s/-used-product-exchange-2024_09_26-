@@ -10,6 +10,24 @@
     <td th:text="${product.pName}"></td>
     <td th:text="${product.pPrice}"></td>
     <td th:text="${product.pState}"></td>
+
+    <td>
+      <a th:if="${product.pState != 'C' && product.pState != 'P'}"
+         th:href="@{'/product/update/' + ${product.id} + '/' + 2}">수정하기</a>
+    </td>
+
+    <td>
+      <form th:action="@{'/product/delete/' + ${product.id}}" method="post" style="display:inline;">
+        <button type="submit" onclick="return confirm('정말 삭제하시겠습니까?');"
+                th:if="${product.pState != 'C'}">삭제하기</button>
+      </form>
+    </td>
   </tr>
 </table>
-
+<script>
+  function deleteProduct(productId) {
+    if (confirm('정말 삭제하시겠습니까?')) {
+      document.getElementById('delete-form').submit();
+    }
+  }
+</script>

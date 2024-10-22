@@ -137,8 +137,8 @@
 <body>
 <h2>상품 등록</h2>
 
-<form id="productForm" th:action="@{/product/update}" method="post" enctype="multipart/form-data">
-  <input type="text" id="id" name="id" th:value="${productDTO.id}" required>
+<form id="productForm" th:action="@{/product/update/} + ${check}" method="post" enctype="multipart/form-data">
+  <input type="hidden" id="id" name="id" th:value="${productDTO.id}" required>
 
   <label for="pName">상품명:</label>
   <input type="text" id="pName" name="pName" th:value="${productDTO.pName}" required>

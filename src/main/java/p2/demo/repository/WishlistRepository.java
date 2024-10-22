@@ -6,8 +6,8 @@ import p2.demo.entity.WishlistEntity;
 public interface WishlistRepository extends JpaRepository<WishlistEntity, Long> {
 
 
-    boolean existsByMemberIdAndProductId(Long memberId, Long productId);
 
-    void deleteByProductId(Long productId);
     WishlistEntity findByMemberIdAndProductId(Long memberId, Long productId);
+    void deleteByProductId(Long productId);
+    boolean existsByProductId(Long productId);
 }

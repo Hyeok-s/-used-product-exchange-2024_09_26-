@@ -1,6 +1,7 @@
 package p2.demo.service;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -9,20 +10,20 @@ import p2.demo.dto.ProductDTO;
 import p2.demo.dto.MemberDTO;
 import p2.demo.entity.ProductEntity;
 import p2.demo.entity.MemberEntity;
-import p2.demo.repository.MemberRepository;
-import p2.demo.repository.ProductRepository;
+import p2.demo.repository.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import p2.demo.repository.WishlistRepository;
+import p2.demo.entity.ProductsHistoryEntity;
+import p2.demo.entity.OrderEntity;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +32,8 @@ public class ProductService {
     private final MemberRepository memberRepository;
     private final WishlistRepository wishlistRepository;
     private static final Logger logger = LoggerFactory.getLogger(ProductService.class);
+    private final ProductsHistoryRepository productsHistoryRepository;
+    private final OrderRepository orderRepository;
 
     @Value("${file.upload-dir}")
     private String uploadDir;
@@ -156,20 +159,55 @@ public class ProductService {
     }
 
     // 제품 삭제 서비스
+    @Transactional
     public void deleteProduct(Long id) {
         ProductEntity product = productRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 제품을 찾을 수 없습니다."));
 
-        // 파일 삭제
-        String picPath = uploadDir + File.separator + product.getPic();
-        File picFile = new File(picPath);
+        // 판매 완료('P') 상태일 때만 히스토리에 저장하고 파일 삭제 방지
+        if ("P".equals(product.getPState())) {
+            // 제품 정보를 ProductsHistoryEntity에 저장
+            ProductsHistoryEntity history = new ProductsHistoryEntity();
+            history.setPName(product.getPName());
+            history.setPContent(product.getPContent());
+            history.setPPrice(product.getPPrice());
+            history.setPic(product.getPic());
+            history.setMember(product.getMember());
 
-        if (picFile.exists()) {
-            picFile.delete(); // 기존 이미지 파일 삭제
+            // 히스토리 저장
+            productsHistoryRepository.save(history);
+
+        } else {
+            // 판매 완료가 아닌 경우에만 파일 삭제
+            String picPath = uploadDir + File.separator + product.getPic();
+            File picFile = new File(picPath);
+
+            if (picFile.exists()) {
+                picFile.delete(); // 기존 이미지 파일 삭제
+            }
         }
-        // 제품 삭제
+        orderRepository.deleteByProductId(id);
+        // 찜 목록에서 삭제 (존재할 경우)
         wishlistRepository.deleteByProductId(id);
+        // 제품 삭제
         productRepository.delete(product);
+    }
+
+
+    // 구매 내역 (삭제되지 않은 제품 + 삭제된 제품) 조회
+    public List<Object> getCompletePurchaseHistory(Long memberId, String status) {
+        // 삭제되지 않은 제품의 주문 내역 (OrderEntity)
+        List<OrderEntity> activeOrders = orderRepository.findByDeliveryStatusAndBuyerId(status, memberId);
+
+        // 삭제된 제품의 이력 (ProductsHistoryEntity)
+        List<ProductsHistoryEntity> deletedOrdersHistory = productsHistoryRepository.findByMemberId(memberId);
+
+        // 두 리스트를 합쳐서 하나의 리스트로 반환
+        List<Object> completeHistory = new ArrayList<>();
+        completeHistory.addAll(activeOrders);           // 삭제되지 않은 제품 내역 추가
+        completeHistory.addAll(deletedOrdersHistory);   // 삭제된 제품 이력 추가
+
+        return completeHistory;
     }
 
 }

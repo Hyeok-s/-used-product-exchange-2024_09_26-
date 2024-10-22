@@ -8,9 +8,8 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Table(name="products")
-public class ProductEntity {
-
+@Table(name="productsHistory")
+public class ProductsHistoryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -28,36 +27,11 @@ public class ProductEntity {
     private Integer pPrice;
 
     @Column
-    @NonNull
-    private String pType1;
-
-    @Column
-    @NonNull
-    private String pType2;
-
-    @Column
     private String pic;
-
-    @Column
-    private Integer counts;
-    {
-        this.counts=0;
-    }
-
-    @Column
-    private String pState;
-    {
-        this.pState = "N";
-    }
 
     // MemberEntity와 다대일 관계 설정
     @ManyToOne
     @JoinColumn(name = "member_id", referencedColumnName = "id")// 외래 키 설정
     private MemberEntity member;
 
-    @Transient //이 필드는 데이터베이스에 저장x
-    private boolean likedStatus;
-    {
-        this.likedStatus=false;
-    }
 }

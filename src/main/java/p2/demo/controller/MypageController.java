@@ -42,8 +42,6 @@ public class MypageController {
             member.setMemberPhone(loggedInUserDTO.getMemberPhone());
 
             List<AddressEntity> addresses = addressService.getAddressesByMemberId(loggedInUserDTO.getId());
-            //List<ProductEntity> myProduct = productService.get~~;
-            //List<ProductEntity> buyProduct =
 
             model.addAttribute("member", member);
             model.addAttribute("addresses", addresses);
@@ -109,8 +107,9 @@ public class MypageController {
     public String getPurchasesByStatus(@PathVariable("status") String status, Model model, HttpSession session) {
         MemberDTO loggedInUserDTO = (MemberDTO) session.getAttribute("loggedInUser");
         Long id = loggedInUserDTO.getId();
-        List<OrderEntity> orders = orderService.getOrdersByStatusAndMemberId(status, id);
-        model.addAttribute("orders", orders);
+        List<Object> completeHistory = productService.getCompletePurchaseHistory(id, status);
+
+        model.addAttribute("orders", completeHistory);
 
         return "myPurchase";  // 배송 상태에 따른 구매 내역을 보여주는 html 파일
     }

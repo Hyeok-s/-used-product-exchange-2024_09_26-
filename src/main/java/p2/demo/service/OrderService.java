@@ -48,4 +48,14 @@ public class OrderService {
     public List<OrderEntity> getOrdersByStatusAndMemberId(String state, Long memberId) {
         return orderRepository.findByDeliveryStatusAndBuyerId(state, memberId);
     }
+
+    public void updateOrderDeliveryStatus(Long productId, String deliveryStatus){
+        OrderEntity orderentity = orderRepository.findByProductId(productId);
+        orderentity.setDeliveryStatus(deliveryStatus);
+    }
+
+    public void deleteOrder(Long id){
+        orderRepository.deleteById(id);
+    }
+
 }
