@@ -7,10 +7,19 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ProductHistoryDTO {
-    private Long id;
     private String pName;
     private String pContent;
     private Integer pPrice;
-    private Long memberId;
+    private Long productId;
+    private String pic;
+    private String deliveryStatus;
 
+    public ProductHistoryDTO(String pName, int pPrice, String pContent, Long productId, String pic, String deliveryStatus) {
+        this.pName = pName;
+        this.pContent = pContent;
+        this.pPrice = pPrice;
+        this.productId = productId;
+        this.pic = pic;
+        this.deliveryStatus = deliveryStatus;
+    }
 }

@@ -7,6 +7,7 @@ import p2.demo.entity.MemberEntity;
 import p2.demo.entity.ProductEntity;
 import p2.demo.repository.MemberRepository;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -22,6 +23,7 @@ public class MemberService {
         memberEntity.setMemberName(memberDTO.getMemberName());
         memberEntity.setMemberBir(memberDTO.getMemberBir());
         memberEntity.setMemberPhone(memberDTO.getMemberPhone());
+        memberEntity.setMemberTime(LocalDateTime.now());
         return memberRepository.save(memberEntity);
     }
 
@@ -52,4 +54,8 @@ public class MemberService {
         memberRepository.save(member);
     }
 
+    // 이메일 중복 여부 확인
+    public boolean isEmailExists(String email) {
+        return memberRepository.existsByMemberEmail(email);
+    }
 }

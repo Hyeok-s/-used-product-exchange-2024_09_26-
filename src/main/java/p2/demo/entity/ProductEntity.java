@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @Setter
@@ -37,6 +39,10 @@ public class ProductEntity {
 
     @Column
     private String pic;
+
+    @Column
+    @NonNull
+    private LocalDateTime pTime;
 
     @Column
     private Integer counts;

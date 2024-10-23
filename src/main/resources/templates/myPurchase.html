@@ -4,33 +4,23 @@
   <tr>
     <th>상품명</th>
     <th>가격</th>
-    <th>배송 상태</th>
     <th>확정 버튼</th>
   </tr>
   <tr th:each="order : ${orders}">
-    <!-- 만약 OrderEntity라면 -->
-    <td th:if="${order instanceof T(com.demo.OrderEntity)}"
-        th:text="${order.product.pName}"></td>
-    <td th:if="${order instanceof T(com.demo.OrderEntity)}"
-        th:text="${order.product.pPrice}"></td>
-    <td th:if="${order instanceof T(com.demo.OrderEntity)}"
-        th:text="${order.deliveryStatus}"></td>
+    <!-- OrderEntity인 경우 -->
+    <td th:text="${order.pName}"></td>
+    <td th:text="${order.pPrice}"></td>
 
-    <!-- 만약 ProductsHistoryEntity라면 -->
-    <td th:if="${order instanceof T(com.demo.ProductsHistoryEntity)}"
-        th:text="${order.pName}"></td>
-    <td th:if="${order instanceof T(com.demo.ProductsHistoryEntity)}"
-        th:text="${order.pPrice}"></td>
     <!-- 배송 완료 시에만 구매확정 버튼 표시 -->
     <td th:if="${order.deliveryStatus == 'f'}">
-      <a th:href="@{'/order/finish/' + ${order.product.id}}">구매확정</a>
+      <a th:href="@{'/order/finish/' + ${order.productId}}">구매확정</a>
     </td>
     <!-- 배송 전일 때 상품 취소 버튼 표시 -->
-    <td th:if="${order.deliveryStatus == 'w'}">
-      <a th:href="@{'/order/cancel/' + ${order.id} + '/' + ${order.product.id}}">상품취소</a>
-    </td>
+     <td th:if="${order.deliveryStatus == 'w'}">
+       <a th:href="@{'/order/cancel/' + ${order.productId}}">상품취소</a>
+     </td>
 
-    <!-- 그 외의 상태는 버튼 비활성화 -->
+     <!-- 그 외의 상태는 버튼 비활성화 -->
     <td th:if="${order.deliveryStatus != 'f' && order.deliveryStatus != 'w'}">
   </tr>
 </table>

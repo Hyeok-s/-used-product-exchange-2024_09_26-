@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import p2.demo.dto.AddressDTO;
 import p2.demo.dto.MemberDTO;
+import p2.demo.dto.ProductHistoryDTO;
 import p2.demo.entity.MemberEntity;
 import p2.demo.entity.AddressEntity;
 import p2.demo.entity.OrderEntity;
@@ -107,7 +108,7 @@ public class MypageController {
     public String getPurchasesByStatus(@PathVariable("status") String status, Model model, HttpSession session) {
         MemberDTO loggedInUserDTO = (MemberDTO) session.getAttribute("loggedInUser");
         Long id = loggedInUserDTO.getId();
-        List<Object> completeHistory = productService.getCompletePurchaseHistory(id, status);
+        List<ProductHistoryDTO> completeHistory = productService.getCompletePurchaseHistory(id, status);
 
         model.addAttribute("orders", completeHistory);
 

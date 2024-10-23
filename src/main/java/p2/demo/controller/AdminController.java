@@ -41,7 +41,7 @@ public class AdminController {
     //관리자 거부 게시물
     @GetMapping("/Admin/fproduct")
     public String getFAdminForm(Model model){
-        model.addAttribute("products", productService.getProductsByState("F"));
+        model.addAttribute("products", productService.getProductsByState("NF"));
         return "adminProduct";
     }
 

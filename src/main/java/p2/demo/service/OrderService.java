@@ -58,4 +58,9 @@ public class OrderService {
         orderRepository.deleteById(id);
     }
 
+    // productId로 OrderEntity 가져오기
+    public OrderEntity getOrderByProductId(Long productId) {
+        return orderRepository.findByProductId(productId);
+    }
+
 }

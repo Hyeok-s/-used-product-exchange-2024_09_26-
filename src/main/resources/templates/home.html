@@ -26,7 +26,7 @@
 
 
 </head>
-<body onload="loadContent('/product/product')">
+<body onload="loadContent('/product/product/' + 'O')">
 <!-- 상단 바 -->
 <div class="header-area">
     <div class="container">
@@ -84,8 +84,8 @@
         <div class="row">
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a href="#" onclick="loadContent('/product/product')">상품확인</a></li>
-                    <li><a href="#">내찜상품</a></li>
+                    <li><a href="#" onclick="loadContent('/product/product/' + 'O')">상품확인</a></li>
+                    <li><a href="#" onclick="loadContent('/product/heart)">내찜상품</a></li>
                     <li><a href="#" onclick="loadContent('/ask')">문의하기</a></li>
                     <li><a href="#">도움말</a></li>
                 </ul>
@@ -98,7 +98,7 @@
 <div class="scontainer">
     <div class="sidebar">
         <ul class="menu">
-            <li><a href="#" onclick="loadContent('/product/product')">전체</a></li>
+            <li><a href="#" onclick="loadContent('/product/product/' + 'O')">전체</a></li>
             <li>
                 <a href="#" onclick="loadContentByCategory('/product/category/', '디지털/가전')">디지털/가전</a>
                 <ul class="sub">
@@ -140,7 +140,7 @@
                     <li><a href="#" onclick="loadContentBySubCategory('/product/subcategory/', '기타동물')">> 기타동물</a></li>
                 </ul>
             </li>
-            <li><a href="#" onclick="loadContent('/product/product')">기타 용품</a></li>
+            <li><a href="#" onclick="loadContentByCategory('/product/category/', '기타물품')">기타물품</a></li>
         </ul>
     </div>
 
@@ -150,7 +150,6 @@
 </div>
 
 <script>
-    // 전체 products
     function loadContent(url) {
         fetch(url)
         .then(response => response.text())

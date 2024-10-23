@@ -15,6 +15,9 @@ import p2.demo.repository.AddressRepository;
 import p2.demo.service.AddressService;
 import p2.demo.service.MemberService;
 import p2.demo.repository.MemberRepository;
+
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
@@ -34,15 +37,40 @@ public class MemberController {
         return "signup";
     }
 
-    //회원가입
+
+    //ResponseEntity를 활용해 c.s통신
+    @GetMapping("/demo/check-email")
+    public ResponseEntity<Map<String, Boolean>> checkEmail(@RequestParam String email) {
+        boolean exists = memberService.isEmailExists(email);
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("exists", exists);
+        return ResponseEntity.ok(response);
+    }
+
     @PostMapping("/demo/signup")
     public String signup(@ModelAttribute("memberDTO") MemberDTO memberDTO) {
-        MemberEntity savedMember = memberService.save(memberDTO);
-        AddressDTO addressDTO = memberDTO.getAddress();
-
-        addressService.save(addressDTO, savedMember);
-        return "redirect:/";
+        // 가입 시 이메일 중복 여부 최종 확인
+        if (!memberService.isEmailExists(memberDTO.getMemberEmail())) {
+            // 비밀번호 일치 및 규칙 확인
+            if (isValidPassword(memberDTO.getMemberPassword())) {
+                MemberEntity savedMember = memberService.save(memberDTO);
+                AddressDTO addressDTO = memberDTO.getAddress();
+                addressService.save(addressDTO, savedMember);
+                return "redirect:/";
+            } else {
+                return "회원가입 실패: 비밀번호 규칙을 확인해주세요.";
+            }
+        } else {
+            return "회원가입 실패: 이메일 중복을 확인해주세요.";
+        }
     }
+
+    // 비밀번호 유효성 검사
+    private boolean isValidPassword(String password) {
+        String passwordPattern = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[!@#$%^&*])[A-Za-z\\d!@#$%^&*]{9,15}$";
+        return password.matches(passwordPattern);
+    }
+
 
     //로그인폼
     @GetMapping("/demo/login")

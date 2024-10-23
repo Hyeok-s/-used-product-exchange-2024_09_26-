@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @Setter
@@ -39,6 +41,9 @@ public class MemberEntity {
     @NonNull
     private String memberRole;
 
+    @Column
+    @NonNull
+    private LocalDateTime memberTime;
     {
         this.memberRole="user";
     }

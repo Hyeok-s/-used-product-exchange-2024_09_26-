@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import p2.demo.dto.ProductDTO;
 import p2.demo.entity.MemberEntity;
 import p2.demo.entity.ProductEntity;
+import p2.demo.repository.ProductRepository;
 import p2.demo.service.MemberService;
 import p2.demo.service.ProductService;
 import org.springframework.ui.Model;
@@ -28,6 +29,7 @@ public class ProductController {
     private final ProductService productService;
     private final WishlistService wishlistService;
     private final MemberService memberService;
+    private final ProductRepository productRepository;
     private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
 
 
@@ -53,12 +55,11 @@ public class ProductController {
     }
 
     // 게시물 목록
-    @GetMapping("/product/product")
-    public String productForm(Model model, HttpSession session) {
+    @GetMapping("/product/product/{state}")
+    public String productForm(@PathVariable("state") String state, Model model, HttpSession session) {
         MemberDTO loggedInUserDTO = (MemberDTO) session.getAttribute("loggedInUser");
 
-        //MemberDTO를 MemberEntity로 변환
-        List<ProductEntity> products = productService.getPstateO();
+        List<ProductEntity> products = productService.getpState(state);
 
         if(loggedInUserDTO != null){
             MemberEntity loggedInUser = memberService.findById(loggedInUserDTO.getId());
@@ -71,21 +72,56 @@ public class ProductController {
         return "product";
     }
 
+    @GetMapping("/product/heart")
+    public String productHeartForm(Model model, HttpSession session) {
+        MemberDTO loggedInUserDTO = (MemberDTO) session.getAttribute("loggedInUser");
+
+        if(loggedInUserDTO == null){
+            return "redirect:/";
+        }
+        List<ProductEntity> products = productService.getMemberId(loggedInUserDTO.getId());
+
+        MemberEntity loggedInUser = memberService.findById(loggedInUserDTO.getId());
+        for(ProductEntity product : products){
+            boolean isLiked = wishlistService.isProductLikedByMember(loggedInUser.getId(), product.getId());
+            product.setLikedStatus(isLiked);
+        }
+
+        model.addAttribute("products", products);
+        return "product";
+    }
 
     // 카테고리에 따른 상품 목록 로드
     @GetMapping("/product/category/{category}")
-    public String getProductsByCategory1(@PathVariable("category") String category, Model model) {
+    public String getProductsByCategory1(@PathVariable("category") String category, Model model, HttpSession session) {
+        MemberDTO loggedInUserDTO = (MemberDTO) session.getAttribute("loggedInUser");
         category = category.replace("_", "/");
         List<ProductEntity> products = productService.getProductsByType1(category);
+        if(loggedInUserDTO != null){
+            MemberEntity loggedInUser = memberService.findById(loggedInUserDTO.getId());
+            for(ProductEntity product : products){
+                boolean isLiked = wishlistService.isProductLikedByMember(loggedInUser.getId(), product.getId());
+                product.setLikedStatus(isLiked);
+            }
+        }
+
         model.addAttribute("products", products);
         return "product";  // 이 페이지는 카테고리별로 필터된 상품 리스트를 보여주는 HTML 조각
     }
 
     // 서브 카테고리에 따른 상품 목록 로드
     @GetMapping("/product/subcategory/{subcategory}")
-    public String getProductsByCategory2(@PathVariable("subcategory") String subcategory, Model model) {
+    public String getProductsByCategory2(@PathVariable("subcategory") String subcategory, Model model, HttpSession session) {
+        MemberDTO loggedInUserDTO = (MemberDTO) session.getAttribute("loggedInUser");
         subcategory = subcategory.replace("_", "/");
         List<ProductEntity> products = productService.getProductsByType2(subcategory);
+        if(loggedInUserDTO != null){
+            MemberEntity loggedInUser = memberService.findById(loggedInUserDTO.getId());
+            for(ProductEntity product : products){
+                boolean isLiked = wishlistService.isProductLikedByMember(loggedInUser.getId(), product.getId());
+                product.setLikedStatus(isLiked);
+            }
+        }
         model.addAttribute("products", products);
         return "product";  // 이 페이지는 카테고리별로 필터된 상품 리스트를 보여주는 HTML 조각
     }
@@ -100,6 +136,9 @@ public class ProductController {
         boolean mine = false;
         if(loggedInUserDTO.getId() == product.getMember().getId()){
             mine = true;
+        }
+        if(!mine){
+            productService.incrementProductCount(id);
         }
         model.addAttribute("mine", mine);
         return "productDetail";

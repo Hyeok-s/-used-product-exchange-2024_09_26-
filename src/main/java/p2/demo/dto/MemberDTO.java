@@ -5,6 +5,7 @@ import lombok.Setter;
 import p2.demo.entity.MemberEntity;
 
 
+
 @Getter
 @Setter
 public class MemberDTO {

@@ -13,6 +13,7 @@ import p2.demo.dto.ProductDTO;
 import p2.demo.dto.OrderDTO;
 import p2.demo.dto.MemberDTO;
 import p2.demo.entity.AddressEntity;
+import p2.demo.entity.OrderEntity;
 import p2.demo.entity.ProductEntity;
 import p2.demo.service.AddressService;
 import p2.demo.service.ProductService;
@@ -74,9 +75,10 @@ public class OrderController {
     }
 
     //주문 취소
-    @GetMapping("/order/cancel/{orderId}/{productId}")
-    public String cancelOrder(@PathVariable("orderId") Long orderId, @PathVariable("productId") Long productId){
-        orderService.deleteOrder(orderId);
+    @GetMapping("/order/cancel/{productId}")
+    public String cancelOrder(@PathVariable("productId") Long productId){
+        OrderEntity orderEntity = orderService.getOrderByProductId(productId);
+        orderService.deleteOrder(orderEntity.getId());
         productService.updateProductState(productId, "O");
         return "redirect:/demo/mypage";
     }
