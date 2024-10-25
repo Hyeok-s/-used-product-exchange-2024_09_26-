@@ -245,4 +245,25 @@ public class ProductService {
         productRepository.save(productEntity);
     }
 
+    //memberId로 가져오기
+    public List<ProductEntity> getMemberId(Long memberId){
+        return productRepository.findByMemberId(memberId);
+    }
+
+    /*public List<ProductEntity> findAllOrderByCountsDesc() {
+        return productRepository.findAllOrderByCountsDesc();
+    }
+    public List<ProductEntity> findAllOrderBypTimeAsc() {
+        return productRepository.findAllOrderBypTimeAsc();
+    }
+    public List<ProductEntity> findAllOrderBypPriceAsc() {
+        return productRepository.findAllOrderBypPriceAsc();
+    }
+    public List<ProductEntity> findAllOrderBypPriceDesc() {
+        return productRepository.findAllOrderBypPriceDesc();
+    }
+    public List<ProductEntity> findAllOrderBypTimeDesc() {
+        return productRepository.findAllOrderBypTimeDesc();
+    }*/
+
 }

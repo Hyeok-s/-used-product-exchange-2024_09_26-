@@ -19,6 +19,7 @@ import jakarta.servlet.http.HttpSession;
 import p2.demo.service.WishlistService;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -72,6 +73,7 @@ public class ProductController {
         return "product";
     }
 
+    //내찜 목록
     @GetMapping("/product/heart")
     public String productHeartForm(Model model, HttpSession session) {
         MemberDTO loggedInUserDTO = (MemberDTO) session.getAttribute("loggedInUser");
@@ -79,15 +81,18 @@ public class ProductController {
         if(loggedInUserDTO == null){
             return "redirect:/";
         }
-        List<ProductEntity> products = productService.getMemberId(loggedInUserDTO.getId());
+        List<ProductEntity> products = productService.getpState("O");
+        List<ProductEntity> newProducts = new ArrayList<>();
 
         MemberEntity loggedInUser = memberService.findById(loggedInUserDTO.getId());
         for(ProductEntity product : products){
             boolean isLiked = wishlistService.isProductLikedByMember(loggedInUser.getId(), product.getId());
             product.setLikedStatus(isLiked);
+            if(isLiked){
+                newProducts.add(product);
+            }
         }
-
-        model.addAttribute("products", products);
+        model.addAttribute("products", newProducts);
         return "product";
     }
 
@@ -215,4 +220,31 @@ public class ProductController {
             return "redirect:/product/" + id; // 오류 발생 시 제품 상세 페이지로 리다이렉트
         }
     }
+
+    //제품 정렬
+    /*@GetMapping("/product/list")
+    public String productList(@RequestParam(defaultValue = "default") String sort, Model model) {
+        List<ProductEntity> products;
+        switch (sort) {
+            case "countDesc":
+                products = productService.findAllOrderByCountsDesc();
+                break;
+            case "timeDesc":
+                products = productService.findAllOrderBypTimeDesc();
+                break;
+            case "timeAsc":
+                products = productService.findAllOrderBypTimeAsc();
+                break;
+            case "priceAsc":
+                products = productService.findAllOrderBypPriceAsc();
+                break;
+            case "priceDesc":
+                products = productService.findAllOrderBypPriceDesc();
+                break;
+            default:
+                products = productService.getpState("O");
+        }
+        model.addAttribute("products", products);
+        return "productList"; // 위의 HTML 파일 이름으로 반환
+    }*/
 }
