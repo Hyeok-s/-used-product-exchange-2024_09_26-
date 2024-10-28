@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -41,9 +41,6 @@
                         <li th:if="${session.loggedInUser == null}">
                             <a href="/demo/signup"><i class="fa fa-heart"></i>회원가입</a>
                         </li>
-                        <li th:if="${session.loggedInUser == null}">
-                            <a href="/demo/test"><i class="fa fa-heart"></i>테스트</a>
-                        </li>
                         <li th:if="${session.loggedInUser != null}">
                             <a href="/demo/mypage"><i class="fa fa-user"></i>마이페이지</a>
                         </li>
@@ -66,7 +63,7 @@
         <div class="row">
             <div class="col-sm-6">
                 <div class="logo">
-                    <h1><a href="index.html">T<span>est</span></a></h1>
+                    <h1><a href="/">T<span>est</span></a></h1>
                 </div>
             </div>
             <div class="col-sm-6">
@@ -152,9 +149,19 @@
 <script>
     function loadContent(url) {
         fetch(url)
-        .then(response => response.text())
+        .then(response => {
+            if (response.status === 401) {  // 401 상태 코드 확인
+                alert("로그인 먼저 진행해주세요.");
+                window.location.href = "/demo/login";
+                return null;
+            }
+            return response.text();
+        })
         .then(html => {
             document.getElementById('mainContent').innerHTML = html;
+             if (url === '/product/product/O'){
+                showProducts('recent');
+             }
         })
         .catch(err => console.warn('Something went wrong.', err));
     }
@@ -163,11 +170,11 @@
     function loadContentByCategory(url, category) {
         category = category.replace(/\//g, '_');
         url = url + category;
-        console.log(url);
         fetch(url)
         .then(response => response.text())
         .then(html => {
             document.getElementById('mainContent').innerHTML = html;
+            showProducts('recent');
         })
         .catch(err => console.warn('Something went wrong.', err));
     }
@@ -176,11 +183,11 @@
     function loadContentBySubCategory(url, subcategory) {
         subcategory = subcategory.replace(/\//g, '_');
         url = url + subcategory;
-        console.log(url);
         fetch(url)
         .then(response => response.text())
         .then(html => {
             document.getElementById('mainContent').innerHTML = html;
+            showProducts('recent');
         })
         .catch(err => console.warn('Something went wrong.', err));
     }
@@ -228,5 +235,103 @@
         });
     });
 </script>
+<script>
+    //정렬하기위해 값
+    document.addEventListener("DOMContentLoaded", function() {
+      window.showProducts = function(sortType) {
+        const products = Array.from(document.querySelectorAll('.product-item')).map(product => ({
+          id: product.getAttribute('data-id'),
+          name: product.getAttribute('data-name'),
+          price: parseFloat(product.getAttribute('data-price')),
+          pic: product.getAttribute('data-pic'),
+          likedStatus: product.getAttribute('data-liked') === 'true',
+          counts: parseInt(product.getAttribute('data-counts')),
+          time: product.getAttribute('data-time')
+        }));
+
+        // 정렬
+        if (sortType === 'count') {
+            products.sort((a, b) => b.counts - a.counts);
+        }
+        else if (sortType === 'priceLow') {
+            products.sort((a, b) => a.price - b.price);
+        }
+        else if (sortType === 'priceHigh') {
+            products.sort((a, b) => b.price - a.price);
+        }
+        else if (sortType === 'recent') {
+            products.sort((a, b) => new Date(b.time) - new Date(a.time));
+        }
+        else if (sortType === 'old') {
+            products.sort((a, b) => new Date(a.time) - new Date(b.time));
+        }
+
+
+        // 제품 목록을 콘솔에 출력
+        console.log(sortType + ' 제품 리스트:', products);
+
+        // 기존 제품 리스트 삭제
+        const productListElement = document.getElementById('product-list');
+        if (productListElement) {
+          productListElement.innerHTML = '';
+
+          // 정렬된 제품 리스트 다시 출력
+          products.forEach(product => {
+            const productItem = document.createElement('div');
+            productItem.classList.add('col-md-3', 'col-sm-6', 'product-item');
+            productItem.setAttribute('data-id', product.id);
+            productItem.setAttribute('data-name', product.name);
+            productItem.setAttribute('data-price', product.price);
+            productItem.setAttribute('data-pic', product.pic);
+            productItem.setAttribute('data-liked', product.likedStatus);
+            productItem.setAttribute('data-counts', product.counts);
+            productItem.setAttribute('data-time', product.time);
+
+            productItem.innerHTML = `
+              <div class="single-shop-product">
+                <div class="product-upper">
+                  <a href="/product/productDetail/${product.id}"><img src="/uploads/${product.pic}" alt="" width="100"></a>
+                </div>
+                <h2><a href="#">${product.name}</a></h2>
+                <div class="product-carousel-price">
+                  <ins>$${product.price}</ins>
+                </div>
+                <div class="product-option-shop">
+                  <a class="add_to_cart_button" href="/product/productDetail/${product.id}">상세보기</a>
+                  <form action="/product/wishlist/${product.id}" method="post">
+                    <button id="wishlist-btn">
+                      ${product.likedStatus ? '찜 취소' : '찜하기'}
+                    </button>
+                  </form>
+                </div>
+              </div>
+            `;
+            productListElement.appendChild(productItem);
+          });
+        } else {
+          console.error('product-list 요소를 찾을 수 없습니다.');
+        }
+      };
+
+    });
+</script>
+<script>
+    //검색기능
+    function filterProducts() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const products = Array.from(document.querySelectorAll('.product-item'));
+
+    // 제품 필터링
+    products.forEach(product => {
+        const productName = product.getAttribute('data-name').toLowerCase();
+        if (productName.includes(searchTerm)) {
+            product.style.display = 'block'; // 검색어에 포함되면 표시
+        } else {
+            product.style.display = 'none'; // 검색어에 포함되지 않으면 숨김
+        }
+    });
+}
+</script>
+
 </body>
 </html>

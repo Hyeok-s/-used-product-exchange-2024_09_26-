@@ -18,7 +18,11 @@ public class AskController {
     private final AskService askService;
 
     @GetMapping("/ask")
-    public String showInquiryForm(Model model) {
+    public String showInquiryForm(Model model, HttpSession session) {
+        MemberDTO loggedInUser = (MemberDTO) session.getAttribute("loggedInUser");
+        if(loggedInUser == null){
+            return "redirect:/error/unauthorized";
+        }
         model.addAttribute("askDTO", new AskDTO());
         return "ask";
     }

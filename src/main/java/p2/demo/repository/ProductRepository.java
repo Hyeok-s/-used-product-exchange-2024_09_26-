@@ -29,10 +29,5 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
 
     List<ProductEntity> findByMemberId(Long memberId);
 
-    /*List<ProductEntity> findAllOrderByCountsDesc();
-    List<ProductEntity> findAllOrderBypTimeDesc();
-    List<ProductEntity> findAllOrderBypTimeAsc();
-    List<ProductEntity> findAllOrderBypPriceAsc();
-    List<ProductEntity> findAllOrderBypPriceDesc();*/
 }
 

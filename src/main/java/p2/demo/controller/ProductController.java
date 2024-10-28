@@ -1,8 +1,13 @@
 package p2.demo.controller;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,6 +24,9 @@ import jakarta.servlet.http.HttpSession;
 import p2.demo.service.WishlistService;
 
 import java.io.IOException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,7 +44,11 @@ public class ProductController {
 
     //글쓰기 페이지
     @GetMapping("/product/upload")
-    public String uploadForm(Model model) {
+    public String uploadForm(Model model, HttpSession session) {
+        MemberDTO loggedInUserDTO = (MemberDTO) session.getAttribute("loggedInUser");
+        if(loggedInUserDTO == null){
+            return "errorMessage";
+        }
         model.addAttribute("productDTO", new ProductDTO());
         return "upload";
     }
@@ -79,7 +91,7 @@ public class ProductController {
         MemberDTO loggedInUserDTO = (MemberDTO) session.getAttribute("loggedInUser");
 
         if(loggedInUserDTO == null){
-            return "redirect:/";
+            return "redirect:/error/unauthorized";
         }
         List<ProductEntity> products = productService.getpState("O");
         List<ProductEntity> newProducts = new ArrayList<>();
@@ -134,16 +146,51 @@ public class ProductController {
 
     // 제품 ID로 해당 제품의 상세 정보를 조회
     @GetMapping("/product/productDetail/{id}")
-    public String productDetail(@PathVariable("id") Long id, Model model, HttpSession session) {
+    public String productDetail(@PathVariable("id") Long id, Model model, HttpSession session, HttpServletRequest request, HttpServletResponse response) {
         MemberDTO loggedInUserDTO = (MemberDTO) session.getAttribute("loggedInUser");
         ProductEntity product = productService.findById(id);
         model.addAttribute("product", product);
+
         boolean mine = false;
-        if(loggedInUserDTO.getId() == product.getMember().getId()){
-            mine = true;
+
+        if(loggedInUserDTO == null){
+            return "errorMessage";
         }
-        if(!mine){
-            productService.incrementProductCount(id);
+        else{
+            if(loggedInUserDTO.getId() == product.getMember().getId()){
+                mine = true;
+            }
+            if(!mine){
+                // 쿠키 확인
+                Cookie[] cookies = request.getCookies();
+                boolean viewed = false;
+                if (cookies != null) {
+                    for (Cookie cookie : cookies) {
+                        if ("viewedProductIds".equals(cookie.getName())) {
+                            try {
+                                // 기존 쿠키 값 디코딩 후 확인
+                                String decodedValue = URLDecoder.decode(cookie.getValue(), StandardCharsets.UTF_8);
+                                if (decodedValue.contains("[" + id + "]")) {
+                                    viewed = true;
+                                    break;
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }
+                // 조회수가 증가된 적이 없다면 증가시키고, 새로운 쿠키 저장
+                if (!viewed) {
+                    productService.incrementProductCount(id);
+
+                    // 조회한 제품 ID를 쿠키에 추가
+                    String newCookieValue = "[" + id + "]";
+                    Cookie newCookie = new Cookie("viewedProductIds", URLEncoder.encode(newCookieValue, StandardCharsets.UTF_8));
+                    newCookie.setMaxAge(60*60); // 1시간 동안 유효
+                    response.addCookie(newCookie);
+                }
+            }
         }
         model.addAttribute("mine", mine);
         return "productDetail";
@@ -156,7 +203,7 @@ public class ProductController {
 
         if (loggedInUserDTO == null) {
             model.addAttribute("errorMessage", "로그인이 필요합니다.");
-            return "redirect:/demo/login";
+            return "errorMessage";
         }
 
         //MemberDTO를 MemberEntity로 변환
@@ -221,30 +268,11 @@ public class ProductController {
         }
     }
 
-    //제품 정렬
-    /*@GetMapping("/product/list")
-    public String productList(@RequestParam(defaultValue = "default") String sort, Model model) {
-        List<ProductEntity> products;
-        switch (sort) {
-            case "countDesc":
-                products = productService.findAllOrderByCountsDesc();
-                break;
-            case "timeDesc":
-                products = productService.findAllOrderBypTimeDesc();
-                break;
-            case "timeAsc":
-                products = productService.findAllOrderBypTimeAsc();
-                break;
-            case "priceAsc":
-                products = productService.findAllOrderBypPriceAsc();
-                break;
-            case "priceDesc":
-                products = productService.findAllOrderBypPriceDesc();
-                break;
-            default:
-                products = productService.getpState("O");
-        }
-        model.addAttribute("products", products);
-        return "productList"; // 위의 HTML 파일 이름으로 반환
-    }*/
+    //에러 메세지
+    @GetMapping("/error/unauthorized")
+    public ResponseEntity<String> unauthorized() {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body("로그인 먼저 진행해주세요.");
+    }
+
 }

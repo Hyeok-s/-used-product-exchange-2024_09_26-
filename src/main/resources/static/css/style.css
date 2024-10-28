@@ -16,10 +16,6 @@ h6 {
 body { font-family: 'Titillium Web', sans-serif; }
 
 
-
-.header-area {
-    background: none repeat scroll 0 0 #f4f4f4;
-}
 .header-area a {
     color: #888;
 }
@@ -961,7 +957,6 @@ div.cart-collaterals ul.products li.product:hover .add_to_cart_button{background
 
 .sidebar {
     width: 20%;
-    background-color: #f4f4f4;
     padding: 20px;
     box-shadow: 2px 0 5px rgba(0,0,0,0.1);
 }

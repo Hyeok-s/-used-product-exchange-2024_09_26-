@@ -250,20 +250,4 @@ public class ProductService {
         return productRepository.findByMemberId(memberId);
     }
 
-    /*public List<ProductEntity> findAllOrderByCountsDesc() {
-        return productRepository.findAllOrderByCountsDesc();
-    }
-    public List<ProductEntity> findAllOrderBypTimeAsc() {
-        return productRepository.findAllOrderBypTimeAsc();
-    }
-    public List<ProductEntity> findAllOrderBypPriceAsc() {
-        return productRepository.findAllOrderBypPriceAsc();
-    }
-    public List<ProductEntity> findAllOrderBypPriceDesc() {
-        return productRepository.findAllOrderBypPriceDesc();
-    }
-    public List<ProductEntity> findAllOrderBypTimeDesc() {
-        return productRepository.findAllOrderBypTimeDesc();
-    }*/
-
 }

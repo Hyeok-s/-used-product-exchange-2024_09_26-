@@ -78,12 +78,6 @@ public class MemberController {
         return "login";
     }
 
-    //테스트
-    @GetMapping("/demo/test")
-    public String lForm() {
-        return "mypageEdit";
-    }
-
     //로그인
     @PostMapping("/demo/login")
     public String login(@RequestParam("email") String email,
