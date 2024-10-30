@@ -6,39 +6,26 @@
 </head>
 <body>
 <h1>제품 상세 정보</h1>
+
 <img th:src="@{/uploads/} + ${product.pic}" alt="Product Image" width="200">
+<p><strong>판매자:</strong> <span th:text="${product.member.memberEmail}">이메일</span></p>
 <p><strong>상품명:</strong> <span th:text="${product.pName}">상품명</span></p>
 <p><strong>가격:</strong> <span th:text="${product.pPrice}">상품가격</span></p>
+<p><strong>대분류:</strong> <span th:text="${product.pType1}">대분류</span></p>
+<p><strong>소분류:</strong> <span th:text="${product.pType2}">소분류</span></p>
 <p><strong>설명:</strong> <span th:text="${product.pContent}">상품설명</span></p>
 <p><strong>상태:</strong> <span th:text="${product.pState}" id="productState">상태</span></p>
+<p><strong>업로드시간:</strong> <span th:text="${product.pTime}">업로드시간</span></p>
 
-<!-- 수락 및 거절 버튼 -->
-<button onclick="updateProductState('O')">수락</button>
-<button onclick="updateProductState('NP')">거절</button>
+<div>
+<form th:action="@{'/Admin/product/' + ${product.id} + '/O'}" method="post" style="display:inline;">
+    <button type="submit" th:if="${product.pState == 'N' || product.pState == 'NP'}">수락</button>
+</form>
 
-<script>
-    function updateProductState(newState) {
-        const productId = [[${product.id}]];  // 제품 ID를 가져옴
-        console.log('Updating product with ID:', productId, 'to state:', newState);  // 추가된 로그
-
-        fetch('/Admin/updateProductState/' + productId + '/' + newState, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Response:', data);  // 추가된 로그
-            if (data.success) {
-                document.getElementById('productState').textContent = newState;  // 상태 업데이트
-            } else {
-                alert('상태 업데이트에 실패했습니다.');
-            }
-        })
-        .catch(error => console.error('Error:', error));
-    }
-</script>
+<form th:action="@{'/Admin/product/' + ${product.id} + '/NP'}" method="post" style="display:inline;">
+    <button type="submit" th:if="${product.pState == 'N' || product.pState == 'O'}">거절</button>
+</form>
+</div>
 
 </body>
 </html>

@@ -6,7 +6,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import p2.demo.entity.AskEntity;
+import p2.demo.entity.OrderEntity;
 import p2.demo.entity.ProductEntity;
+import p2.demo.service.OrderService;
 import p2.demo.service.ProductService;
 import p2.demo.service.AskService;
 import org.springframework.ui.Model;
@@ -23,41 +25,42 @@ import java.util.Map;
 public class AdminController {
     private final ProductService productService;
     private final AskService askService;
+    private final OrderService orderService;
 
-    //관리자 대기 게시물
-    @GetMapping("/Admin/nproduct")
-    public String getNAdminForm(Model model){
-        model.addAttribute("products", productService.getProductsByState("N"));
-        return "adminProduct";
-    }
-
-   //관리자 승인 게시물
-    @GetMapping("/Admin/oproduct")
-    public String getOAdminForm(Model model){
-        model.addAttribute("products", productService.getProductsByState("O"));
-        return "adminProduct";
-    }
-
-    //관리자 거부 게시물
-    @GetMapping("/Admin/fproduct")
-    public String getFAdminForm(Model model){
-        model.addAttribute("products", productService.getProductsByState("NF"));
-        return "adminProduct";
-    }
-
-    //거래 완료 게시물
-    @GetMapping("/Admin/pproduct")
-    public String getPAdminForm(Model model){
-        model.addAttribute("products", productService.getProductsByState("P"));
-        return "adminProduct";
-    }
-
+    //관리자 홈
     @GetMapping("/Admin/admin")
     public String adminHome(){
         return "admin";
     }
 
+    //상태에 따른 목록 표시
+    @GetMapping("/Admin/product/{state}")
+    public String getAdminForm(@PathVariable("state") String state, Model model){
+        model.addAttribute("products", productService.getProductsByState(state));
+        return "adminProduct";
+    }
 
+
+    //주문상태에 따른 목록 표시
+    @GetMapping("/Admin/order/{status}")
+    public String getAdminOrderForm(@PathVariable("status") String status, Model model){
+        if(status.equals("a")){
+            model.addAttribute("orders", orderService.getOrdersByStatus(status));
+        }
+        else{
+            model.addAttribute("dorers", orderService.getCompletePurchaseHistory(status));
+        }
+        return "adminOrderProduct";
+    }
+
+    //상태변경
+    @PostMapping("/Admin/product/{productId}/{state}")
+    public String productState(@PathVariable ("productId") Long productId, @PathVariable("state") String state){
+        productService.updateProductState(productId, state);
+        return "redirect:/Admin/admin";
+    }
+
+    //id에 따른 상세정보
     @GetMapping("/Admin/productDetail/{id}")
     public String productDetail(@PathVariable("id") Long id, Model model) {
         // 제품 ID로 해당 제품의 상세 정보를 조회
@@ -66,20 +69,22 @@ public class AdminController {
         return "adminProductDetail";  // adminProductDetail.html 페이지로 이동
     }
 
-    @PutMapping("/Admin/updateProductState/{id}/{newState}")
-    @ResponseBody
-    public Map<String, Object> updateProductState(@PathVariable Long id, @PathVariable String newState) {
-        Map<String, Object> response = new HashMap<>();
-        try {
-            productService.updateProductState(id, newState);  // 상태 업데이트
-            response.put("success", true);
-        } catch (Exception e) {
-            response.put("success", false);
-            response.put("message", e.getMessage());
-        }
-        return response;
+    //id에 따른 주문 상세정보
+    @GetMapping("/Admin/productOrderDetail/{productId}")
+    public String orderProductDetail(@PathVariable("productId") Long productId, Model model) {
+        OrderEntity order = orderService.getOrderByProductId(productId);
+        model.addAttribute("order", order);
+        return "adminOrderProductDetail";
     }
 
+    //상태변경
+    @PostMapping("/Admin/order/{orderId}/{status}")
+    public String orderState(@PathVariable ("orderId") Long orderId, @PathVariable("status") String status){
+        orderService.updateOrderStatus(orderId, status);
+        return "redirect:/Admin/admin";
+    }
+
+    //질문 리스트
     @GetMapping("/Admin/askList")
     public String getAskList(Model model) {
         List<AskEntity> askList = askService.getAllAsks();
@@ -87,6 +92,7 @@ public class AdminController {
         return "ask-list";  // askList.html로 이동
     }
 
+    //질문 상세 정보
     @GetMapping("/Admin/askDetail/{id}")
     public String getAskDetail(@PathVariable Long id, Model model) {
         AskEntity ask = askService.getAskById(id);
@@ -94,6 +100,7 @@ public class AdminController {
         return "askDetail";  // askDetail.html로 이동
     }
 
+    //답변
     @PostMapping("/Admin/askDetail/{id}")
     public String submitAnswer(@PathVariable Long id, @RequestParam("aReturn") String aReturn) {
         askService.submitAnswer(id, aReturn);

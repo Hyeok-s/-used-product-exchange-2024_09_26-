@@ -1,5 +1,6 @@
 package p2.demo.repository;
 import org.springframework.stereotype.Repository;
+import p2.demo.entity.ProductEntity;
 import p2.demo.entity.ProductsHistoryEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 

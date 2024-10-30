@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>제품 상세 정보</title>
+</head>
+<body>
+<h1>제품 상세 정보</h1>
+
+
+<img th:src="@{/uploads/} + ${order.product.pic}" alt="Product Image" width="200">
+<p><strong>판매자:</strong> <span th:text="${order.buyer.memberEmail}">이메일</span></p>
+<p><strong>상품명:</strong> <span th:text="${order.product.pName}">상품명</span></p>
+<p><strong>가격:</strong> <span th:text="${order.product.pPrice}">상품가격</span></p>
+<p><strong>대분류:</strong> <span th:text="${order.product.pType1}">대분류</span></p>
+<p><strong>소분류:</strong> <span th:text="${order.product.pType2}">소분류</span></p>
+<p><strong>설명:</strong> <span th:text="${order.product.pContent}">상품설명</span></p>
+<p><strong>업로드시간:</strong> <span th:text="${order.product.pTime}">업로드시간</span></p>
+
+
+<form th:action="@{'/Admin/order/' + ${order.id} + '/ing'}" method="post" style="display:inline;">
+  <button type="submit" th:if="${order.deliveryStatus == 'w'}">배송중으로 변경</button>
+</form>
+
+<form th:action="@{'/Admin/order/' + ${order.id} + '/f'}" method="post" style="display:inline;">
+  <button type="submit" th:if="${order.deliveryStatus == 'ing'}">배송완료로 변경</button>
+</form>
+
+<form th:action="@{'/Admin/order/' + ${order.id} + '/d'}" method="post" style="display:inline;">
+  <button type="submit" th:if="${order.deliveryStatus == 'f'}">구매확정으로 변경</button>
+</form>
+
+
+</body>
+</html>

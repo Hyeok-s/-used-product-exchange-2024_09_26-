@@ -202,6 +202,7 @@ public class ProductService {
 
         List<OrderEntity> activeOrders = orderRepository.findByDeliveryStatusAndBuyerId(status, memberId);
         List<ProductsHistoryEntity> deletedOrdersHistory = new ArrayList<>();
+
         if(status.equals("d")){
             deletedOrdersHistory= productsHistoryRepository.findByMemberId(memberId);
         }
@@ -220,7 +221,6 @@ public class ProductService {
             ));
         }
 
-
         if(deletedOrdersHistory != null){
             for (ProductsHistoryEntity history : deletedOrdersHistory) {
                 completeHistory.add(new ProductHistoryDTO(
@@ -237,17 +237,12 @@ public class ProductService {
         return completeHistory;
     }
 
-
-    // 조회 추가
+    // 조회수 추가
     public void incrementProductCount(Long id) {
         ProductEntity productEntity = productRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid product ID: " + id));
         productEntity.setCounts(productEntity.getCounts()+1);
         productRepository.save(productEntity);
     }
 
-    //memberId로 가져오기
-    public List<ProductEntity> getMemberId(Long memberId){
-        return productRepository.findByMemberId(memberId);
-    }
 
 }

@@ -100,7 +100,7 @@ public class MypageController {
         Long id = loggedInUserDTO.getId();
         List<ProductEntity> products = productService.getProductsByStatusAndMemberId(status, id);
         model.addAttribute("products", products);
-        return "myProduct";  // 상태에 따른 제품을 보여주는 html 파일 (myProduct.html)
+        return "myProduct";
     }
 
     // 구매 게시물(배송 상태) 리스트 페이지
@@ -108,10 +108,9 @@ public class MypageController {
     public String getPurchasesByStatus(@PathVariable("status") String status, Model model, HttpSession session) {
         MemberDTO loggedInUserDTO = (MemberDTO) session.getAttribute("loggedInUser");
         Long id = loggedInUserDTO.getId();
+        //주문,삭제 리스트 합산해서 돌려주기
         List<ProductHistoryDTO> completeHistory = productService.getCompletePurchaseHistory(id, status);
-
         model.addAttribute("orders", completeHistory);
-
-        return "myPurchase";  // 배송 상태에 따른 구매 내역을 보여주는 html 파일
+        return "myPurchase";
     }
 }

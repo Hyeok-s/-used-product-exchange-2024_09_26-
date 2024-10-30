@@ -11,10 +11,12 @@
   <!-- 사이드바 -->
   <div class="sidebar">
     <ul>
-      <li><a href="#" onclick="loadContent('/Admin/nproduct')">승인대기</a></li>
-      <li><a href="#" onclick="loadContent('/Admin/oproduct')">승인완료</a></li>
-      <li><a href="#" onclick="loadContent('/Admin/fproduct')">승인취소</a></li>
-      <li><a href="#" onclick="loadContent('/Admin/pproduct')">판매완료</a></li>
+      <li><a href="#" onclick="loadContent('/Admin/nproduct')">가입자 현황</a></li>
+      <li><a href="#" onclick="loadContent('/Admin/product/N')">승인대기</a></li>
+      <li><a href="#" onclick="loadContent('/Admin/product/O')">승인완료</a></li>
+      <li><a href="#" onclick="loadContent('/Admin/product/NP')">승인거부</a></li>
+      <li><a href="#" onclick="loadContent('/Admin/order/a')">배송대기중</a></li>
+      <li><a href="#" onclick="loadContent('/Admin/order/d')">구매확정</a></li>
       <li><a href="#" onclick="loadContent('/Admin/askList')">문의 리스트</a></li>
     </ul>
   </div>
@@ -33,15 +35,6 @@
       })
       .catch(error => console.error('Error loading content:', error));
   }
-    $(document).ready(function() {
-      $(".sub").hide(); // 기본적으로 서브 메뉴 숨기기
-      $(".menu li").click(function(event) {
-          // 서브 메뉴 토글
-          $(this).children(".sub").slideToggle("fast");
-          // 클릭된 메뉴를 제외한 다른 서브 메뉴는 숨기기
-          $(".sub").not($(this).children(".sub")).slideUp("fast");
-      });
-  });
 </script>
 </body>
 </html>
