@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Edit Password</title>
+  <link rel="stylesheet" href="/css/mypage.css">
+</head>
+<body>
+<div th:if="${element} == 'name'">
+  <h1>이름변경하기</h1>
+  <form action="/Admin/memberEdit/name" method="post">
+    <input type="hidden" name="id" th:value="${member.id}" />
+    <label for="memberName" th:text="${member.memberName} + ' >'"></label>
+    <input type="text" id="memberName" name="memberName">
+    <button type="submit">저장</button>
+  </form>
+</div>
+
+<div th:if="${element} == 'password'">
+  <h1>비밀번호 변경하기</h1>
+  <form action="/Admin/memberEdit/password" method="post" onsubmit="return finalValidation();">
+    <input type="hidden" name="id" th:value="${member.id}" />
+    <label for="memberPassword">새 비밀번호:</label>
+    <input type="password" id="memberPassword" name="memberPassword" onkeyup="checkPasswordMatch();">
+    <span id="passwordError" style="color: red;"></span> <!-- 비밀번호 유효성 오류 메시지 -->
+    <br>
+    <label for="passwordConfirm">비밀번호 확인:</label>
+    <input type="password" id="passwordConfirm" onkeyup="checkPasswordMatch();">
+    <span id="passwordMatchError" style="color: red;"></span> <!-- 비밀번호 일치 오류 메시지 -->
+    <br>
+    <button type="submit">저장</button>
+  </form>
+</div>
+
+<div th:if="${element} == 'phone'">
+  <h1>전화번호 변경하기</h1>
+  <form action="/Admin/memberEdit/phone" method="post">
+    <input type="hidden" name="id" th:value="${member.id}" />
+    <label for="memberPhone" th:text="'0' + ${member.memberPhone} + ' >'"></label>
+    <input type="number" id=memberPhone name="memberPhone">
+    <button type="submit">저장</button>
+  </form>
+</div>
+
+<script>
+  // 비밀번호 유효성 검사
+  function isValidPassword(password) {
+      const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{9,15}$/;
+      return passwordPattern.test(password);
+  }
+
+  // 비밀번호 일치 여부 검사
+  function checkPasswordMatch() {
+      const password = document.getElementById("memberPassword").value;
+      const passwordConfirm = document.getElementById("passwordConfirm").value;
+      const passwordMatchError = document.getElementById("passwordMatchError");
+
+      if (password !== passwordConfirm) {
+          passwordMatchError.textContent = "비밀번호가 일치하지 않습니다.";
+      } else {
+          passwordMatchError.textContent = "";
+      }
+
+      // 비밀번호 유효성 검사
+      const passwordError = document.getElementById("passwordError");
+      if (!isValidPassword(password)) {
+          passwordError.textContent = "비밀번호는 9~15자, 숫자, 문자 및 특수문자를 포함해야 합니다.";
+      } else {
+          passwordError.textContent = "";
+      }
+  }
+
+  // 최종 유효성 검사
+  function finalValidation() {
+      const passwordError = document.getElementById("passwordError").textContent;
+      const passwordMatchError = document.getElementById("passwordMatchError").textContent;
+
+      if (passwordError || passwordMatchError) {
+          alert("비밀번호를 다시 확인해주세요.");
+          return false;
+      }
+
+      return true;
+  }
+</script>
+
+</body>
+</html>

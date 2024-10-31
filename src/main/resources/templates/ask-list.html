@@ -13,6 +13,7 @@
     <th>제목</th>
     <th>작성자</th>
     <th>작성일</th>
+    <th>답변여부</th>
     <th>보기</th>
   </tr>
   </thead>
@@ -22,6 +23,7 @@
     <td th:text="${ask.aTitle}"></td>
     <td th:text="${ask.member.memberName}"></td>
     <td th:text="${ask.aTime}"></td>
+    <td th:text="${ask.answers} ? 'O' : 'X'"></td>
     <td><a th:href="@{'/Admin/askDetail/' + ${ask.id}}">보기</a></td>
   </tr>
   </tbody>

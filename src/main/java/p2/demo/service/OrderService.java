@@ -100,7 +100,8 @@ public class OrderService {
                     order.getProduct().getPContent(),
                     order.getProduct().getId(),
                     order.getProduct().getPic(),
-                    status
+                    status,
+                    true
             ));
         }
         for (ProductsHistoryEntity history : deletedOrdersHistory) {
@@ -110,7 +111,8 @@ public class OrderService {
                     history.getPContent(),
                     history.getId(),
                     history.getPic(),
-                    status
+                    status,
+                    false
             ));
         }
         return completeHistory;

@@ -11,6 +11,6 @@ public class AskDTO {
     private String aTitle;
     private String aContent;
     private LocalDateTime aTime;
-    private String pState;
     private Long memberId;
+    private boolean answers;
 }

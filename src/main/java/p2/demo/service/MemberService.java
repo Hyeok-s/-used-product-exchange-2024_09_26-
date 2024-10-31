@@ -8,6 +8,9 @@ import p2.demo.entity.ProductEntity;
 import p2.demo.repository.MemberRepository;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -15,7 +18,7 @@ import java.util.Optional;
 public class MemberService {
     private final MemberRepository memberRepository;
 
-    //회원가입 저장
+    //회원가입 저장DTO
     public MemberEntity save(MemberDTO memberDTO) {
         MemberEntity memberEntity = new MemberEntity();
         memberEntity.setMemberEmail(memberDTO.getMemberEmail());
@@ -24,6 +27,11 @@ public class MemberService {
         memberEntity.setMemberBir(memberDTO.getMemberBir());
         memberEntity.setMemberPhone(memberDTO.getMemberPhone());
         memberEntity.setMemberTime(LocalDateTime.now());
+        return memberRepository.save(memberEntity);
+    }
+
+    //회원가입 저장Entity
+    public MemberEntity save(MemberEntity memberEntity){
         return memberRepository.save(memberEntity);
     }
 
@@ -41,7 +49,7 @@ public class MemberService {
         return null;
     }
 
-    //id가져오기
+    //id로가져오기
     public MemberEntity findById(Long id) {
         return memberRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid member ID: " + id));
     }
@@ -50,7 +58,7 @@ public class MemberService {
     public void updatePassword(Long memberId, String newPassword) {
         MemberEntity member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
-        member.setMemberPassword(newPassword); // 암호화 로직 추가 가능
+        member.setMemberPassword(newPassword);
         memberRepository.save(member);
     }
 
@@ -58,4 +66,39 @@ public class MemberService {
     public boolean isEmailExists(String email) {
         return memberRepository.existsByMemberEmail(email);
     }
+
+    //전체정보
+    public List<MemberEntity> findAll(){
+        return memberRepository.findAll();
+    }
+
+
+    // 일별 가입자 수 통계
+    public Map<String, Long> getDailyRegistrations() {
+        List<Object[]> results = memberRepository.countByRegistrationDate();
+        Map<String, Long> dailyRegistrations = new HashMap<>();
+
+        for (Object[] result : results) {
+            String date = (String) result[0];
+            Long count = ((Number) result[1]).longValue(); // 형 변환 처리
+            dailyRegistrations.put(date, count);
+        }
+
+        return dailyRegistrations;
+    }
+
+    // 월별 가입자 수 통계
+    public Map<String, Long> getMonthlyRegistrations() {
+        List<Object[]> results = memberRepository.countByRegistrationMonth();
+        Map<String, Long> monthlyRegistrations = new HashMap<>();
+
+        for (Object[] result : results) {
+            String month = (String) result[0];
+            Long count = ((Number) result[1]).longValue(); // 형 변환 처리
+            monthlyRegistrations.put(month, count);
+        }
+
+        return monthlyRegistrations;
+    }
+
 }

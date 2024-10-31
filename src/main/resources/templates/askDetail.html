@@ -7,13 +7,23 @@
 <body>
 <h2>문의 상세 내용</h2>
 <p>제목: <span th:text="${ask.aTitle}"></span></p>
+<p>작성자: <span th:text="${ask.member.memberEmail}"></span></p>
 <p>내용: <span th:text="${ask.aContent}"></span></p>
-<p>작성일: <span th:text="${ask.aTime}"></span></p>
+<p>작성시간: <span th:text="${#temporals.format(ask.aTime, 'yyyy년MM월dd일 HH시mm분')}"></span></p>
+<div th:if="${!ask.answers}">
+  <h3>답변 작성</h3>
+  <form th:action="@{'/Admin/askDetail/' + ${ask.id}}" method="post">
+    <textarea name="aReturn"></textarea>
+    <button type="submit">답변 제출</button>
+  </form>
+</div>
 
-<h3>답변 작성</h3>
-<form th:action="@{'/Admin/askDetail/' + ${ask.id}}" method="post">
-  <textarea name="aReturn"></textarea>
-  <button type="submit">답변 제출</button>
-</form>
+<div th:if="${ask.answers}">
+  <h3>답변</h3>
+  <p>답변자: <span th:text="${answer.member.memberEmail}"></span></p>
+  <p>답변시간: <span th:text="${#temporals.format(answer.rTime, 'yyyy년MM월dd일 HH시mm분')}"></span></p>
+  <a th:text="${answer.aReturn}"></a>
+</div>
+
 </body>
 </html>

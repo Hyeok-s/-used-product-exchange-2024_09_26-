@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>가입자 통계</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px; /* 제목과 버튼 간격 */
+            font-size: 28px; /* 제목 글씨 크기 증가 */
+            font-weight: bold; /* 제목 글씨 두껍게 */
+        }
+        #buttonContainer {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        button {
+            background-color: #5bc0de;
+            color: white;
+            border: none;
+            padding: 15px 30px; /* 버튼 크기 증가 */
+            font-size: 18px; /* 버튼 글씨 크기 증가 */
+            cursor: pointer;
+            margin: 0 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #31b0d5;
+        }
+        #chartContainer {
+            max-width: 1200px; /* 차트의 최대 너비 증가 */
+            margin: 0 auto; /* 가운데 정렬 */
+            padding: 10px;
+            background-color: white; /* 차트 배경색 */
+            border-radius: 8px; /* 모서리 둥글게 */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+        }
+        canvas {
+            height: 600px; /* 차트 높이 증가 */
+            width: 100%; /* 차트 너비를 100%로 설정 */
+        }
+    </style>
+</head>
+<body>
+<h2>가입자 통계</h2>
+
+<!-- 데이터 선택 버튼 -->
+<div id="buttonContainer">
+    <button id="monthlyButton">월별</button>
+    <button id="dailyButton">일별</button>
+</div>
+
+<!-- 차트 캔버스 -->
+<div id="chartContainer">
+    <canvas id="registrationChart"></canvas>
+</div>
+
+<script th:inline="javascript">
+    // Daily registrations 데이터 가져오기
+    const dailyRegistrations = /*[[${dailyRegistrations}]]*/ {};
+    console.log("Daily Registrations:", dailyRegistrations); // 데이터 확인
+
+    // Monthly registrations 데이터 가져오기
+    const monthlyRegistrations = /*[[${monthlyRegistrations}]]*/ {};
+    console.log("Monthly Registrations:", monthlyRegistrations); // 데이터 확인
+
+    // 라벨과 데이터를 배열로 변환
+    const dailyEntries = Object.entries(dailyRegistrations);
+    const monthlyEntries = Object.entries(monthlyRegistrations);
+
+    // 날짜 기준으로 정렬
+    dailyEntries.sort((a, b) => new Date(a[0]) - new Date(b[0]));
+    monthlyEntries.sort((a, b) => new Date(a[0]) - new Date(b[0]));
+
+    // 라벨과 데이터 배열 생성
+    const dailyLabels = dailyEntries.map(entry => entry[0]);
+    const dailyData = dailyEntries.map(entry => entry[1]);
+
+    const monthlyLabels = monthlyEntries.map(entry => entry[0]);
+    const monthlyData = monthlyEntries.map(entry => entry[1]);
+
+    // 초기 그래프 설정
+    const ctx = document.getElementById('registrationChart').getContext('2d');
+    const registrationChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: monthlyLabels,
+            datasets: [{
+                label: '월별 가입자 수',
+                data: monthlyData,
+                backgroundColor: 'rgba(153, 102, 255, 0.6)', // 보라색
+                borderColor: 'rgba(153, 102, 255, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        font: {
+                            size: 16, // y축 글씨 크기 증가
+                            weight: 'bold' // y축 글씨 두껍게
+                        }
+                    },
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.1)' // y축 그리드 색상 조정
+                    }
+                },
+                x: {
+                    ticks: {
+                        font: {
+                            size: 16, // x축 글씨 크기 증가
+                            weight: 'bold' // x축 글씨 두껍게
+                        }
+                    },
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.1)' // x축 그리드 색상 조정
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    labels: {
+                        font: {
+                            size: 18, // 범례 글씨 크기 증가
+                            weight: 'bold' // 범례 글씨 두껍게
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // 버튼 클릭 이벤트
+    document.getElementById('dailyButton').addEventListener('click', () => {
+        registrationChart.data.labels = dailyLabels;
+        registrationChart.data.datasets[0].label = '일별 가입자 수';
+        registrationChart.data.datasets[0].data = dailyData;
+        registrationChart.data.datasets[0].backgroundColor = 'rgba(75, 192, 192, 0.6)'; // 연두색
+        registrationChart.data.datasets[0].borderColor = 'rgba(75, 192, 192, 1)';
+        registrationChart.update();
+    });
+
+    document.getElementById('monthlyButton').addEventListener('click', () => {
+        registrationChart.data.labels = monthlyLabels;
+        registrationChart.data.datasets[0].label = '월별 가입자 수';
+        registrationChart.data.datasets[0].data = monthlyData;
+        registrationChart.data.datasets[0].backgroundColor = 'rgba(153, 102, 255, 0.6)'; // 보라색
+        registrationChart.data.datasets[0].borderColor = 'rgba(153, 102, 255, 1)';
+        registrationChart.update();
+    });
+</script>
+
+</body>
+</html>

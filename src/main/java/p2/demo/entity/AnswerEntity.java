@@ -24,4 +24,8 @@ public class AnswerEntity {
     @ManyToOne
     @JoinColumn(name = "ask_id", referencedColumnName = "id")
     private AskEntity ask;  // 외래키로 members 테이블 참조
+
+    @ManyToOne
+    @JoinColumn(name = "member_id", referencedColumnName = "id")// 외래 키 설정
+    private MemberEntity member;
 }

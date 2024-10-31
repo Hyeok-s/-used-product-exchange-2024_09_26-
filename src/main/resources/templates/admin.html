@@ -1,17 +1,19 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<link rel="stylesheet" th:href="@{/css/home.css}">
 <head>
   <meta charset="UTF-8">
-  <title>승인 대기 중인 제품</title>
+  <title>관리자페이지</title>
+  <link rel="stylesheet" th:href="@{/css/home.css}">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body>
+<body onload="loadContent('/Admin/chart')">
 <!-- 좌우 -->
 <div class="container">
   <!-- 사이드바 -->
+  <a href="/Admin/chart">Home</a>
   <div class="sidebar">
     <ul>
-      <li><a href="#" onclick="loadContent('/Admin/nproduct')">가입자 현황</a></li>
+      <li><a href="#" onclick="loadContent('/Admin/member')">가입자 현황</a></li>
       <li><a href="#" onclick="loadContent('/Admin/product/N')">승인대기</a></li>
       <li><a href="#" onclick="loadContent('/Admin/product/O')">승인완료</a></li>
       <li><a href="#" onclick="loadContent('/Admin/product/NP')">승인거부</a></li>
@@ -26,15 +28,49 @@
     <p>관리자 페이지 메인</p>
   </div>
 </div>
+
 <script>
   function loadContent(url) {
       fetch(url)
       .then(response => response.text())
       .then(html => {
           document.getElementById('mainContent').innerHTML = html;
+          // HTML을 로드한 후 스크립트를 실행
+          executeLoadedScripts(html);
       })
       .catch(error => console.error('Error loading content:', error));
   }
+
+  function executeLoadedScripts(html) {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+      const scripts = doc.querySelectorAll('script');
+
+      // 먼저 Chart.js 라이브러리와 같은 외부 스크립트를 로드
+      const loadChartJs = () => {
+          return new Promise((resolve) => {
+              const chartScript = document.createElement('script');
+              chartScript.src = 'https://cdn.jsdelivr.net/npm/chart.js';
+              chartScript.onload = resolve;
+              document.body.appendChild(chartScript);
+          });
+      };
+
+      loadChartJs().then(() => {
+          scripts.forEach(script => {
+              const newScript = document.createElement('script');
+              newScript.type = 'text/javascript';
+              if (script.src) {
+                  newScript.src = script.src;
+                  newScript.onload = () => console.log(`${script.src} 로드 완료`);
+              } else {
+                  newScript.textContent = script.innerHTML;
+              }
+              document.body.appendChild(newScript);
+          });
+      });
+  }
 </script>
+
 </body>
 </html>

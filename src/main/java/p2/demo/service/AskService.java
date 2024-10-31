@@ -11,6 +11,7 @@ import p2.demo.repository.AnswerRepository;
 import p2.demo.repository.AskRepository;
 import p2.demo.repository.MemberRepository;
 import p2.demo.entity.AnswerEntity;
+import p2.demo.service.MemberService;
 
 import java.util.List;
 import java.time.LocalDateTime;
@@ -22,6 +23,7 @@ public class AskService {
     private final AskRepository askRepository;
     private final MemberRepository memberRepository;
     private final AnswerRepository answerRepository;
+    private final MemberService memberService;
 
     //질문저장
     public void saveAsk(AskDTO askDTO, MemberDTO loggedInUser) {
@@ -50,21 +52,22 @@ public class AskService {
     }
 
     //답장저장
-    public void submitAnswer(Long id, String aReturn) {
+    public void submitAnswer(Long id, String aReturn, Long memberId) {
         AnswerEntity answerEntity = new AnswerEntity();
         answerEntity.setAReturn(aReturn);
         answerEntity.setRTime(LocalDateTime.now());  // 답변 시간 설정
-
-        AskEntity askEntity = askRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid ID"));
+        MemberEntity memberEntity = memberService.findById(memberId);
+        answerEntity.setMember(memberEntity);
+        AskEntity askEntity = getAskById(id);
         answerEntity.setAsk(askEntity);
-
+        askEntity.setAnswers(true);  // 상태 변경
+        askRepository.save(askEntity);
         answerRepository.save(answerEntity);
     }
 
-    //질문 상태변경
-    public void setAskState(Long id){
-        AskEntity ask = askRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid product ID: " + id));;
-        ask.setAState("P");  // 상태 변경
-        askRepository.save(ask);
+
+    public AnswerEntity getAnswerByAskId(Long id){
+        return answerRepository.findByAskId(id);
     }
+
 }

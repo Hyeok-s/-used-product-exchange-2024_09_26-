@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>유저 상세 정보</title>
+</head>
+<body>
+<h1>유저 상세 정보</h1>
+    <p><strong>이메일:</strong> <span th:text="${member.memberEmail}">이메일</span></p>
+    <p><strong>이름:</strong> <span th:text="${member.memberName}">이름</span><a th:href="@{'/Admin/memberEdit/' + ${member.id} + '/name'}">수정하기</a></p>
+    <p><strong>비밀번호:</strong> <span th:text="${member.memberPassword}">비밀번호</span><a th:href="@{'/Admin/memberEdit/' + ${member.id} + '/password'}">수정하기</a></p>
+    <p><strong>생년월일:</strong> <span th:text="${#strings.substring(member.memberBir.toString(), 0, 4)} + '.' +
+              ${#strings.substring(member.memberBir.toString(), 4, 6)} + '.' +
+              ${#strings.substring(member.memberBir.toString(), 6, 8)}">생년월일</span></p>
+    <p><strong>전화번호:</strong> <span th:text="'0' + ${member.memberPhone}">전화번호</span><a th:href="@{'/Admin/memberEdit/' + ${member.id} + '/phone'}">수정하기</a></p>
+    <p><strong>가입시간:</strong> <span th:text="${#temporals.format(member.memberTime, 'yyyy년MM월dd일 HH시mm분')}">가입시간</span></p>
+    <p><strong>역할:</strong> <span th:text="${member.memberRole}">역할</span></p>
+
+
+    <form th:action="@{'/'}" method="post" style="display:inline;">
+        <button type="submit" onclick="return confirm('정말 삭제하시겠습니까?');">삭제하기</button>
+    </form>
+</body>
+</html>

@@ -21,16 +21,17 @@ public class AskEntity {
     private String aContent;
 
     @Column(nullable = false)
-    private LocalDateTime aTime;  // 문의 시간
+    private LocalDateTime aTime;
 
     @Column
-    private String aState;
+    private boolean answers;
     {
-        this.aState = "N";
+        this.answers=false;
     }
 
     @ManyToOne
     @JoinColumn(name = "member_id", referencedColumnName = "id")
     private MemberEntity member;  // 외래키로 members 테이블 참조
+
 
 }

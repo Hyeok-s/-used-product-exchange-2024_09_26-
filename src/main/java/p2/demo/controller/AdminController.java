@@ -1,13 +1,15 @@
 package p2.demo.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import p2.demo.entity.AskEntity;
-import p2.demo.entity.OrderEntity;
-import p2.demo.entity.ProductEntity;
+import p2.demo.dto.MemberDTO;
+import p2.demo.entity.*;
+import p2.demo.service.MemberService;
 import p2.demo.service.OrderService;
 import p2.demo.service.ProductService;
 import p2.demo.service.AskService;
@@ -16,6 +18,7 @@ import org.springframework.ui.Model;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,11 +29,89 @@ public class AdminController {
     private final ProductService productService;
     private final AskService askService;
     private final OrderService orderService;
+    private final MemberService memberService;
 
     //관리자 홈
     @GetMapping("/Admin/admin")
     public String adminHome(){
         return "admin";
+    }
+
+    //유저 현황
+    @GetMapping("/Admin/member")
+    public String adminMembewrForm(Model model){
+        List<MemberEntity> memberEntity = memberService.findAll();
+        model.addAttribute("member", memberEntity);
+        return "adminMember";
+    }
+
+    //테스트
+    @GetMapping("/Admin/chart")
+    public String showMemberStatistics(Model model) {
+        Map<String, Long> dailyRegistrations = memberService.getDailyRegistrations();
+        Map<String, Long> monthlyRegistrations = memberService.getMonthlyRegistrations();
+
+        model.addAttribute("dailyRegistrations", dailyRegistrations);
+        model.addAttribute("monthlyRegistrations", monthlyRegistrations);
+
+        return "adminChart";
+    }
+
+    //유저상세
+    @GetMapping("/Admin/memberDetail/{id}")
+    public String adminMemberDetail(@PathVariable("id") Long id, Model model){
+        MemberEntity memberEntity = memberService.findById(id);
+        model.addAttribute("member", memberEntity);
+        return "adminMemberDetail";
+    }
+
+    //유저수정
+    @GetMapping("/Admin/memberEdit/{id}/{element}")
+    public String adminMemberEdit(@PathVariable("id") Long id, @PathVariable("element") String element, Model model){
+        MemberEntity memberEntity = memberService.findById(id);
+        model.addAttribute("member", memberEntity);
+        model.addAttribute("element", element);
+        return "adminEdit";
+    }
+
+    // 비밀번호 유효성 검사
+    private boolean isValidPassword(String password) {
+        String passwordPattern = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[!@#$%^&*])[A-Za-z\\d!@#$%^&*]{9,15}$";
+        return password.matches(passwordPattern);
+    }
+
+    //유저수정 저장
+    @PostMapping("/Admin/memberEdit/{element}")
+    public String updateMemberInfo(@PathVariable("element") String element,
+                                   @RequestParam("id") Long id,
+                                   @RequestParam(required = false) String memberName,
+                                   @RequestParam(required = false) String memberPassword,
+                                   @RequestParam(required = false) Integer memberPhone,
+                                   Model model) {
+        MemberEntity member = memberService.findById(id);
+
+        switch (element) {
+            case "name":
+                member.setMemberName(memberName);
+                break;
+            case "password":
+                // 비밀번호 유효성 검사
+                if (!isValidPassword(memberPassword)) {
+                    model.addAttribute("error", "비밀번호는 9~15자, 숫자, 문자 및 특수문자를 포함해야 합니다.");
+                    return String.format("redirect:/Admin/memberEdit/%d/password", id); // 비밀번호 변경 페이지로 리다이렉트
+                }
+                member.setMemberPassword(memberPassword);
+                break;
+            case "phone":
+                member.setMemberPhone(memberPhone);
+                break;
+            default:
+                // 잘못된 element 처리
+                model.addAttribute("error", "잘못된 요청입니다.");
+                return "errorPage";
+        }
+        memberService.save(member);  // 변경된 내용을 저장
+        return String.format("redirect:/Admin/memberDetail/%d", id);
     }
 
     //상태에 따른 목록 표시
@@ -48,7 +129,7 @@ public class AdminController {
             model.addAttribute("orders", orderService.getOrdersByStatus(status));
         }
         else{
-            model.addAttribute("dorers", orderService.getCompletePurchaseHistory(status));
+            model.addAttribute("dorders", orderService.getCompletePurchaseHistory(status));
         }
         return "adminOrderProduct";
     }
@@ -72,8 +153,20 @@ public class AdminController {
     //id에 따른 주문 상세정보
     @GetMapping("/Admin/productOrderDetail/{productId}")
     public String orderProductDetail(@PathVariable("productId") Long productId, Model model) {
+        boolean check = true;
         OrderEntity order = orderService.getOrderByProductId(productId);
         model.addAttribute("order", order);
+        model.addAttribute("check", check);
+        return "adminOrderProductDetail";
+    }
+
+    //history상세정보
+    @GetMapping("/Admin/productHistoryDetail/{id}")
+    public String orderProductHisotryDetail(@PathVariable("id") Long id, Model model) {
+        boolean check = false;
+        ProductsHistoryEntity productsHistoryEntity = productService.findByHistoryId(id);
+        model.addAttribute("history", productsHistoryEntity);
+        model.addAttribute("check", check);
         return "adminOrderProductDetail";
     }
 
@@ -97,14 +190,16 @@ public class AdminController {
     public String getAskDetail(@PathVariable Long id, Model model) {
         AskEntity ask = askService.getAskById(id);
         model.addAttribute("ask", ask);
-        return "askDetail";  // askDetail.html로 이동
+        AnswerEntity answer = askService.getAnswerByAskId(id);
+        model.addAttribute("answer", answer);
+        return "askDetail";
     }
 
     //답변
     @PostMapping("/Admin/askDetail/{id}")
-    public String submitAnswer(@PathVariable Long id, @RequestParam("aReturn") String aReturn) {
-        askService.submitAnswer(id, aReturn);
-        askService.setAskState(id);
+    public String submitAnswer(@PathVariable Long id, @RequestParam("aReturn") String aReturn, HttpSession session) {
+        MemberDTO loggedInUserDTO = (MemberDTO) session.getAttribute("loggedInUser");
+        askService.submitAnswer(id, aReturn, loggedInUserDTO.getId());
         return "redirect:/Admin/askList";
     }
 

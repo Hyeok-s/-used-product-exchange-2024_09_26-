@@ -7,6 +7,7 @@
 <body>
 <table>
   <tbody>
+  <!-- 배송전 -->
   <tr th:each="order : ${orders}" th:if="${order.DeliveryStatus == 'w'}">
     <td>배송전</td>
     <td><a th:href="@{'/Admin/productOrderDetail/' + ${order.product.id}}"><img th:src="@{/uploads/} + ${order.product.pic}" alt="Product Image" width="100"></a></td>
@@ -31,16 +32,9 @@
   </tr>
 
   <!-- 구매완료 -->
-  <tr th:each="order : ${orders}" th:if="${order.DeliveryStatus == 'd'}">
-    <td>배송완료</td>
-    <td><a th:href="@{'/Admin/productOrderDetail/' + ${order.product.id}}"><img th:src="@{/uploads/} + ${order.product.pic}" alt="Product Image" width="100"></a></td>
-    <td th:text="${order.product.pName}">상품명</td>
-    <td th:text="${order.product.pPrice}">상품가격</td>
-  </tr>
-
   <tr th:each="dorder : ${dorders}">
-    <td>배송완료</td>
-    <td><img th:src="@{/uploads/} + ${dorder.pic}" alt="Product Image" width="100"></a></td>
+    <td>구매완료</td>
+    <td><a th:href="${dorder.isOrder} ? @{'/Admin/productOrderDetail/' + ${dorder.productId}} : @{'/Admin/productHistoryDetail/' + ${dorder.productId}}"><img th:src="@{/uploads/} + ${dorder.pic}" alt="Product Image" width="100"></a></td>
     <td th:text="${dorder.pName}">상품명</td>
     <td th:text="${dorder.pPrice}">상품가격</td>
   </tr>

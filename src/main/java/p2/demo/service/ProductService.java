@@ -217,7 +217,8 @@ public class ProductService {
                     order.getProduct().getPContent(),
                     order.getProduct().getId(),
                     order.getProduct().getPic(),
-                    status
+                    status,
+                    true
             ));
         }
 
@@ -229,7 +230,8 @@ public class ProductService {
                         history.getPContent(),
                         history.getId(),
                         history.getPic(),
-                        status
+                        status,
+                        false
                 ));
             }
         }
@@ -244,5 +246,8 @@ public class ProductService {
         productRepository.save(productEntity);
     }
 
-
+    //아이디로 가져오기
+    public ProductsHistoryEntity findByHistoryId(Long id) {
+        return productsHistoryRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid History ID: " + id));
+    }
 }
