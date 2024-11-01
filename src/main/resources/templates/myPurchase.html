@@ -7,8 +7,8 @@
     <th>확정 버튼</th>
   </tr>
   <tr th:each="order : ${orders}">
-    <td th:text="${order.pName}"></td>
-    <td th:text="${order.pPrice}"></td>
+    <td th:text="${order.product.pName}"></td>
+    <td th:text="${order.product.pPrice}"></td>
 
     <!-- 배송 완료 시에만 구매확정 버튼 표시 -->
     <td th:if="${order.deliveryStatus == 'f'}">
@@ -18,8 +18,11 @@
      <td th:if="${order.deliveryStatus == 'w'}">
        <a th:href="@{'/order/cancel/' + ${order.productId}}">상품취소</a>
      </td>
+    <td th:if="${order.deliveryStatus == 'd'}">
+      <form th:action="@{'/order/delete/' + ${order.id}}" method="post" style="display:inline;">
+        <button type="submit" onclick="return confirm('정말 삭제하시겠습니까?');">삭제하기</button>
+      </form>
+    </td>
 
-     <!-- 그 외의 상태는 버튼 비활성화 -->
-    <td th:if="${order.deliveryStatus != 'f' && order.deliveryStatus != 'w'}">
   </tr>
 </table>

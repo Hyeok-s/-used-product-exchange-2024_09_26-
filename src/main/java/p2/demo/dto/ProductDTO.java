@@ -16,4 +16,5 @@ public class ProductDTO {
     private Long member_id;
     private String pState;
     private Integer counts;
+    private boolean trash = false;
 }

@@ -13,9 +13,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import p2.demo.dto.ProductDTO;
 import p2.demo.entity.MemberEntity;
+import p2.demo.entity.OrderEntity;
 import p2.demo.entity.ProductEntity;
+import p2.demo.repository.OrderRepository;
 import p2.demo.repository.ProductRepository;
 import p2.demo.service.MemberService;
+import p2.demo.service.OrderService;
 import p2.demo.service.ProductService;
 import org.springframework.ui.Model;
 import p2.demo.dto.MemberDTO;
@@ -39,6 +42,8 @@ public class ProductController {
     private final WishlistService wishlistService;
     private final MemberService memberService;
     private final ProductRepository productRepository;
+    private final OrderService orderService;
+    private final OrderRepository orderRepository;
     private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
 
 
@@ -255,24 +260,34 @@ public class ProductController {
         }
     }
 
-    //제품삭제
-    @PostMapping("/product/delete/{id}")
-    public String deleteProduct(@PathVariable Long id, Model model) {
-
-        try {
-            productService.deleteProduct(id);
-            return "redirect:/"; // 삭제 후 메인 페이지로 리다이렉트
-        } catch (Exception e) {
-            model.addAttribute("errorMessage", "제품 삭제 중 오류가 발생했습니다.");
-            return "redirect:/product/" + id; // 오류 발생 시 제품 상세 페이지로 리다이렉트
-        }
-    }
 
     //에러 메세지
     @GetMapping("/error/unauthorized")
     public ResponseEntity<String> unauthorized() {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body("로그인 먼저 진행해주세요.");
+    }
+
+    //제품 삭제
+    @PostMapping("/product/delete/{id}")
+    public String deleteProduct(@PathVariable("id") Long id){
+        ProductEntity product = productService.findById(id);
+        if(product.getPState().equals("P")){
+            OrderEntity order = orderService.getOrderByProductId(id);
+            if(order.isTrash()){
+                orderRepository.delete(order);
+                productRepository.delete(product);
+                return "redirect:/demo/mypage";
+            }
+            else{
+                product.setTrash(true);
+                productRepository.save(product);
+            }
+        }
+        else{
+            productRepository.delete(product);
+        }
+        return "redirect:/demo/mypage";
     }
 
 }

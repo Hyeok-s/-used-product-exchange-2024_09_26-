@@ -25,7 +25,7 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
     List<ProductEntity> findBypState(String pState);
 
     //로그인한 id와 상태의 조회
-    List<ProductEntity> findBypStateAndMemberId(String state, Long memberId);
+    List<ProductEntity> findBypStateAndMemberIdAndTrash(String pState, Long memberId, boolean trash);
 
     List<ProductEntity> findByMemberId(Long memberId);
 

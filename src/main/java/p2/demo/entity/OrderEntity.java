@@ -31,6 +31,12 @@ public class OrderEntity {
     @Column(nullable = false)
     private String shoppingAddress;
 
+    @Column(nullable = false)
+    private boolean trash;
+    {
+        this.trash = false;
+    }
+
     @ManyToOne
     @JoinColumn(name = "member_id", referencedColumnName = "id")
     private MemberEntity buyer;  // users 테이블과의 관계

@@ -8,13 +8,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import p2.demo.dto.ProductDTO;
 import p2.demo.dto.MemberDTO;
-import p2.demo.dto.ProductHistoryDTO;
 import p2.demo.entity.ProductEntity;
 import p2.demo.entity.MemberEntity;
 import p2.demo.repository.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import p2.demo.entity.ProductsHistoryEntity;
 import p2.demo.entity.OrderEntity;
 
 import java.io.File;
@@ -34,8 +32,8 @@ public class ProductService {
     private final MemberRepository memberRepository;
     private final WishlistRepository wishlistRepository;
     private static final Logger logger = LoggerFactory.getLogger(ProductService.class);
-    private final ProductsHistoryRepository productsHistoryRepository;
     private final OrderRepository orderRepository;
+    private final OrderService orderService;
 
     @Value("${file.upload-dir}")
     private String uploadDir;
@@ -118,8 +116,8 @@ public class ProductService {
     }
 
     //로그인 id와 상태로 가져오기
-    public List<ProductEntity> getProductsByStatusAndMemberId(String state, Long memberId) {
-        return productRepository.findBypStateAndMemberId(state, memberId);
+    public List<ProductEntity> getProductsByStatusAndMemberIdAndFalse(String state, Long memberId) {
+        return productRepository.findBypStateAndMemberIdAndTrash(state, memberId, false);
     }
 
     //상품정보 업데이트
@@ -161,83 +159,6 @@ public class ProductService {
 
     }
 
-    // 제품 삭제 서비스
-    @Transactional
-    public void deleteProduct(Long id) {
-        ProductEntity product = productRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 제품을 찾을 수 없습니다."));
-
-        // 판매 완료('P') 상태일 때만 히스토리에 저장하고 파일 삭제 방지
-        if ("P".equals(product.getPState())) {
-            // 제품 정보를 ProductsHistoryEntity에 저장
-            ProductsHistoryEntity history = new ProductsHistoryEntity();
-            history.setPName(product.getPName());
-            history.setPContent(product.getPContent());
-            history.setPPrice(product.getPPrice());
-            history.setPic(product.getPic());
-            history.setMember(product.getMember());
-
-            // 히스토리 저장
-            productsHistoryRepository.save(history);
-
-        } else {
-            // 판매 완료가 아닌 경우에만 파일 삭제
-            String picPath = uploadDir + File.separator + product.getPic();
-            File picFile = new File(picPath);
-
-            if (picFile.exists()) {
-                picFile.delete(); // 기존 이미지 파일 삭제
-            }
-        }
-        orderRepository.deleteByProductId(id);
-        // 찜 목록에서 삭제 (존재할 경우)
-        wishlistRepository.deleteByProductId(id);
-        // 제품 삭제
-        productRepository.delete(product);
-    }
-
-
-    // 구매 내역 (삭제되지 않은 제품 + 삭제된 제품) 조회
-    public List<ProductHistoryDTO> getCompletePurchaseHistory(Long memberId, String status) {
-
-        List<OrderEntity> activeOrders = orderRepository.findByDeliveryStatusAndBuyerId(status, memberId);
-        List<ProductsHistoryEntity> deletedOrdersHistory = new ArrayList<>();
-
-        if(status.equals("d")){
-            deletedOrdersHistory= productsHistoryRepository.findByMemberId(memberId);
-        }
-        //하나의 리스트로 반환
-        List<ProductHistoryDTO> completeHistory = new ArrayList<>();
-
-        // OrderEntity OrderHistoryDTO 변환
-        for (OrderEntity order : activeOrders) {
-            completeHistory.add(new ProductHistoryDTO(
-                    order.getProduct().getPName(),
-                    order.getProduct().getPPrice(),
-                    order.getProduct().getPContent(),
-                    order.getProduct().getId(),
-                    order.getProduct().getPic(),
-                    status,
-                    true
-            ));
-        }
-
-        if(deletedOrdersHistory != null){
-            for (ProductsHistoryEntity history : deletedOrdersHistory) {
-                completeHistory.add(new ProductHistoryDTO(
-                        history.getPName(),
-                        history.getPPrice(),
-                        history.getPContent(),
-                        history.getId(),
-                        history.getPic(),
-                        status,
-                        false
-                ));
-            }
-        }
-
-        return completeHistory;
-    }
 
     // 조회수 추가
     public void incrementProductCount(Long id) {
@@ -246,8 +167,5 @@ public class ProductService {
         productRepository.save(productEntity);
     }
 
-    //아이디로 가져오기
-    public ProductsHistoryEntity findByHistoryId(Long id) {
-        return productsHistoryRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid History ID: " + id));
-    }
+
 }

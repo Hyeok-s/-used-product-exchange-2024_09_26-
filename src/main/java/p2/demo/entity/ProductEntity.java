@@ -56,6 +56,12 @@ public class ProductEntity {
         this.pState = "N";
     }
 
+    @Column
+    private boolean trash;
+    {
+        this.trash = false;
+    }
+
     // MemberEntity와 다대일 관계 설정
     @ManyToOne
     @JoinColumn(name = "member_id", referencedColumnName = "id")// 외래 키 설정

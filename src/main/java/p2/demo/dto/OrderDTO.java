@@ -13,4 +13,5 @@ public class OrderDTO {
     private String shoppingAddress;
     private Long buyerId;
     private Long productId;
+    private boolean trash = false;
 }

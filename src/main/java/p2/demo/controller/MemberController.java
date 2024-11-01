@@ -121,4 +121,15 @@ public class MemberController {
         return "redirect:/demo/mypage";
     }
 
+    //회원탈퇴 폼
+    @GetMapping("/demo/withdraw")
+    public String withDrawForm(HttpSession session, Model model){
+        MemberDTO loggedInUserDTO = (MemberDTO) session.getAttribute("loggedInUser");
+        if (loggedInUserDTO != null){
+            model.addAttribute("memberDTO", loggedInUserDTO);
+        }
+        return "memberWithDraw";
+    }
+
+
 }

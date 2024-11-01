@@ -15,6 +15,8 @@ import p2.demo.dto.MemberDTO;
 import p2.demo.entity.AddressEntity;
 import p2.demo.entity.OrderEntity;
 import p2.demo.entity.ProductEntity;
+import p2.demo.repository.OrderRepository;
+import p2.demo.repository.ProductRepository;
 import p2.demo.service.AddressService;
 import p2.demo.service.ProductService;
 import p2.demo.service.OrderService;
@@ -29,6 +31,8 @@ public class OrderController {
     private final OrderService orderService;
     private final ProductService productService;
     private final AddressService addressService;
+    private final OrderRepository orderRepository;
+    private final ProductRepository productRepository;
 
     // 제품 ID를 받아서 주문 폼을 표시
     @GetMapping("/order/{id}")
@@ -82,6 +86,20 @@ public class OrderController {
         productService.updateProductState(productId, "O");
         return "redirect:/demo/mypage";
     }
-
-
+    //주문삭제
+    @PostMapping("/order/delete/{id}")
+    public String deleteOrder(@PathVariable("id") Long id){
+        OrderEntity order = orderService.findById(id);
+        if(order.getProduct().isTrash()){
+            ProductEntity product = order.getProduct();
+            orderRepository.delete(order);
+            productRepository.delete(product);
+            return "redirect:/demo/mypage";
+        }
+        else {
+            order.setTrash(true);
+            orderRepository.save(order);
+        }
+        return "redirect:/demo/mypage";
+    }
 }

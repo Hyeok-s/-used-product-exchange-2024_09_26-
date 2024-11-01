@@ -45,7 +45,7 @@ public class AdminController {
         return "adminMember";
     }
 
-    //테스트
+    //차트
     @GetMapping("/Admin/chart")
     public String showMemberStatistics(Model model) {
         Map<String, Long> dailyRegistrations = memberService.getDailyRegistrations();
@@ -116,7 +116,7 @@ public class AdminController {
 
     //상태에 따른 목록 표시
     @GetMapping("/Admin/product/{state}")
-    public String getAdminForm(@PathVariable("state") String state, Model model){
+    public String getProductAdminForm(@PathVariable("state") String state, Model model){
         model.addAttribute("products", productService.getProductsByState(state));
         return "adminProduct";
     }
@@ -124,12 +124,14 @@ public class AdminController {
 
     //주문상태에 따른 목록 표시
     @GetMapping("/Admin/order/{status}")
-    public String getAdminOrderForm(@PathVariable("status") String status, Model model){
+    public String getOrderAdminForm(@PathVariable("status") String status, Model model){
         if(status.equals("a")){
-            model.addAttribute("orders", orderService.getOrdersByStatus(status));
+            List<OrderEntity> orders = orderService.getOrdersByStatus();
+            model.addAttribute("orders", orders);
         }
         else{
-            model.addAttribute("dorders", orderService.getCompletePurchaseHistory(status));
+            List<OrderEntity> orders = orderService.getOrderByStatus(status);
+            model.addAttribute("orders", orders);
         }
         return "adminOrderProduct";
     }
@@ -153,22 +155,11 @@ public class AdminController {
     //id에 따른 주문 상세정보
     @GetMapping("/Admin/productOrderDetail/{productId}")
     public String orderProductDetail(@PathVariable("productId") Long productId, Model model) {
-        boolean check = true;
         OrderEntity order = orderService.getOrderByProductId(productId);
         model.addAttribute("order", order);
-        model.addAttribute("check", check);
         return "adminOrderProductDetail";
     }
 
-    //history상세정보
-    @GetMapping("/Admin/productHistoryDetail/{id}")
-    public String orderProductHisotryDetail(@PathVariable("id") Long id, Model model) {
-        boolean check = false;
-        ProductsHistoryEntity productsHistoryEntity = productService.findByHistoryId(id);
-        model.addAttribute("history", productsHistoryEntity);
-        model.addAttribute("check", check);
-        return "adminOrderProductDetail";
-    }
 
     //상태변경
     @PostMapping("/Admin/order/{orderId}/{status}")

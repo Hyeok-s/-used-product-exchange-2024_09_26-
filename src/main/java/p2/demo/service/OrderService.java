@@ -1,15 +1,10 @@
 package p2.demo.service;
 
 import lombok.RequiredArgsConstructor;
-import org.hibernate.query.Order;
+import org.springframework.beans.factory.annotation.Value;
 import p2.demo.dto.OrderDTO;
-import p2.demo.dto.ProductHistoryDTO;
 import p2.demo.entity.*;
-import p2.demo.repository.AddressRepository;
-import p2.demo.repository.MemberRepository;
-import p2.demo.repository.OrderRepository;
-import p2.demo.repository.ProductRepository;
-import p2.demo.repository.ProductsHistoryRepository;
+import p2.demo.repository.*;
 
 import org.springframework.stereotype.Service;
 
@@ -23,7 +18,9 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final MemberRepository memberRepository;
     private final ProductRepository productRepository;
-    private final ProductsHistoryRepository productsHistoryRepository;
+
+    @Value("${file.upload-dir}")
+    private String uploadDir;
 
     // 주문을 저장하는 메서드
     public void saveOrder(OrderDTO orderDTO) {
@@ -46,8 +43,8 @@ public class OrderService {
     }
 
     //로그인 id와 상태로 가져오기
-    public List<OrderEntity> getOrdersByStatusAndMemberId(String state, Long memberId) {
-        return orderRepository.findByDeliveryStatusAndBuyerId(state, memberId);
+    public List<OrderEntity> getOrdersByStatusAndMemberIdAndFalse(String state, Long memberId) {
+        return orderRepository.findByDeliveryStatusAndBuyerIdAndTrash(state, memberId, false);
     }
 
     public void updateOrderDeliveryStatus(Long productId, String deliveryStatus){
@@ -66,7 +63,7 @@ public class OrderService {
 
 
     //조건부 만족하는 상태 찾기
-    public List<OrderEntity> getOrdersByStatus(String status) {
+    public List<OrderEntity> getOrdersByStatus() {
         return orderRepository.findByDeliveryStatusIn(List.of("w", "ing", "f"));
     }
 
@@ -82,39 +79,9 @@ public class OrderService {
         orderRepository.save(order);
     }
 
-    // 구매 내역 (삭제되지 않은 제품 + 삭제된 제품) 조회
-    public List<ProductHistoryDTO> getCompletePurchaseHistory(String status) {
-
-        List<OrderEntity> activeOrders = orderRepository.findByDeliveryStatus(status);
-        List<ProductsHistoryEntity> deletedOrdersHistory = new ArrayList<>();
-        deletedOrdersHistory= productsHistoryRepository.findAll();
-
-        //하나의 리스트로 반환
-        List<ProductHistoryDTO> completeHistory = new ArrayList<>();
-
-        // OrderEntity OrderHistoryDTO 변환
-        for (OrderEntity order : activeOrders) {
-            completeHistory.add(new ProductHistoryDTO(
-                    order.getProduct().getPName(),
-                    order.getProduct().getPPrice(),
-                    order.getProduct().getPContent(),
-                    order.getProduct().getId(),
-                    order.getProduct().getPic(),
-                    status,
-                    true
-            ));
-        }
-        for (ProductsHistoryEntity history : deletedOrdersHistory) {
-            completeHistory.add(new ProductHistoryDTO(
-                    history.getPName(),
-                    history.getPPrice(),
-                    history.getPContent(),
-                    history.getId(),
-                    history.getPic(),
-                    status,
-                    false
-            ));
-        }
-        return completeHistory;
+    //배송상태에 따른 orderEntity
+    public List<OrderEntity> getOrderByStatus(String status){
+        return orderRepository.findByDeliveryStatus(status);
     }
+
 }

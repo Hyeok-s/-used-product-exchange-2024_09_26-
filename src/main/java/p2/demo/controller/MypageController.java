@@ -2,22 +2,16 @@ package p2.demo.controller;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import p2.demo.dto.AddressDTO;
 import p2.demo.dto.MemberDTO;
-import p2.demo.dto.ProductHistoryDTO;
 import p2.demo.entity.MemberEntity;
 import p2.demo.entity.AddressEntity;
 import p2.demo.entity.OrderEntity;
 import p2.demo.entity.ProductEntity;
-import p2.demo.repository.AddressRepository;
 import p2.demo.service.AddressService;
-import p2.demo.service.MemberService;
-import p2.demo.repository.MemberRepository;
-import org.springframework.http.HttpStatus;
 import p2.demo.service.OrderService;
 import p2.demo.service.ProductService;
 
@@ -98,19 +92,19 @@ public class MypageController {
     public String getProductsByStatus(@PathVariable("status") String status, Model model, HttpSession session) {
         MemberDTO loggedInUserDTO = (MemberDTO) session.getAttribute("loggedInUser");
         Long id = loggedInUserDTO.getId();
-        List<ProductEntity> products = productService.getProductsByStatusAndMemberId(status, id);
+        List<ProductEntity> products = productService.getProductsByStatusAndMemberIdAndFalse(status, id);
         model.addAttribute("products", products);
         return "myProduct";
     }
 
     // 구매 게시물(배송 상태) 리스트 페이지
-    @GetMapping("/mypage/order/{status}")
-    public String getPurchasesByStatus(@PathVariable("status") String status, Model model, HttpSession session) {
+    @GetMapping("mypage/order/{status}")
+    public String getOrdersByStatus(@PathVariable("status") String status, Model model, HttpSession session) {
         MemberDTO loggedInUserDTO = (MemberDTO) session.getAttribute("loggedInUser");
         Long id = loggedInUserDTO.getId();
-        //주문,삭제 리스트 합산해서 돌려주기
-        List<ProductHistoryDTO> completeHistory = productService.getCompletePurchaseHistory(id, status);
-        model.addAttribute("orders", completeHistory);
+        List<OrderEntity> orders = orderService.getOrdersByStatusAndMemberIdAndFalse(status, id);
+        model.addAttribute("orders", orders);
         return "myPurchase";
     }
+
 }
