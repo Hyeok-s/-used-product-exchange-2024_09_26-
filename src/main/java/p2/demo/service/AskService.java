@@ -1,5 +1,6 @@
 package p2.demo.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import p2.demo.dto.AskDTO;
@@ -65,9 +66,23 @@ public class AskService {
         answerRepository.save(answerEntity);
     }
 
-
     public AnswerEntity getAnswerByAskId(Long id){
         return answerRepository.findByAskId(id);
     }
 
+    // 1. memberId로 모든 질문 조회
+    public List<AskEntity> findByMemberId(Long memberId) {
+        return askRepository.findByMemberId(memberId);
+    }
+
+    // askId 목록으로 삭제
+    @Transactional
+    public void deleteByAskIds(List<Long> askIds) {
+        answerRepository.deleteByAskIdIn(askIds);
+    }
+
+    public void deleteByAskMemberId(Long memberId) {
+        // memberId에 해당하는 모든 주소 데이터를 삭제
+        askRepository.deleteByMemberId(memberId);
+    }
 }

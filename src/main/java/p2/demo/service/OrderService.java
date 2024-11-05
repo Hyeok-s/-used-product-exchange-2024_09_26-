@@ -1,5 +1,6 @@
 package p2.demo.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import p2.demo.dto.OrderDTO;
@@ -9,6 +10,7 @@ import p2.demo.repository.*;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -84,4 +86,14 @@ public class OrderService {
         return orderRepository.findByDeliveryStatus(status);
     }
 
+    public boolean hasOrdersWithRestrictedStatus(Long memberId) {
+        List<OrderEntity> orders = orderRepository.findByBuyerIdAndDeliveryStatusIn(memberId, Arrays.asList("w", "ing", "f"));
+        return !orders.isEmpty();
+    }
+
+    @Transactional
+    public void updateMemberIdToNull(Long memberId) {
+        // orders의 memberId를 null로 업데이트
+        orderRepository.updateBuyerIdToNull(memberId);
+    }
 }

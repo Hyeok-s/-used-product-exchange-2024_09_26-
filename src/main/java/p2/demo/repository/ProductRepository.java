@@ -27,7 +27,11 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
     //로그인한 id와 상태의 조회
     List<ProductEntity> findBypStateAndMemberIdAndTrash(String pState, Long memberId, boolean trash);
 
-    List<ProductEntity> findByMemberId(Long memberId);
+    List<ProductEntity> findBypStateAndMemberId(String pState, Long memberId);
 
+    @Modifying
+    @Transactional
+    @Query("UPDATE ProductEntity p SET p.member = null WHERE p.member.id = :memberId")
+    void updateMemberIdToNull(@Param("memberId") Long memberId);
 }
 

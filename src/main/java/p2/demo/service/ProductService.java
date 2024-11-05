@@ -167,5 +167,13 @@ public class ProductService {
         productRepository.save(productEntity);
     }
 
-
+    public boolean hasProductsWithStateC(Long memberId) {
+        List<ProductEntity> products = productRepository.findBypStateAndMemberId("C", memberId);
+        return !products.isEmpty();
+    }
+    @Transactional
+    public void updateMemberIdToNull(Long memberId) {
+        // products의 memberId를 null로 업데이트
+        productRepository.updateMemberIdToNull(memberId);
+    }
 }

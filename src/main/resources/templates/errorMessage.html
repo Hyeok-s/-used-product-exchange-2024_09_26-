@@ -1,10 +1,16 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
+  <title>Error</title>
 </head>
-<script>
-  alert("로그인 먼저 진행해주세요.");
-  window.location.href = "/demo/login";
+<body>
+<script th:inline="javascript">
+  const message = /*[[${message}]]*/ '오류 메시지';
+  const redirectUrl = /*[[${redirectUrl}]]*/ '/';
+
+  alert(message);
+  window.location.href = redirectUrl;
 </script>
+</body>
 </html>

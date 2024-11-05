@@ -19,7 +19,6 @@ public class WishlistService {
         return wishlist != null && wishlist.isLiked();
     }
 
-
     // 찜하기 토글 (찜하기 추가 또는 해제)
     public void toggleWishlist(MemberEntity member, ProductEntity product) {
         WishlistEntity wishlist = wishlistRepository.findByMemberIdAndProductId(member.getId(), product.getId());
@@ -34,5 +33,10 @@ public class WishlistService {
             newWishlist.setLiked(true);  // 처음에는 찜한 상태로 저장
             wishlistRepository.save(newWishlist);
         }
+    }
+
+    public void deleteByMemberId(Long memberId) {
+        // memberId에 해당하는 모든 주소 데이터를 삭제
+        wishlistRepository.deleteByMemberId(memberId);
     }
 }

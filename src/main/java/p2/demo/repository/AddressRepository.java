@@ -10,4 +10,5 @@ import java.util.List;
 public interface AddressRepository extends JpaRepository<AddressEntity, Long> {
     List<AddressEntity> findByMemberId(Long memberId);
 
+    void deleteByMemberId(Long memberId);
 }

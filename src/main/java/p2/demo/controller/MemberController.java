@@ -1,26 +1,31 @@
 package p2.demo.controller;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import p2.demo.dto.AddressDTO;
 import p2.demo.dto.MemberDTO;
 import p2.demo.entity.MemberEntity;
-import p2.demo.entity.AddressEntity;
+import p2.demo.entity.AskEntity;
+import p2.demo.entity.OrderEntity;
 import p2.demo.entity.ProductEntity;
 import p2.demo.repository.AddressRepository;
-import p2.demo.service.AddressService;
-import p2.demo.service.MemberService;
+import p2.demo.repository.OrderRepository;
+import p2.demo.service.*;
 import p2.demo.repository.MemberRepository;
+
 
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
@@ -29,6 +34,11 @@ public class MemberController {
     private final MemberService memberService;
     private final MemberRepository memberRepository;
     private final AddressService addressService;
+    private final OrderRepository orderRepository;
+    private final ProductService productService;
+    private final OrderService orderService;
+    private final WishlistService wishlistService;
+    private final AskService askService;
 
     //회원가입폼
     @GetMapping("/demo/signup")
@@ -129,6 +139,39 @@ public class MemberController {
             model.addAttribute("memberDTO", loggedInUserDTO);
         }
         return "memberWithDraw";
+    }
+
+    @Transactional
+    @PostMapping("/demo/delete/{id}")
+    public String deleteProduct(@PathVariable("id") Long memberId) {
+
+        if (productService.hasProductsWithStateC(memberId)) {
+            return "redirect:/demo/errorMessage/2";  // 탈퇴 실패 시 리다이렉트할 경로
+        }
+        if (orderService.hasOrdersWithRestrictedStatus(memberId)) {
+            return "redirect:/demo/errorMessage/3";  // 탈퇴 실패 시 리다이렉트할 경로
+        }
+        wishlistService.deleteByMemberId(memberId);
+        addressService.deleteByMemberId(memberId);
+        // 1. ask에서 memberId로 모든 질문 조회
+        List<AskEntity> asks = askService.findByMemberId(memberId);
+
+        // 2. askId 리스트 추출
+        List<Long> askIds = asks.stream()
+                .map(AskEntity::getId) // askId 가져오기
+                .collect(Collectors.toList());
+
+        // 3. answers에서 해당 askId로 답변 삭제
+        if (!askIds.isEmpty()) {
+            askService.deleteByAskIds(askIds);
+        }
+        askService.deleteByAskMemberId(memberId);
+        MemberEntity member = memberService.findById(memberId);
+        productService.updateMemberIdToNull(memberId);
+        orderService.updateMemberIdToNull(memberId);
+        memberRepository.delete(member);
+
+        return "redirect:/demo/mypage";
     }
 
 

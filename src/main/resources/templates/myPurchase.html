@@ -9,14 +9,13 @@
   <tr th:each="order : ${orders}">
     <td th:text="${order.product.pName}"></td>
     <td th:text="${order.product.pPrice}"></td>
-
     <!-- 배송 완료 시에만 구매확정 버튼 표시 -->
     <td th:if="${order.deliveryStatus == 'f'}">
-      <a th:href="@{'/order/finish/' + ${order.productId}}">구매확정</a>
+      <a th:href="@{'/order/finish/' + ${order.product.id}}">구매확정</a>
     </td>
     <!-- 배송 전일 때 상품 취소 버튼 표시 -->
      <td th:if="${order.deliveryStatus == 'w'}">
-       <a th:href="@{'/order/cancel/' + ${order.productId}}">상품취소</a>
+       <a th:href="@{'/order/cancel/' + ${order.product.id}}">상품취소</a>
      </td>
     <td th:if="${order.deliveryStatus == 'd'}">
       <form th:action="@{'/order/delete/' + ${order.id}}" method="post" style="display:inline;">

@@ -9,7 +9,8 @@
 
 
 <img th:src="@{/uploads/} + ${order.product.pic}" alt="Product Image" width="200">
-<p><strong>판매자:</strong> <span th:text="${order.buyer.memberEmail}">이메일</span></p>
+<p><strong>판매자:</strong> <span th:text="${order.product.member.memberEmail}">이메일</span></p>
+<p><strong>구매자:</strong> <span th:text="${order.buyer.memberEmail}">이메일</span></p>
 <p><strong>상품명:</strong> <span th:text="${order.product.pName}">상품명</span></p>
 <p><strong>가격:</strong> <span th:text="${order.product.pPrice}">상품가격</span></p>
 <p><strong>대분류:</strong> <span th:text="${order.product.pType1}">대분류</span></p>
