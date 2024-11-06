@@ -122,12 +122,16 @@ public class MemberController {
 
     // 비밀번호 수정 처리
     @PostMapping("/demo/edit-password")
-    public String updatePassword(@RequestParam("memberPassword") String newPassword, HttpSession session) {
+    public String updatePassword(@RequestParam("memberPassword") String memberPassword, HttpSession session) {
         MemberDTO loggedInUserDTO = (MemberDTO) session.getAttribute("loggedInUser");
-        if (loggedInUserDTO != null) {
-            memberService.updatePassword(loggedInUserDTO.getId(), newPassword);
-            session.setAttribute("loggedInUser", loggedInUserDTO);  // 세션 갱신
+        MemberEntity member = memberService.findById(loggedInUserDTO.getId());
+        if (!isValidPassword(memberPassword)) {
+            return "redirect:/demo/errorMessage/4";
         }
+        member.setMemberPassword(memberPassword);
+        memberService.save(member);
+        session.setAttribute("loggedInUser", loggedInUserDTO);
+
         return "redirect:/demo/mypage";
     }
 
@@ -141,6 +145,7 @@ public class MemberController {
         return "memberWithDraw";
     }
 
+    //회원탈퇴
     @Transactional
     @PostMapping("/demo/delete/{id}")
     public String deleteProduct(@PathVariable("id") Long memberId) {

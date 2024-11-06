@@ -46,6 +46,7 @@ public class AskService {
         return askRepository.findAll();
     }
 
+
     // 특정 문의를 ID로 조회하는 메서드
     public AskEntity getAskById(Long id) {
         return askRepository.findById(id)
@@ -66,6 +67,7 @@ public class AskService {
         answerRepository.save(answerEntity);
     }
 
+    //askId로 답변확인
     public AnswerEntity getAnswerByAskId(Long id){
         return answerRepository.findByAskId(id);
     }
@@ -81,6 +83,7 @@ public class AskService {
         answerRepository.deleteByAskIdIn(askIds);
     }
 
+    //memberId에 해당하는ask 삭제
     public void deleteByAskMemberId(Long memberId) {
         // memberId에 해당하는 모든 주소 데이터를 삭제
         askRepository.deleteByMemberId(memberId);

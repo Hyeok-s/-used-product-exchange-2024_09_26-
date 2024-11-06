@@ -3,12 +3,55 @@
 <head>
   <meta charset="UTF-8">
   <title>제품 상세 정보</title>
+  <style>
+    .slider {
+      position: relative;
+      width: 200px;
+      height: 200px;
+      overflow: hidden;
+    }
+    .slides {
+      display: flex;
+      transition: transform 0.5s ease-in-out;
+    }
+    .slides img {
+      width: 200px;
+      height: 200px;
+    }
+    .arrow {
+      position: absolute;
+      top: 50%;
+      width: 30px;
+      height: 30px;
+      background-color: rgba(0, 0, 0, 0.5);
+      color: white;
+      border: none;
+      cursor: pointer;
+      transform: translateY(-50%);
+      display: none;
+    }
+    .arrow.left {
+      left: 0;
+    }
+    .arrow.right {
+      right: 0;
+    }
+  </style>
 </head>
 <body>
 <h1>제품 상세 정보</h1>
 
+<div class="slider">
+  <div class="slides" id="slides">
+    <img th:src="@{/uploads/} + ${product.pic}" alt="Product Image">
+    <img th:src="@{/uploads/} + ${product.pic1}" alt="Product Image" th:if="${product.pic1}">
+    <img th:src="@{/uploads/} + ${product.pic2}" alt="Product Image" th:if="${product.pic2}">
+    <!-- 추가 이미지가 있다면 계속 추가 -->
+  </div>
+  <button class="arrow left" id="leftArrow" onclick="changeSlide(-1)">&#10094;</button>
+  <button class="arrow right" id="rightArrow" onclick="changeSlide(1)">&#10095;</button>
+</div>
 
-<img th:src="@{/uploads/} + ${product.pic}" alt="Product Image" width="200">
 <p><strong>상품명:</strong> <span th:text="${product.pName}">상품명</span></p>
 <p><strong>가격:</strong> <span th:text="${product.pPrice}">상품가격</span></p>
 <p><strong>설명:</strong> <span th:text="${product.pContent}">상품설명</span></p>
@@ -26,12 +69,25 @@
   <a th:href="@{'/order/' + ${product.id}}">구매하기</a>
 </div>
 
-</body>
 <script>
-  function deleteProduct(productId) {
-    if (confirm('정말 삭제하시겠습니까?')) {
-      document.getElementById('delete-form').submit();
-    }
+  let currentSlide = 0;
+
+  function changeSlide(direction) {
+    const slides = document.getElementById('slides');
+    const totalSlides = slides.children.length;
+    currentSlide = (currentSlide + direction + totalSlides) % totalSlides;
+    slides.style.transform = `translateX(-${currentSlide * 200}px)`;
   }
+
+  // Show arrows only if there is more than one image
+  window.onload = function() {
+    const totalSlides = document.getElementById('slides').children.length;
+    if (totalSlides > 1) {
+      document.getElementById('leftArrow').style.display = 'block';
+      document.getElementById('rightArrow').style.display = 'block';
+    }
+  };
 </script>
+
+</body>
 </html>

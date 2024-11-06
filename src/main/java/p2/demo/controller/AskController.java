@@ -4,12 +4,15 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.*;
+import p2.demo.dto.AnswerDTO;
 import p2.demo.dto.AskDTO;
 import p2.demo.dto.MemberDTO;
+import p2.demo.entity.AnswerEntity;
+import p2.demo.entity.AskEntity;
 import p2.demo.service.AskService;
+
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -23,8 +26,17 @@ public class AskController {
         if(loggedInUser == null){
             return "redirect:/error/unauthorized";
         }
+        List<AskEntity> askEntity = askService.findByMemberId(loggedInUser.getId());
+        model.addAttribute("asks", askEntity);
         model.addAttribute("askDTO", new AskDTO());
         return "ask";
+    }
+
+    @GetMapping("/admin/answer/{askId}")
+    @ResponseBody
+    public AnswerEntity getAnswer(@PathVariable Long askId) {
+        AnswerEntity answer = askService.getAnswerByAskId(askId);
+        return answer;
     }
 
     @PostMapping("/ask/submit")

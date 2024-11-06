@@ -166,11 +166,25 @@
     <option value="">먼저 상위 카테고리를 선택하세요</option>
   </select>
 
-  <label for="pic">사진 업로드:</label>
+  <label for="pic">대표 업로드:</label>
   <div class="file-input">
     <i class="fas fa-upload"></i>
     <span>이미지를 선택하세요</span>
     <input type="file" id="pic" name="pic" accept="image/*">
+  </div>
+
+  <label for="pic1">추가 사진 1:</label>
+  <div class="file-input">
+    <i class="fas fa-upload"></i>
+    <span>이미지를 선택하세요</span>
+    <input type="file" id="pic1" name="pic1" accept="image/*">
+  </div>
+
+  <label for="pic2">추가 사진 2:</label>
+  <div class="file-input">
+    <i class="fas fa-upload"></i>
+    <span>이미지를 선택하세요</span>
+    <input type="file" id="pic2" name="pic2" accept="image/*">
   </div>
 
   <button type="submit">상품 등록</button>
@@ -228,10 +242,20 @@
     }
   });
 
-  // 파일 선택 시 파일명 표시
+// 허용되는 확장자 리스트
+  const allowedExtensions = ['png', 'jpeg', 'jpg'];
+
   $('.file-input input[type="file"]').change(function(e) {
     const fileName = e.target.files[0].name;
-    $(this).siblings('span').text(fileName);
+    const fileExtension = fileName.split('.').pop().toLowerCase();
+
+    if (!allowedExtensions.includes(fileExtension)) {
+      alert('허용되지 않은 파일 형식입니다. .png, .jpeg, .jpg 파일만 업로드 가능합니다.');
+      $(this).val(''); // 파일 입력 필드 초기화
+      $(this).siblings('span').text('이미지를 선택하세요'); // 기본 메시지로 복원
+    } else {
+      $(this).siblings('span').text(fileName);
+    }
   });
 </script>
 

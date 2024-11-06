@@ -30,6 +30,10 @@ public class HomeController {
                 message = "구매중인 상품이 있습니다.";
                 redirectUrl = "/demo/mypage";
                 break;
+            case 4:
+                message = "비밀번호는 9~15자, 숫자, 문자 및 특수문자를 포함해야 합니다.";
+                redirectUrl = "/demo/edit-password";
+                break;
             default:
                 message = "알 수 없는 오류가 발생했습니다.";
                 redirectUrl = "/demo/home";

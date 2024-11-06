@@ -41,6 +41,12 @@ public class ProductEntity {
     private String pic;
 
     @Column
+    private String pic1;
+
+    @Column
+    private String pic2;
+
+    @Column
     @NonNull
     private LocalDateTime pTime;
 

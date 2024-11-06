@@ -39,7 +39,8 @@ public class ProductService {
     private String uploadDir;
 
     //새로운 상품 저장
-    public void saveProduct(ProductDTO productDTO, MultipartFile pic, HttpSession session) throws IOException {
+    @Transactional
+    public void saveProduct(ProductDTO productDTO, MultipartFile pic, MultipartFile pic1, MultipartFile pic2, HttpSession session) throws IOException {
         MemberDTO loggedInUser = (MemberDTO) session.getAttribute("loggedInUser");
 
         if (loggedInUser != null) {
@@ -60,17 +61,25 @@ public class ProductService {
 
                 // 랜덤한 이름으로 파일 저장
                 if (pic != null && !pic.isEmpty()) {
-                    String fileName = UUID.randomUUID() + "_" + pic.getOriginalFilename();
-                    Path savePath = Paths.get(uploadDir + File.separator + fileName);
-
-                    // 디렉토리 없으면 생성
-                    if (!Files.exists(Paths.get(uploadDir))) {
-                        Files.createDirectories(Paths.get(uploadDir));
+                    String fileName = saveFile(pic);
+                    productEntity.setPic(fileName);
+                }
+                else {
+                    String fileName = "nothing.png";
+                    Path defaultImagePath = Paths.get(uploadDir + File.separator + fileName);
+                    // 기본 이미지가 없으면 예외 처리
+                    if (!Files.exists(defaultImagePath)) {
+                        throw new IOException("Default image 'nothing.png' not found in upload directory.");
                     }
-
-                    pic.transferTo(savePath.toFile());
-
-                    productEntity.setPic(fileName);  // 파일 이름 저장
+                    productEntity.setPic(fileName);
+                }
+                if (pic1 != null && !pic1.isEmpty()) {
+                    String fileName1 = saveFile(pic1);
+                    productEntity.setPic1(fileName1);
+                }
+                if (pic2 != null && !pic2.isEmpty()) {
+                    String fileName2 = saveFile(pic2);
+                    productEntity.setPic2(fileName2);
                 }
 
                 productRepository.save(productEntity);
@@ -82,6 +91,19 @@ public class ProductService {
             logger.warn("User is not logged in.");
             throw new IllegalStateException("User is not logged in.");
         }
+    }
+
+    //사진 파일 저장
+    private String saveFile(MultipartFile file) throws IOException {
+        String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+        Path savePath = Paths.get(uploadDir + File.separator + fileName);
+
+        if (!Files.exists(savePath.getParent())) {
+            Files.createDirectories(savePath.getParent());
+        }
+
+        file.transferTo(savePath.toFile());
+        return fileName;
     }
 
     //상품 종류 가져오기

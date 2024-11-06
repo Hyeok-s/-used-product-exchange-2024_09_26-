@@ -1,13 +1,127 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 <head>
-  <meta charset="UTF-8">
-  <title>문의하기</title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Google Fonts -->
+  <link href='http://fonts.googleapis.com/css?family=Titillium+Web:400,200,300,700,600' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Roboto+Condensed:400,700,300' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Raleway:400,100' rel='stylesheet' type='text/css'>
+
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+  <!-- css -->
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+  <style>
+    .details {
+      display: none;
+      background-color: #f9f9f9;
+      border-top: 1px solid #ddd;
+    }
+  </style>
 </head>
 <body>
+<!-- 상단 바 -->
+<div class="header-area">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8">
+        <div class="user-menu">
+          <ul>
+            <!-- 로그인 여부에 따라 다른 버튼 표시 -->
+            <li th:if="${session.loggedInUser == null}">
+              <a href="/demo/login"><i class="fa fa-user"></i>로그인</a>
+            </li>
+            <li th:if="${session.loggedInUser == null}">
+              <a href="/demo/signup"><i class="fa fa-heart"></i>회원가입</a>
+            </li>
+            <li th:if="${session.loggedInUser != null}">
+              <a href="/demo/mypage"><i class="fa fa-user"></i>마이페이지</a>
+            </li>
+            <li th:if="${session.loggedInUser != null}">
+              <a href="/demo/logout"><i class="fa fa-user"></i>로그아웃</a>
+            </li>
+            <li th:if="${session.loggedInUser != null and session.loggedInUser.memberRole == 'admin'}">
+              <a href="/Admin/admin"><i class="fa fa-user"></i>관리자페이지</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- 상단 밑 사진 등 바 -->
+<div class="site-branding-area">
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="logo">
+          <h1><a href="/">T<span>est</span></a></h1>
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="shopping-item">
+          <a href="/product/upload"><i class="fa fa-pencil-square-o">-upload</i> <span class="product-count">0</span></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- 네비게이션 바 -->
+<div class="mainmenu-area">
+  <div class="container">
+    <div class="row">
+      <div class="navbar-collapse collapse">
+        <ul class="nav navbar-nav">
+          <li><a href="/">상품확인</a></li>
+          <li><a href="/product/heart">내찜상품</a></li>
+          <li><a href="/ask">문의하기</a></li>
+          <li><a href="#">도움말</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h1>질문 내용</h1>
+<table>
+  <thead>
+  <tr>
+    <th>제목</th>
+    <th>작성일</th>
+    <th>답변 여부</th>
+    <th>보기</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="ask : ${asks}" th:data-askid="${ask.id}">
+    <td th:text="${ask.aTitle}"></td>
+    <td th:text="${ask.aTime}"></td>
+    <td th:text="${ask.answers ? '답변완료' : '답변전'}"></td>
+    <td>
+      <!-- 답변이 있을 때만 '보기' 버튼을 표시 -->
+      <button type="button" th:if="${ask.answers}"
+              th:onclick="'fetchAnswerDetails(' + ${ask.id} + ')'">보기</button>
+    </td>
+  </tr>
+  <tr th:each="ask : ${asks}">
+    <td colspan="4" class="answer-row" style="display:none;">
+      <div><strong>답변 내용:</strong> <span th:text="ask.aContent"></span></div>
+    </td>
+  </tr>
+  </tbody>
+</table>
+
 
 <h1>문의하기</h1>
-
 <form th:action="@{/ask/submit}" th:object="${askDTO}" method="post">
   <label for="aTitle">제목:</label>
   <input type="text" id="aTitle" th:field="*{aTitle}" required>
@@ -20,5 +134,26 @@
   <button type="submit">제출</button>
 </form>
 
+<script>
+  function fetchAnswerDetails(askId) {
+    const answerRow = document.querySelector(`tr[data-askid='${askId}']`);
+    console.log(answerRow);
+    // 이미 답변이 보이고 있으면 숨기기
+    if (answerRow.style.display === 'table-row') {
+      answerRow.style.display = 'none';
+    } else {
+      // 답변이 없으면 그냥 '답변이 없습니다.' 표시
+      fetch(`/admin/answer/${askId}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data && data.aReturn) {
+            answerRow.querySelector('.answer-content').textContent = data.aReturn;
+          }
+          answerRow.style.display = 'table-row'; // 답변을 보여줌
+        })
+        .catch(error => console.error('Error:', error));
+    }
+  }
+</script>
 </body>
 </html>

@@ -62,15 +62,19 @@ public class ProductController {
     @PostMapping("/product/upload")
     public String uploadProduct(@ModelAttribute("productDTO") ProductDTO productDTO,
                                 @RequestParam("pic") MultipartFile pic,
+                                @RequestParam(value = "pic1", required = false) MultipartFile pic1,
+                                @RequestParam(value = "pic2", required = false) MultipartFile pic2,
                                 HttpSession session, Model model) {
-        try {//로그인 된사용자 인지 확인
-            productService.saveProduct(productDTO, pic, session);
+        try {
+            // 로그인된 사용자 확인 및 서비스 호출
+            productService.saveProduct(productDTO, pic, pic1, pic2, session);
             return "redirect:/";
         } catch (IllegalStateException | IOException e) {
             model.addAttribute("errorMessage", e.getMessage());
             return "redirect:/";
         }
     }
+
 
     // 게시물 목록
     @GetMapping("/product/product/{state}")
