@@ -6,13 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Google Fonts -->
-    <link href='http://fonts.googleapis.com/css?family=Titillium+Web:400,200,300,700,600' rel='stylesheet' type='text/css'>
-    <link href='http://fonts.googleapis.com/css?family=Roboto+Condensed:400,700,300' rel='stylesheet' type='text/css'>
-    <link href='http://fonts.googleapis.com/css?family=Raleway:400,100' rel='stylesheet' type='text/css'>
-
     <!-- Bootstrap -->
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+
+    <!-- google font-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jua&family=Nanum+Brush+Script&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
@@ -20,10 +21,21 @@
     <!-- css -->
     <link rel="stylesheet" href="/css/style.css">
     <script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+
     <style>
+        .main {
+          font-family: "Nanum Brush Script", cursive;
+          font-weight: 400;
+          font-style: normal;
+        }
+        .navbar-nav {
+            display: flex;
+            width: 100%;
+            justify-content: space-around;
+        }
+
 
     </style>
-
 
 </head>
 <body onload="loadContent('/product/product/' + 'O')">
@@ -63,12 +75,12 @@
         <div class="row">
             <div class="col-sm-6">
                 <div class="logo">
-                    <h1><a href="/">T<span>est</span></a></h1>
+                    <h1 class="main"><a href="/">중고물품<span>&nbsp중개거래</span></a></h1>
                 </div>
             </div>
             <div class="col-sm-6">
                 <div class="shopping-item">
-                    <a href="/product/upload"><i class="fa fa-pencil-square-o">-upload</i> <span class="product-count">0</span></a>
+                    <a href="/product/upload"><i class="fa fa-pencil-square-o">-upload</i> <span class="product-count">+</span></a>
                 </div>
             </div>
         </div>
@@ -82,9 +94,9 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li><a href="#" onclick="loadContent('/product/product/' + 'O')">상품확인</a></li>
-                    <li><a href="#" onclick="loadContent('/product/heart')">내찜상품</a></li>
+                    <li><a href="/product/heart">내찜상품</a></li>
                     <li><a href="/ask">문의하기</a></li>
-                    <li><a href="#">도움말</a></li>
+                    <li><a href="#">도움말&nbsp</a></li>
                 </ul>
             </div>
         </div>
@@ -265,10 +277,6 @@
         else if (sortType === 'old') {
             products.sort((a, b) => new Date(a.time) - new Date(b.time));
         }
-
-
-        // 제품 목록을 콘솔에 출력
-        console.log(sortType + ' 제품 리스트:', products);
 
         // 기존 제품 리스트 삭제
         const productListElement = document.getElementById('product-list');

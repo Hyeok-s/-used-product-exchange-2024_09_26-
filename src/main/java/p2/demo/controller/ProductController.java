@@ -6,8 +6,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -52,7 +50,7 @@ public class ProductController {
     public String uploadForm(Model model, HttpSession session) {
         MemberDTO loggedInUserDTO = (MemberDTO) session.getAttribute("loggedInUser");
         if(loggedInUserDTO == null){
-            return "errorMessage";
+            return "redirect:/demo/errorMessage/1";
         }
         model.addAttribute("productDTO", new ProductDTO());
         return "upload";
@@ -100,7 +98,7 @@ public class ProductController {
         MemberDTO loggedInUserDTO = (MemberDTO) session.getAttribute("loggedInUser");
 
         if(loggedInUserDTO == null){
-            return "redirect:/error/unauthorized";
+            return "redirect:/demo/errorMessage/1";
         }
         List<ProductEntity> products = productService.getpState("O");
         List<ProductEntity> newProducts = new ArrayList<>();
@@ -114,7 +112,7 @@ public class ProductController {
             }
         }
         model.addAttribute("products", newProducts);
-        return "product";
+        return "wishProduct";
     }
 
     // 카테고리에 따른 상품 목록 로드
@@ -163,7 +161,7 @@ public class ProductController {
         boolean mine = false;
 
         if(loggedInUserDTO == null){
-            return "errorMessage";
+            return "redirect:/demo/errorMessage/1";
         }
         else{
             if(loggedInUserDTO.getId() == product.getMember().getId()){
@@ -211,8 +209,7 @@ public class ProductController {
         MemberDTO loggedInUserDTO = (MemberDTO) session.getAttribute("loggedInUser");
 
         if (loggedInUserDTO == null) {
-            model.addAttribute("errorMessage", "로그인이 필요합니다.");
-            return "errorMessage";
+            return "redirect:/demo/errorMessage/1";
         }
 
         //MemberDTO를 MemberEntity로 변환
@@ -265,16 +262,9 @@ public class ProductController {
     }
 
 
-    //에러 메세지
-    @GetMapping("/error/unauthorized")
-    public ResponseEntity<String> unauthorized() {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body("로그인 먼저 진행해주세요.");
-    }
-
     //제품 삭제
-    @PostMapping("/product/delete/{id}")
-    public String deleteProduct(@PathVariable("id") Long id){
+    @PostMapping("/product/delete/{id}/{num}")
+    public String deleteProduct(@PathVariable("id") Long id, @PathVariable("num") int num){
         ProductEntity product = productService.findById(id);
         if(product.getPState().equals("P")){
             OrderEntity order = orderService.getOrderByProductId(id);
@@ -290,6 +280,9 @@ public class ProductController {
         }
         else{
             productRepository.delete(product);
+        }
+        if(num == 1){
+            return "redirect:/";
         }
         return "redirect:/demo/mypage";
     }

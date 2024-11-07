@@ -24,7 +24,7 @@ public class AskController {
     public String showInquiryForm(Model model, HttpSession session) {
         MemberDTO loggedInUser = (MemberDTO) session.getAttribute("loggedInUser");
         if(loggedInUser == null){
-            return "redirect:/error/unauthorized";
+            return "redirect:/demo/errorMessage/1";
         }
         List<AskEntity> askEntity = askService.findByMemberId(loggedInUser.getId());
         model.addAttribute("asks", askEntity);

@@ -91,7 +91,6 @@
   </div>
 </div>
 
-<h1>질문 내용</h1>
 <table>
   <thead>
   <tr>
@@ -107,19 +106,18 @@
     <td th:text="${ask.aTime}"></td>
     <td th:text="${ask.answers ? '답변완료' : '답변전'}"></td>
     <td>
-      <!-- 답변이 있을 때만 '보기' 버튼을 표시 -->
       <button type="button" th:if="${ask.answers}"
               th:onclick="'fetchAnswerDetails(' + ${ask.id} + ')'">보기</button>
     </td>
   </tr>
-  <tr th:each="ask : ${asks}">
-    <td colspan="4" class="answer-row" style="display:none;">
-      <div><strong>답변 내용:</strong> <span th:text="ask.aContent"></span></div>
+  <tr th:each="ask : ${asks}" th:attr="id=${'answer-' + ask.id}"
+      class="answer-row" style="display:none;">
+    <td colspan="4">
+      <div><strong>답변 내용:</strong> <span class="answer-content"></span></div>
     </td>
   </tr>
   </tbody>
 </table>
-
 
 <h1>문의하기</h1>
 <form th:action="@{/ask/submit}" th:object="${askDTO}" method="post">
@@ -134,26 +132,41 @@
   <button type="submit">제출</button>
 </form>
 
-<script>
+<script th:inline="javascript">
   function fetchAnswerDetails(askId) {
-    const answerRow = document.querySelector(`tr[data-askid='${askId}']`);
-    console.log(answerRow);
-    // 이미 답변이 보이고 있으면 숨기기
-    if (answerRow.style.display === 'table-row') {
-      answerRow.style.display = 'none';
-    } else {
-      // 답변이 없으면 그냥 '답변이 없습니다.' 표시
-      fetch(`/admin/answer/${askId}`)
-        .then(response => response.json())
-        .then(data => {
-          if (data && data.aReturn) {
-            answerRow.querySelector('.answer-content').textContent = data.aReturn;
-          }
-          answerRow.style.display = 'table-row'; // 답변을 보여줌
-        })
-        .catch(error => console.error('Error:', error));
-    }
+  const existingAnswerRow = document.getElementById(`answer-${askId}`);
+
+  if (existingAnswerRow) {
+    // 이미 답변이 열려 있다면 숨기기
+    existingAnswerRow.remove();
+  } else {
+    // fetch 요청을 통해 답변 데이터를 가져오기
+    fetch(`/admin/answer/${askId}`)
+      .then(response => response.json())
+      .then(data => {
+        const answerText = data && data.areturn ? data.areturn : '답변이 없습니다.';
+
+        // 새로운 tr 요소를 동적으로 생성하여 답변 내용을 추가
+        const answerRow = document.createElement('tr');
+        answerRow.id = `answer-${askId}`;
+        answerRow.className = 'answer-row';
+        answerRow.innerHTML = `
+          <td colspan="4">
+            <div><strong>답변 내용:</strong> <span>${answerText}</span></div>
+          </td>
+        `;
+
+        // 클릭된 질문 행 바로 아래에 답변 행 삽입
+        const askRow = document.querySelector(`tr[data-askid="${askId}"]`);
+        askRow.parentNode.insertBefore(answerRow, askRow.nextSibling);
+      })
+      .catch(error => console.error('Error:', error));
   }
+}
+
 </script>
+
+
+
 </body>
 </html>

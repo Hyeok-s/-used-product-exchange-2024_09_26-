@@ -17,7 +17,7 @@
     </td>
 
     <td>
-      <form th:action="@{'/product/delete/' + ${product.id}}" method="post" style="display:inline;">
+      <form th:action="@{'/product/delete/' + ${product.id}+ '/' + 2}" method="post" style="display:inline;">
         <button type="submit" onclick="return confirm('정말 삭제하시겠습니까?');"
                 th:if="${product.pState != 'C'}">삭제하기</button>
       </form>
