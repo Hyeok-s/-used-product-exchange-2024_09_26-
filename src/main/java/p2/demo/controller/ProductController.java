@@ -88,6 +88,7 @@ public class ProductController {
                 product.setLikedStatus(isLiked);
             }
         }
+
         model.addAttribute("products", products);
         return "product";
     }

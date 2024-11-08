@@ -4,29 +4,36 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- Google Fonts -->
-  <link href='http://fonts.googleapis.com/css?family=Titillium+Web:400,200,300,700,600' rel='stylesheet' type='text/css'>
-  <link href='http://fonts.googleapis.com/css?family=Roboto+Condensed:400,700,300' rel='stylesheet' type='text/css'>
-  <link href='http://fonts.googleapis.com/css?family=Raleway:400,100' rel='stylesheet' type='text/css'>
 
   <!-- Bootstrap -->
   <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+
+  <!-- google font-->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Jua&family=Nanum+Brush+Script&family=Rubik:ital,wght@0,300..900;1,300..900&family=Sunflower:wght@300&display=swap" rel="stylesheet">
 
   <!-- Font Awesome -->
   <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 
   <!-- css -->
-  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/style.css?after">
+  <link rel="stylesheet" href="/static/css/style.css">
   <script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+  <script src="https://kit.fontawesome.com/adad881590.js" crossorigin="anonymous"></script>
   <style>
-
+    .product-items{
+        margin-left: 200px;
+        margin-right: 200px;
+    }
+    .product-item{
+        width: 20%;
+        margin-left: 15px;
+    }
   </style>
 
-
 </head>
-<body>
+<body onload="loadContent('/product/product/' + 'O')">
 <!-- 상단 바 -->
 <div class="header-area">
   <div class="container">
@@ -63,12 +70,12 @@
     <div class="row">
       <div class="col-sm-6">
         <div class="logo">
-          <h1><a href="/">T<span>est</span></a></h1>
+          <h1 class="main"><a href="/">중고물품<span>&nbsp중개거래</span></a></h1>
         </div>
       </div>
       <div class="col-sm-6">
         <div class="shopping-item">
-          <a href="/product/upload"><i class="fa fa-pencil-square-o">-upload</i> <span class="product-count">0</span></a>
+          <a href="/product/upload"><i class="fa fa-pencil-square-o">-upload</i> <span class="product-count">+</span></a>
         </div>
       </div>
     </div>
@@ -93,141 +100,143 @@
 
 <div class="single-product-area">
   <div class="container">
-    <!-- 정렬 옵션 라디오 버튼 -->
-    <div>
-      <label><input type="radio" name="sort" value="recent" checked onclick="showProducts('recent')"> 최신순</label>
-      <label><input type="radio" name="sort" value="count" onclick="showProducts('count')"> 조회순</label>
-      <label><input type="radio" name="sort" value="old" onclick="showProducts('old')"> 오래된순</label>
-      <label><input type="radio" name="sort" value="priceLow" onclick="showProducts('priceLow')"> 가격 낮은순</label>
-      <label><input type="radio" name="sort" value="priceHigh" onclick="showProducts('priceHigh')"> 가격 높은순</label>
+    <div class="sort-filter-container">
+      <!-- 정렬 옵션 라디오 버튼 -->
+      <div class="sort-options">
+        <label><input type="radio" name="sort" value="recent" checked onclick="showProducts('recent')"> 최신순</label>
+        <label><input type="radio" name="sort" value="count" onclick="showProducts('count')"> 조회순</label>
+        <label><input type="radio" name="sort" value="old" onclick="showProducts('old')"> 오래된순</label>
+        <label><input type="radio" name="sort" value="priceLow" onclick="showProducts('priceLow')"> 가격 낮은순</label>
+        <label><input type="radio" name="sort" value="priceHigh" onclick="showProducts('priceHigh')"> 가격 높은순</label>
+      </div>
       <input type="text" id="searchInput" placeholder="상품명 검색" oninput="filterProducts()">
     </div>
+  </div>
 
-    <div class="row" id="product-list">
-      <div th:each="product : ${products}" class="col-md-3 col-sm-6 product-item"
-           th:data-id="${product.id}"
-           th:data-name="${product.pName}"
-           th:data-price="${product.pPrice}"
-           th:data-pic="${product.pic}"
-           th:data-liked="${product.likedStatus}"
-           th:data-counts="${product.counts}"
-           th:data-time="${product.pTime}">
-        <div class="single-shop-product">
-          <div class="product-upper">
-            <a th:href="@{'/product/productDetail/' + ${product.id}}"><img th:src="@{/uploads/} + ${product.pic}" alt="" width="100"></a>
-          </div>
-          <h2><a href="#" th:text="${product.pName}">상품명</a></h2>
-          <div class="product-carousel-price">
-            <ins th:text="'$' + ${product.pPrice}">상품가격</ins>
-          </div>
-          <div class="product-option-shop">
-            <a class="add_to_cart_button" th:href="@{'/product/productDetail/' + ${product.id}}">상세보기</a>
-            <form th:action="@{'/product/wishlist/' + ${product.id}}" method="post">
-              <button id="wishlist-btn">
-                <span th:if="${product.likedStatus}">찜 취소</span>
-                <span th:if="${!product.likedStatus}">찜하기</span>
-              </button>
-            </form>
-          </div>
+  <div class="row product-items" id="product-list">
+    <div th:each="product : ${products}" class="col-md-3 col-sm-6 product-item"
+         th:data-id="${product.id}"
+         th:data-name="${product.pName}"
+         th:data-price="${product.pPrice}"
+         th:data-pic="${product.pic}"
+         th:data-liked="${product.likedStatus}"
+         th:data-counts="${product.counts}"
+         th:data-time="${product.pTime}">
+      <div class="single-shop-product">
+        <div class="product-upper">
+          <a th:href="@{'/product/productDetail/' + ${product.id}}"><img th:src="@{/uploads/} + ${product.pic}" alt="" width="100"></a>
+        </div>
+        <h2><a class="pName" th:href="@{'/product/productDetail/' + ${product.id}}" th:text="${product.pName}">상품명</a></h2>
+        <div class="product-carousel-price">
+          <ins data-th-text="${#numbers.formatInteger(product.pPrice, 3, 'COMMA') + '원'}">가격</ins>
+        </div>
+        <div class="product-option-shop">
+          <a class="pTime" th:text="${product.pTime}"></a>
+          <form th:action="@{'/product/wishlist/' + ${product.id}}" method="post" class="wishlist-form">
+            <button id="wishlist-btn">
+              <i class="fa-regular fa-heart" th:if="${!product.likedStatus}"></i>
+              <i class="fa-solid fa-heart" th:if="${product.likedStatus}"></i>
+            </button>
+          </form>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-
 <script>
   //정렬하기위해 값
-  document.addEventListener("DOMContentLoaded", function() {
-    window.showProducts = function(sortType) {
-      const products = Array.from(document.querySelectorAll('.product-item')).map(product => ({
-        id: product.getAttribute('data-id'),
-        name: product.getAttribute('data-name'),
-        price: parseFloat(product.getAttribute('data-price')),
-        pic: product.getAttribute('data-pic'),
-        likedStatus: product.getAttribute('data-liked') === 'true',
-        counts: parseInt(product.getAttribute('data-counts')),
-        time: product.getAttribute('data-time')
-      }));
+    document.addEventListener("DOMContentLoaded", function() {
+        function getRelativeTime(timeString) {
+            const time = new Date(timeString);
+            const now = new Date();
+            const diffMs = now - time; // 밀리초 단위 차이
+            const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+            const diffDays = Math.floor(diffHours / 24);
 
-      // 정렬
-      if (sortType === 'count') {
-          products.sort((a, b) => b.counts - a.counts);
-      }
-      else if (sortType === 'priceLow') {
-          products.sort((a, b) => a.price - b.price);
-      }
-      else if (sortType === 'priceHigh') {
-          products.sort((a, b) => b.price - a.price);
-      }
-      else if (sortType === 'recent') {
-          products.sort((a, b) => new Date(b.time) - new Date(a.time));
-      }
-      else if (sortType === 'old') {
-          products.sort((a, b) => new Date(a.time) - new Date(b.time));
-      }
-
-      // 기존 제품 리스트 삭제
-      const productListElement = document.getElementById('product-list');
-      if (productListElement) {
-        productListElement.innerHTML = '';
-
-        // 정렬된 제품 리스트 다시 출력
-        products.forEach(product => {
-          const productItem = document.createElement('div');
-          productItem.classList.add('col-md-3', 'col-sm-6', 'product-item');
-          productItem.setAttribute('data-id', product.id);
-          productItem.setAttribute('data-name', product.name);
-          productItem.setAttribute('data-price', product.price);
-          productItem.setAttribute('data-pic', product.pic);
-          productItem.setAttribute('data-liked', product.likedStatus);
-          productItem.setAttribute('data-counts', product.counts);
-          productItem.setAttribute('data-time', product.time);
-
-          productItem.innerHTML = `
-            <div class="single-shop-product">
-              <div class="product-upper">
-                <a href="/product/productDetail/${product.id}"><img src="/uploads/${product.pic}" alt="" width="100"></a>
+            if (diffDays >= 1) {
+              return `${diffDays}일 전`;
+            } else {
+              return `${diffHours}시간 전`;
+            }
+          }
+    document.querySelectorAll('.pTime').forEach(function(pTimeElement) {
+        const productTime = pTimeElement.textContent.trim();
+        const relativeTime = getRelativeTime(productTime);
+        pTimeElement.textContent = relativeTime;
+      });
+      window.showProducts = function(sortType) {
+        const products = Array.from(document.querySelectorAll('.product-item')).map(product => ({
+          id: product.getAttribute('data-id'),
+          name: product.getAttribute('data-name'),
+          price: parseFloat(product.getAttribute('data-price')),
+          pic: product.getAttribute('data-pic'),
+          likedStatus: product.getAttribute('data-liked') === 'true',
+          counts: parseInt(product.getAttribute('data-counts')),
+          time: product.getAttribute('data-time')
+        }));
+        // 정렬
+        if (sortType === 'count') {
+            products.sort((a, b) => b.counts - a.counts);
+        }
+        else if (sortType === 'priceLow') {
+            products.sort((a, b) => a.price - b.price);
+        }
+        else if (sortType === 'priceHigh') {
+            products.sort((a, b) => b.price - a.price);
+        }
+        else if (sortType === 'recent') {
+            products.sort((a, b) => new Date(b.time) - new Date(a.time));
+        }
+        else if (sortType === 'old') {
+            products.sort((a, b) => new Date(a.time) - new Date(b.time));
+        }
+        // 제품 목록을 콘솔에 출력
+        console.log(sortType + ' 제품 리스트:', products);
+        // 기존 제품 리스트 삭제
+        const productListElement = document.getElementById('product-list');
+        if (productListElement) {
+          productListElement.innerHTML = '';
+          // 정렬된 제품 리스트 다시 출력
+          products.forEach(product => {
+            const productItem = document.createElement('div');
+            productItem.classList.add('col-md-3', 'col-sm-6', 'product-item');
+            productItem.setAttribute('data-id', product.id);
+            productItem.setAttribute('data-name', product.name);
+            productItem.setAttribute('data-price', product.price);
+            productItem.setAttribute('data-pic', product.pic);
+            productItem.setAttribute('data-liked', product.likedStatus);
+            productItem.setAttribute('data-counts', product.counts);
+            productItem.setAttribute('data-time', product.time);
+            const formattedPrice = product.price.toLocaleString() + '원';
+            const relativeTime = getRelativeTime(product.time);
+            productItem.innerHTML = `
+              <div class="single-shop-product">
+                <div class="product-upper">
+                  <a href="/product/productDetail/${product.id}"><img src="/uploads/${product.pic}" alt="" width="100"></a>
+                </div>
+                <h2><a class="pName" href="/product/productDetail/${product.id}">${product.name}</a></h2>
+                <div class="product-carousel-price">
+                   <ins>${formattedPrice}</ins>
+                </div>
+                <div class="product-option-shop">
+                <a class="pTime">${relativeTime}</a>
+                  <form action="/product/wishlist/${product.id}" method="post">
+                    <button id="wishlist-btn">
+                       ${product.likedStatus ? '<i class="fa-solid fa-heart"></i>' : '<i class="fa-regular fa-heart"></i>'}
+                    </button>
+                  </form>
+                </div>
               </div>
-              <h2><a href="#">${product.name}</a></h2>
-              <div class="product-carousel-price">
-                <ins>$${product.price}</ins>
-              </div>
-              <div class="product-option-shop">
-                <a class="add_to_cart_button" href="/product/productDetail/${product.id}">상세보기</a>
-                <form action="/product/wishlist/${product.id}" method="post">
-                  <button id="wishlist-btn">
-                    ${product.likedStatus ? '찜 취소' : '찜하기'}
-                  </button>
-                </form>
-              </div>
-            </div>
-          `;
-          productListElement.appendChild(productItem);
-        });
-      } else {
-        console.error('product-list 요소를 찾을 수 없습니다.');
-      }
-    };
-
-  });
+            `;
+            productListElement.appendChild(productItem);
+          });
+        } else {
+          console.error('product-list 요소를 찾을 수 없습니다.');
+        }
+      };
+    });
 </script>
-<script>
-  //검색기능
-  function filterProducts() {
-  const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-  const products = Array.from(document.querySelectorAll('.product-item'));
 
-  // 제품 필터링
-  products.forEach(product => {
-      const productName = product.getAttribute('data-name').toLowerCase();
-      if (productName.includes(searchTerm)) {
-          product.style.display = 'block'; // 검색어에 포함되면 표시
-      } else {
-          product.style.display = 'none'; // 검색어에 포함되지 않으면 숨김
-      }
-  });
-}
-</script>
 </body>
 </html>

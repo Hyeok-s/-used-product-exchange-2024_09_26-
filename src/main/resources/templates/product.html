@@ -5,17 +5,19 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Google Fonts -->
-  <link href='http://fonts.googleapis.com/css?family=Titillium+Web:400,200,300,700,600' rel='stylesheet' type='text/css'>
-  <link href='http://fonts.googleapis.com/css?family=Roboto+Condensed:400,700,300' rel='stylesheet' type='text/css'>
-  <link href='http://fonts.googleapis.com/css?family=Raleway:400,100' rel='stylesheet' type='text/css'>
+  <!-- google font-->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Jua&family=Nanum+Brush+Script&family=Rubik:ital,wght@0,300..900;1,300..900&family=Sunflower:wght@300&display=swap" rel="stylesheet">
+
+
 
   <!-- Bootstrap -->
   <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 
   <!-- Font Awesome -->
   <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-
+  <script src="https://kit.fontawesome.com/adad881590.js" crossorigin="anonymous"></script>
   <!-- css -->
   <link rel="stylesheet" href="/css/style.css">
 </head>
@@ -24,13 +26,15 @@
 
 <div class="single-product-area">
   <div class="container">
-    <!-- 정렬 옵션 라디오 버튼 -->
-    <div>
-      <label><input type="radio" name="sort" value="recent" checked onclick="showProducts('recent')"> 최신순</label>
-      <label><input type="radio" name="sort" value="count" onclick="showProducts('count')"> 조회순</label>
-      <label><input type="radio" name="sort" value="old" onclick="showProducts('old')"> 오래된순</label>
-      <label><input type="radio" name="sort" value="priceLow" onclick="showProducts('priceLow')"> 가격 낮은순</label>
-      <label><input type="radio" name="sort" value="priceHigh" onclick="showProducts('priceHigh')"> 가격 높은순</label>
+    <!-- 정렬 옵션 -->
+    <div class="sort-filter-container">
+      <div class="sort-options">
+        <label><input type="radio" name="sort" value="recent" checked onclick="showProducts('recent')"> 최신순</label>
+        <label><input type="radio" name="sort" value="count" onclick="showProducts('count')"> 조회순</label>
+        <label><input type="radio" name="sort" value="old" onclick="showProducts('old')"> 오래된순</label>
+        <label><input type="radio" name="sort" value="priceLow" onclick="showProducts('priceLow')"> 가격 낮은순</label>
+        <label><input type="radio" name="sort" value="priceHigh" onclick="showProducts('priceHigh')"> 가격 높은순</label>
+      </div>
       <input type="text" id="searchInput" placeholder="상품명 검색" oninput="filterProducts()">
     </div>
 
@@ -47,16 +51,15 @@
           <div class="product-upper">
             <a th:href="@{'/product/productDetail/' + ${product.id}}"><img th:src="@{/uploads/} + ${product.pic}" alt="" width="100"></a>
           </div>
-          <h2><a href="#" th:text="${product.pName}">상품명</a></h2>
+          <h2><a class="pName" th:href="@{'/product/productDetail/' + ${product.id}}" th:text="${product.pName}">상품명</a></h2>
           <div class="product-carousel-price">
-            <ins th:text="'$' + ${product.pPrice}">상품가격</ins>
+            <ins th:text="${#numbers.formatDecimal(pPrice, 0, 0)} + '원'">가격</ins>
           </div>
           <div class="product-option-shop">
-            <a class="add_to_cart_button" th:href="@{'/product/productDetail/' + ${product.id}}">상세보기</a>
-            <form th:action="@{'/product/wishlist/' + ${product.id}}" method="post">
+            <form th:action="@{'/product/wishlist/' + ${product.id}}" method="post" class="wishlist-form">
               <button id="wishlist-btn">
-                <span th:if="${product.likedStatus}">찜 취소</span>
-                <span th:if="${!product.likedStatus}">찜하기</span>
+                <i class="fa-regular fa-heart" th:if="${!product.likedStatus}"></i>
+                <i class="fa-solid fa-heart" th:if="${product.likedStatus}"></i>
               </button>
             </form>
           </div>
