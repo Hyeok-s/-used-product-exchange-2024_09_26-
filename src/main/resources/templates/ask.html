@@ -4,29 +4,182 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- Google Fonts -->
-  <link href='http://fonts.googleapis.com/css?family=Titillium+Web:400,200,300,700,600' rel='stylesheet' type='text/css'>
-  <link href='http://fonts.googleapis.com/css?family=Roboto+Condensed:400,700,300' rel='stylesheet' type='text/css'>
-  <link href='http://fonts.googleapis.com/css?family=Raleway:400,100' rel='stylesheet' type='text/css'>
 
   <!-- Bootstrap -->
   <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+
+  <!-- google font-->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Jua&family=Nanum+Brush+Script&family=Rubik:ital,wght@0,300..900;1,300..900&family=Sunflower:wght@300&display=swap" rel="stylesheet">
 
   <!-- Font Awesome -->
   <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 
   <!-- css -->
-  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/style.css?after">
+  <link rel="stylesheet" href="/static/css/style.css">
   <script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+  <script src="https://kit.fontawesome.com/adad881590.js" crossorigin="anonymous"></script>
+
   <style>
-    .details {
-      display: none;
-      background-color: #f9f9f9;
-      border-top: 1px solid #ddd;
+    .question-container {
+      display: flex;
+      gap: 20px;
+      padding: 20px;
+      max-width: 1200px;
+      margin: 20px auto;
+    }
+
+    .question-list {
+      flex: 1;
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      max-height: 600px;
+      position: relative;  /* 수정: 마지막 페이지에서도 페이징 버튼이 제대로 위치하도록 */
+    }
+
+    .question-list table { width: 100%; border-collapse: collapse; }
+    .question-list th, .question-list td { padding: 10px; border: 1px solid #ddd; }
+    .question-list th { background-color: #f4f4f4; }
+    .question-list .answer-row { background-color: #f9f9f9; font-style: italic; }
+    .question-form .content-container { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .active-button { background-color: #4CAF50; color: white; }
+    h1 {
+      font-size: 24px;
+      color: #333;
+      font-weight: 700;
+      text-align: center;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+    thead th {
+      background: #4a90e2;
+      padding: 12px;
+      font-size: 15px;
+      text-transform: uppercase;
+    }
+    tbody tr {
+      transition: background 0.3s;
+    }
+    tbody tr:hover {
+      background: #f3f8ff;
+    }
+    td {
+      padding: 12px;
+      font-size: 14px;
+      color: #444;
+    }
+    .answer-row {
+      background-color: #f0f7ff;
+    }
+
+    button {
+      padding: 8px 16px;
+      border: none;
+      background: #5c9ded;
+      color: #fff;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #4a90e2;
+    }
+
+    .question-form {
+      flex: 0.8;
+      padding: 20px;
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .question-form label {
+      font-weight: 600;
+      color: #555;
+      margin-bottom: 5px;
+      display: inline-block;
+    }
+
+    .question-form input[type="text"], .question-form textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 15px;
+    }
+
+    .question-form .content-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .question-form textarea {
+      height: 200px;
+    }
+
+    .question-form button {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(45deg, #4CAF50, #66BB6A);
+      color: white;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .pagination {
+      position: absolute;
+      bottom: 20px;  /* 수정: 항상 하단에 위치하도록 */
+      left: 0;
+      right: 0;
+      text-align: center;
+    }
+
+    .page-button {
+      padding: 8px 16px;
+      border: 1px solid #ddd;
+      background-color: #f4f4f4;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .page-button:hover {
+      background-color: #4a90e2;
+      color: white;
+    }
+
+    .active-page {
+      background-color: #4a90e2;
+      color: white;
+    }
+
+    .prev-button, .next-button {
+      padding: 8px 16px;
+      border: 1px solid #ddd;
+      background-color: #f4f4f4;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .prev-button:hover, .next-button:hover {
+      background-color: #4a90e2;
+      color: white;
     }
   </style>
+
 </head>
 <body>
 <!-- 상단 바 -->
@@ -58,23 +211,25 @@
     </div>
   </div>
 </div>
+
 <!-- 상단 밑 사진 등 바 -->
 <div class="site-branding-area">
   <div class="container">
     <div class="row">
       <div class="col-sm-6">
         <div class="logo">
-          <h1><a href="/">T<span>est</span></a></h1>
+          <h1 class="main"><a href="/">중고물품<span>&nbsp중개거래</span></a></h1>
         </div>
       </div>
       <div class="col-sm-6">
         <div class="shopping-item">
-          <a href="/product/upload"><i class="fa fa-pencil-square-o">-upload</i> <span class="product-count">0</span></a>
+          <a href="/product/upload"><i class="fa fa-pencil-square-o">-upload</i> <span class="product-count">+</span></a>
         </div>
       </div>
     </div>
   </div>
 </div>
+
 <!-- 네비게이션 바 -->
 <div class="mainmenu-area">
   <div class="container">
@@ -91,82 +246,116 @@
   </div>
 </div>
 
-<table>
-  <thead>
-  <tr>
-    <th>제목</th>
-    <th>작성일</th>
-    <th>답변 여부</th>
-    <th>보기</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr th:each="ask : ${asks}" th:data-askid="${ask.id}">
-    <td th:text="${ask.aTitle}"></td>
-    <td th:text="${ask.aTime}"></td>
-    <td th:text="${ask.answers ? '답변완료' : '답변전'}"></td>
-    <td>
-      <button type="button" th:if="${ask.answers}"
-              th:onclick="'fetchAnswerDetails(' + ${ask.id} + ')'">보기</button>
-    </td>
-  </tr>
-  <tr th:each="ask : ${asks}" th:attr="id=${'answer-' + ask.id}"
-      class="answer-row" style="display:none;">
-    <td colspan="4">
-      <div><strong>답변 내용:</strong> <span class="answer-content"></span></div>
-    </td>
-  </tr>
-  </tbody>
-</table>
+<!-- 메인 -->
+<div class="question-container">
+  <div class="question-list">
+    <h1>문의 내역</h1>
+    <table>
+      <thead>
+      <tr>
+        <th>제목</th>
+        <th>작성일</th>
+        <th>답변 여부</th>
+        <th>보기</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="ask : ${askPage.content}" th:data-askid="${ask.id}">
+        <td th:text="${ask.aTitle}"></td>
+        <td th:text="${#temporals.format(ask.aTime, 'yyyy년MM월dd일')}"></td>
+        <td th:text="${ask.answers ? '답변완료' : '답변전'}"></td>
+        <td>
+          <button type="button" th:onclick="'fetchAnswerDetails(' + ${ask.id} + ', this)'" class="view-button">보기</button>
+        </td>
+      </tr>
+      <tr th:each="ask : ${askPage.content}" th:if="${ask.answers}" th:id="'answer-' + ${ask.id}" class="answer-row" style="display: none;">
+        <td colspan="4" class="answer-content">답변을 불러오는 중입니다...</td>
+      </tr>
+      </tbody>
+    </table>
+    <!-- 페이징 버튼 -->
+    <!-- 페이징 버튼 -->
+    <div class="pagination">
+      <!-- 페이지 번호 출력 -->
+      <span>
+    <button th:each="pageNum : ${#numbers.sequence(1, askPage.totalPages)}"
+            th:text="${pageNum}"
+            th:onclick="|loadPage(${pageNum - 1})|"
+            th:classappend="${askPage.number == pageNum - 1} ? 'active-page' : ''"
+            class="page-button">
+    </button>
+      </span>
+    </div>
+  </div>
 
-<h1>문의하기</h1>
-<form th:action="@{/ask/submit}" th:object="${askDTO}" method="post">
-  <label for="aTitle">제목:</label>
-  <input type="text" id="aTitle" th:field="*{aTitle}" required>
-  <br>
+  <div class="question-form">
+    <h2>문의 작성하기</h2>
+    <form th:action="@{/ask/submit}" th:object="${askDTO}" method="post">
+      <label for="aTitle">제목:</label>
+      <input type="text" id="aTitle" th:field="*{aTitle}" required>
 
-  <label for="aContent">내용:</label>
-  <textarea id="aContent" th:field="*{aContent}" required></textarea>
-  <br>
+      <div class="content-container">
+        <label for="aContent">내용:</label>
+        <label for="fontSize">글씨 크기:</label>
+        <select id="fontSize" onchange="updateFontSize()">
+          <option value="14px">작게</option>
+          <option value="16px">보통</option>
+          <option value="18px">크게</option>
+        </select>
+      </div>
+      <textarea id="aContent" th:field="*{aContent}" required></textarea>
 
-  <button type="submit">제출</button>
-</form>
+      <button type="submit">제출</button>
+    </form>
+  </div>
+</div>
 
 <script th:inline="javascript">
-  function fetchAnswerDetails(askId) {
-  const existingAnswerRow = document.getElementById(`answer-${askId}`);
+  let openAnswerRow = null;  // 현재 열려있는 답변 행
+  let activeButton = null;   // 현재 활성화된 보기 버튼
 
-  if (existingAnswerRow) {
-    // 이미 답변이 열려 있다면 숨기기
-    existingAnswerRow.remove();
-  } else {
-    // fetch 요청을 통해 답변 데이터를 가져오기
-    fetch(`/admin/answer/${askId}`)
-      .then(response => response.json())
-      .then(data => {
-        const answerText = data && data.areturn ? data.areturn : '답변이 없습니다.';
+  function fetchAnswerDetails(askId, button) {
+    const answerRow = document.getElementById(`answer-${askId}`);
 
-        // 새로운 tr 요소를 동적으로 생성하여 답변 내용을 추가
-        const answerRow = document.createElement('tr');
-        answerRow.id = `answer-${askId}`;
-        answerRow.className = 'answer-row';
-        answerRow.innerHTML = `
-          <td colspan="4">
-            <div><strong>답변 내용:</strong> <span>${answerText}</span></div>
-          </td>
-        `;
+    // 이전에 열려있던 답변 행이 있고, 현재 클릭된 버튼이 다른 경우
+    if (openAnswerRow && openAnswerRow !== answerRow) {
+      openAnswerRow.style.display = "none";       // 이전 답변 행 닫기
+      activeButton.classList.remove("active-button"); // 이전 버튼 색상 초기화
+    }
 
-        // 클릭된 질문 행 바로 아래에 답변 행 삽입
-        const askRow = document.querySelector(`tr[data-askid="${askId}"]`);
-        askRow.parentNode.insertBefore(answerRow, askRow.nextSibling);
-      })
-      .catch(error => console.error('Error:', error));
+    // 새롭게 열거나 닫을 답변 행 설정
+    if (answerRow.style.display === "table-row") {
+      answerRow.style.display = "none";
+      button.classList.remove("active-button");
+      openAnswerRow = null;
+      activeButton = null;
+    } else {
+      fetch(`/admin/answer/${askId}`)
+        .then(response => response.json())
+        .then(data => {
+          const answerText = data && data.areturn ? data.areturn : '답변이 없습니다.';
+          answerRow.querySelector('.answer-content').textContent = answerText;
+          answerRow.style.display = "table-row";
+          button.classList.add("active-button");
+
+          // 현재 열린 행 및 버튼 업데이트
+          openAnswerRow = answerRow;
+          activeButton = button;
+        })
+        .catch(error => console.error('Error:', error));
+    }
   }
-}
 
+  function updateFontSize() {
+    const fontSize = document.getElementById("fontSize").value;
+    document.getElementById("aContent").style.fontSize = fontSize;
+  }
+
+  function loadPage(pageNumber) {
+    // 페이지 번호를 기반으로 페이지를 로드하는 로직
+    window.location.href = `/ask?page=${pageNumber}`;
+  }
 </script>
-
-
 
 </body>
 </html>

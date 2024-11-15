@@ -2,6 +2,9 @@ package p2.demo.controller;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -21,13 +24,16 @@ public class AskController {
     private final AskService askService;
 
     @GetMapping("/ask")
-    public String showInquiryForm(Model model, HttpSession session) {
+    public String showInquiryForm(@RequestParam(defaultValue = "0") int page, Model model, HttpSession session) {
         MemberDTO loggedInUser = (MemberDTO) session.getAttribute("loggedInUser");
         if(loggedInUser == null){
             return "redirect:/demo/errorMessage/1";
         }
-        List<AskEntity> askEntity = askService.findByMemberId(loggedInUser.getId());
-        model.addAttribute("asks", askEntity);
+
+        Pageable pageable = PageRequest.of(page, 4);  // 한 페이지에 4개씩
+        Page<AskEntity> askPage = askService.findByMemberId(loggedInUser.getId(), pageable);
+
+        model.addAttribute("askPage", askPage);
         model.addAttribute("askDTO", new AskDTO());
         return "ask";
     }

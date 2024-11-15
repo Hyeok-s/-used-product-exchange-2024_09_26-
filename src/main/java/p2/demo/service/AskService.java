@@ -2,6 +2,8 @@ package p2.demo.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import p2.demo.dto.AskDTO;
 import p2.demo.dto.MemberDTO;
@@ -87,5 +89,9 @@ public class AskService {
     public void deleteByAskMemberId(Long memberId) {
         // memberId에 해당하는 모든 주소 데이터를 삭제
         askRepository.deleteByMemberId(memberId);
+    }
+
+    public Page<AskEntity> findByMemberId(Long memberId, Pageable pageable) {
+        return askRepository.findByMemberId(memberId, pageable);
     }
 }

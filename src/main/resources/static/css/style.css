@@ -42,6 +42,7 @@ z-index: 999;
 .logo h1 {
     font-size: 40px;
     margin: 40px 0;font-weight: 400;
+    text-align: left;
 }
 .logo h1 a {
     color: #999;

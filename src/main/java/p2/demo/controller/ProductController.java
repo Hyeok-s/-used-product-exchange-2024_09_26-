@@ -3,35 +3,31 @@ package p2.demo.controller;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import p2.demo.dto.MemberDTO;
+import p2.demo.dto.OrderDTO;
 import p2.demo.dto.ProductDTO;
+import p2.demo.entity.AddressEntity;
 import p2.demo.entity.MemberEntity;
 import p2.demo.entity.OrderEntity;
 import p2.demo.entity.ProductEntity;
 import p2.demo.repository.OrderRepository;
 import p2.demo.repository.ProductRepository;
-import p2.demo.service.MemberService;
-import p2.demo.service.OrderService;
-import p2.demo.service.ProductService;
-import org.springframework.ui.Model;
-import p2.demo.dto.MemberDTO;
-
-import jakarta.servlet.http.HttpSession;
-import p2.demo.service.WishlistService;
+import p2.demo.service.*;
 
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -42,6 +38,7 @@ public class ProductController {
     private final ProductRepository productRepository;
     private final OrderService orderService;
     private final OrderRepository orderRepository;
+    private final AddressService addressService;
     private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
 
 
@@ -200,6 +197,12 @@ public class ProductController {
                 }
             }
         }
+        model.addAttribute("memberName", loggedInUserDTO.getMemberName());
+        model.addAttribute("memberPhone", loggedInUserDTO.getMemberPhone());
+        model.addAttribute("memberEmail", loggedInUserDTO.getMemberEmail());
+        List<AddressEntity> addresses = addressService.getAddressesByMemberId(loggedInUserDTO.getId());
+        model.addAttribute("addresses",addresses);
+        model.addAttribute("order", new OrderDTO());
         model.addAttribute("mine", mine);
         return "productDetail";
     }
