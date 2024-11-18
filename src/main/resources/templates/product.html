@@ -55,7 +55,7 @@
             <ins th:text="${#numbers.formatDecimal(pPrice, 0, 0)} + '원'">가격</ins>
           </div>
           <div class="product-option-shop">
-            <form th:action="@{'/product/wishlist/' + ${product.id}}" method="post" class="wishlist-form">
+            <form th:action="@{'/product/wishlist/' + ${product.id} + '/1'}" method="post" class="wishlist-form">
               <button id="wishlist-btn">
                 <i class="fa-regular fa-heart" th:if="${!product.likedStatus}"></i>
                 <i class="fa-solid fa-heart" th:if="${product.likedStatus}"></i>

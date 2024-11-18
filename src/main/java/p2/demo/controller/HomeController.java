@@ -34,6 +34,10 @@ public class HomeController {
                 message = "비밀번호는 9~15자, 숫자, 문자 및 특수문자를 포함해야 합니다.";
                 redirectUrl = "/demo/edit-password";
                 break;
+            case 5:
+                message = "구매가 진행중인 상품은 삭제할 수 없습니다.";
+                redirectUrl = "/";
+                break;
             default:
                 message = "알 수 없는 오류가 발생했습니다.";
                 redirectUrl = "/demo/home";

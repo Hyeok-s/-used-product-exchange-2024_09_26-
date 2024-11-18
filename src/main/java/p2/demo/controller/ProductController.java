@@ -155,9 +155,8 @@ public class ProductController {
         MemberDTO loggedInUserDTO = (MemberDTO) session.getAttribute("loggedInUser");
         ProductEntity product = productService.findById(id);
         model.addAttribute("product", product);
-
+        product.getMember().getId();
         boolean mine = false;
-
         if(loggedInUserDTO == null){
             return "redirect:/demo/errorMessage/1";
         }
@@ -197,6 +196,9 @@ public class ProductController {
                 }
             }
         }
+
+        boolean isLiked = wishlistService.isProductLikedByMember(loggedInUserDTO.getId(), product.getId());
+        product.setLikedStatus(isLiked);
         model.addAttribute("memberName", loggedInUserDTO.getMemberName());
         model.addAttribute("memberPhone", loggedInUserDTO.getMemberPhone());
         model.addAttribute("memberEmail", loggedInUserDTO.getMemberEmail());
@@ -208,8 +210,8 @@ public class ProductController {
     }
 
     // 찜하기 버튼 클릭 시 처리
-    @PostMapping("/product/wishlist/{productId}")
-    public String toggleWishlist(@PathVariable("productId") Long productId, HttpSession session, Model model) {
+    @PostMapping("/product/wishlist/{productId}/{num}")
+    public String toggleWishlist(@PathVariable("productId") Long productId, @PathVariable("num") Integer num, HttpSession session, Model model) {
         MemberDTO loggedInUserDTO = (MemberDTO) session.getAttribute("loggedInUser");
 
         if (loggedInUserDTO == null) {
@@ -223,7 +225,14 @@ public class ProductController {
 
         // 로그인된 사용자와 선택한 상품에 대해 찜하기 상태 변경
         wishlistService.toggleWishlist(loggedInUser, product);
-
+        switch (num) {
+            case 1:
+                return "redirect:/";
+            case 2:
+                return "redirect:/product/heart";
+            case 3:
+                return "redirect:/product/productDetail/"+productId;
+        }
         return "redirect:/";
     }
 
@@ -282,7 +291,11 @@ public class ProductController {
                 productRepository.save(product);
             }
         }
+        else if(product.getPState().equals("C")){
+            return "redirect:/demo/errorMessage/5";
+        }
         else{
+            wishlistService.deleteByProductId(product.getId());
             productRepository.delete(product);
         }
         if(num == 1){

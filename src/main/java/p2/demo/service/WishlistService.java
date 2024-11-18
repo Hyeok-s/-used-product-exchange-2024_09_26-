@@ -1,5 +1,6 @@
 package p2.demo.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import p2.demo.entity.MemberEntity;
@@ -36,7 +37,11 @@ public class WishlistService {
     }
 
     public void deleteByMemberId(Long memberId) {
-        // memberId에 해당하는 모든 주소 데이터를 삭제
         wishlistRepository.deleteByMemberId(memberId);
+    }
+
+    @Transactional
+    public void deleteByProductId(Long productId) {
+        wishlistRepository.deleteByProductId(productId);
     }
 }

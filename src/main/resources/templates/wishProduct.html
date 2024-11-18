@@ -132,7 +132,7 @@
         </div>
         <div class="product-option-shop">
           <a class="pTime" th:text="${product.pTime}"></a>
-          <form th:action="@{'/product/wishlist/' + ${product.id}}" method="post" class="wishlist-form">
+          <form th:action="@{'/product/wishlist/' + ${product.id}} + '/2'" method="post" class="wishlist-form">
             <button id="wishlist-btn">
               <i class="fa-regular fa-heart" th:if="${!product.likedStatus}"></i>
               <i class="fa-solid fa-heart" th:if="${product.likedStatus}"></i>

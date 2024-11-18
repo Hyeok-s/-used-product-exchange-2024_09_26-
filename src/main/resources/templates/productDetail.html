@@ -2,142 +2,54 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
   <link rel="stylesheet" href="/css/style.css?after">
+  <link rel="stylesheet" href="/css/productDetail.css?after">
   <link rel="stylesheet" href="/static/css/style.css">
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+  <!-- google font-->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Jua&family=Nanum+Brush+Script&family=Rubik:ital,wght@0,300..900;1,300..900&family=Sunflower:wght@300&display=swap" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  <script src="https://kit.fontawesome.com/adad881590.js" crossorigin="anonymous"></script>
   <meta charset="UTF-8">
   <title>제품 상세 정보</title>
   <style>
-    /* 전체 화면 레이아웃 */
-    body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-family: Arial, sans-serif;
-      background-color: #f3f3f3;
-      margin: 0;
-      padding: 0;
-    }
 
-    .container {
-      display: flex;
-      width: 90%;
-      max-width: 1000px;
-      background-color: #fff;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-    }
-
-    /* 왼쪽 상세 정보 스타일 */
-    .details {
-      flex: 1.2;
-      padding: 20px;
-      background-color: #f8f8f8;
-    }
-
-    .details h1 {
-      font-size: 1.5em;
-      color: #333;
-      margin-bottom: 20px;
-    }
-
-    .slider {
-      position: relative;
-      width: 100%;
-      max-width: 350px;
-      height: 350px;
-      margin-bottom: 20px;
-      overflow: hidden;
-      border-radius: 8px;
-    }
-
-    .slides {
-      display: flex;
-      transition: transform 0.5s ease;
-    }
-
-    .slides img {
-      width: 100%;
-      object-fit: cover;
-    }
-
-    .arrow {
-      position: absolute;
-      top: 50%;
-      width: 40px;
-      height: 40px;
-      background-color: rgba(0, 0, 0, 0.4);
-      color: white;
-      border: none;
-      font-size: 1.5em;
-      cursor: pointer;
-      transform: translateY(-50%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 50%;
-    }
-
-    .arrow.left {
-      left: 10px;
-    }
-
-    .arrow.right {
-      right: 10px;
-    }
-
-    .product-info p {
-      margin: 10px 0;
-      color: #666;
-    }
-
-    /* 오른쪽 구매하기 폼 스타일 */
-    .purchase {
-      flex: 1;
-      padding: 20px;
-      background-color: #333;
-      color: #fff;
-    }
-
-    .purchase h2 {
-      color: #fff;
-      margin-bottom: 20px;
-      font-size: 1.2em;
-    }
-
-    .purchase label {
-      color: #ddd;
-    }
-
-    .purchase input,
-    .purchase select,
-    .purchase textarea {
-      width: 100%;
-      padding: 8px;
-      margin-top: 5px;
-      margin-bottom: 15px;
-      border-radius: 5px;
-      border: none;
-    }
-
-    .purchase button[type="submit"] {
-      width: 100%;
-      padding: 12px;
-      background-color: #ff6b6b;
-      border: none;
-      border-radius: 5px;
-      color: white;
-      font-size: 1em;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-
-    .purchase button[type="submit"]:hover {
-      background-color: #ff4d4d;
-    }
   </style>
 </head>
 <body>
 
+<!-- 상단 바 -->
+<div class="header-area">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8">
+        <div class="user-menu">
+          <ul>
+            <!-- 로그인 여부에 따라 다른 버튼 표시 -->
+            <li th:if="${session.loggedInUser == null}">
+              <a href="/demo/login"><i class="fa fa-user"></i>로그인</a>
+            </li>
+            <li th:if="${session.loggedInUser == null}">
+              <a href="/demo/signup"><i class="fa fa-heart"></i>회원가입</a>
+            </li>
+            <li th:if="${session.loggedInUser != null}">
+              <a href="/demo/mypage"><i class="fa fa-user"></i>마이페이지</a>
+            </li>
+            <li th:if="${session.loggedInUser != null}">
+              <a href="/demo/logout"><i class="fa fa-user"></i>로그아웃</a>
+            </li>
+            <li th:if="${session.loggedInUser != null and session.loggedInUser.memberRole == 'admin'}">
+              <a href="/Admin/admin"><i class="fa fa-user"></i>관리자페이지</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <!-- 상단 밑 사진 등 바 -->
 <div class="site-branding-area">
   <div class="container">
@@ -147,80 +59,113 @@
           <h1 class="main"><a href="/">중고물품<span>&nbsp중개거래</span></a></h1>
         </div>
       </div>
-      <div class="col-sm-6">
-        <div class="shopping-item">
-          <a href="/product/upload"><i class="fa fa-pencil-square-o">-upload</i> <span class="product-count">+</span></a>
-        </div>
+    </div>
+  </div>
+</div>
+<!-- 네비게이션 바 -->
+<div class="mainmenu-area">
+  <div class="container">
+    <div class="row">
+      <div class="navbar-collapse collapse">
+        <ul class="nav navbar-nav">
+          <li><a href="#" onclick="loadContent('/product/product/' + 'O')">상품확인</a></li>
+          <li><a href="/product/heart">내찜상품</a></li>
+          <li><a href="/ask" >문의하기</a></li>
+          <li><a href="#">도움말&nbsp</a></li>
+        </ul>
       </div>
     </div>
   </div>
 </div>
 
-
-
-
-<div class="container">
-  <!-- 상세정보 섹션 -->
-  <div class="details">
-    <h1>제품 상세 정보</h1>
-    <div class="slider">
-      <div class="slides" id="slides">
-        <img th:src="@{/uploads/} + ${product.pic}" alt="Product Image">
-        <img th:src="@{/uploads/} + ${product.pic1}" alt="Product Image" th:if="${product.pic1}">
-        <img th:src="@{/uploads/} + ${product.pic2}" alt="Product Image" th:if="${product.pic2}">
+<div class="dcontainer">
+  <div class="ddcontainer">
+    <!-- 제품 상세 정보 -->
+    <div class="details">
+      <div class="title">
+        <h1>제품 정보</h1>
+        <p><span th:text="'조회수: ' + ${product.counts}">조회수</span></p>
       </div>
-      <button class="arrow left" id="leftArrow" onclick="changeSlide(-1)">&#10094;</button>
-      <button class="arrow right" id="rightArrow" onclick="changeSlide(1)">&#10095;</button>
+      <div class="slider">
+          <div class="slides" id="slides">
+            <img th:src="@{/uploads/} + ${product.pic}" alt="Product Image">
+            <img th:src="@{/uploads/} + ${product.pic1}" th:if="${product.pic1}" alt="Product Image">
+            <img th:src="@{/uploads/} + ${product.pic2}" th:if="${product.pic2}" alt="Product Image">
+          </div>
+          <button class="arrow left" id="leftArrow" onclick="changeSlide(-1)">&#10094;</button>
+          <button class="arrow right" id="rightArrow" onclick="changeSlide(1)">&#10095;</button>
+      </div>
+      <div class="product-info">
+        <p><span th:text="${product.pContent}">상품설명</span></p>
+      </div>
+      <div th:if="${mine}">
+        <a th:href="@{'/product/update/' + ${product.id} + '/' + 2}">수정하기</a>
+        <form th:action="@{'/product/delete/' + ${product.id}+ '/' + 1}" method="post" style="display:inline;">
+          <button type="submit" onclick="return confirm('정말 삭제하시겠습니까?');"
+                  th:if="${product.pState != 'C'}">삭제하기</button>
+        </form>
+      </div>
     </div>
-    <div class="product-info">
-      <p><strong>상품명:</strong> <span th:text="${product.pName}">상품명</span></p>
-      <p><strong>가격:</strong> <span th:text="${product.pPrice}">상품가격</span></p>
-      <p><strong>설명:</strong> <span th:text="${product.pContent}">상품설명</span></p>
-      <p><strong>상태:</strong> <span>판매중</span></p>
+
+    <!-- 구매 섹션 -->
+    <div class="purchase">
+      <div class="title">
+        <h2 class="pName" th:text="${product.pName}">상품 이름</h2>
+        <form th:action="@{'/product/wishlist/' + ${product.id} + '/3'}" method="post" class="wishlist-form">
+          <button id="wishlist-btn">
+            <i class="fa-regular fa-heart" th:if="${!product.likedStatus}"></i>
+            <i class="fa-solid fa-heart" th:if="${product.likedStatus}"></i>
+          </button>
+        </form>
+      </div>
+      <div class="form-group">
+        <label>가격</label> <span th:text="${product.pPrice}">상품가격</span>
+      </div>
+      <form method="post" th:action="@{/order/submit}">
+        <div class="form-group">
+          <label>이름</label>
+          <input type="text" th:value="${memberName}" readonly>
+        </div>
+
+        <div class="form-group">
+          <label>휴대폰 번호</label>
+          <input type="text" th:value="${memberPhone}" readonly>
+        </div>
+
+        <div class="form-group">
+          <label>이메일</label>
+          <input type="email" th:value="${memberEmail}" readonly>
+        </div>
+
+        <div class="form-group">
+          <label>주소</label>
+          <select name="shoppingAddress" required>
+            <option value="" disabled selected>주소를 선택하세요</option>
+            <li th:each="address : ${addresses}">
+              <option th:value="${address.address} + ' ' + ${address.detailAddress}">
+                [[${address.address}]] [[${address.detailAddress}]]
+              </option>
+            </li>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>배송 메모</label>
+          <textarea name="shoppingMemo" placeholder="배송 메모를 입력하세요"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>결제 방법</label>
+          <div class="payment-method">
+            <div data-value="card" onclick="selectPayment(this)"><img src="/pic/card.png"/></div>
+            <div data-value="kakao" onclick="selectPayment(this)"><img src="/pic/kakaopay.png"/></div>
+            <div data-value="toss" onclick="selectPayment(this)"><img src="/pic/toss.png"/></div>
+          </div>
+        </div>
+        <input type="hidden" name="paymentMethod" id="paymentMethod" />
+        <button th:if="${!mine}" type="submit">구매하기</button>
+      </form>
     </div>
-  </div>
-
-  <!-- 구매하기 섹션 -->
-  <div class="purchase">
-    <h2>구매하기</h2>
-    <form method="post" th:action="@{/order/submit}">
-      <label>이름:</label>
-      <input type="text" th:value="${memberName}" readonly>
-
-      <label>휴대폰 번호:</label>
-      <input type="text" th:value="${memberPhone}">
-
-      <label>이메일:</label>
-      <input type="email" th:value="${memberEmail}" readonly>
-
-      <label>주소:</label>
-      <select name="shoppingAddress" required>
-        <option value="" disabled selected>주소를 선택하세요</option>
-        <li th:each="address : ${addresses}">
-          <option th:value="${address.address} + ' ' + ${address.detailAddress}">[[${address.address}]] [[${address.detailAddress}]]</option>
-        </li>
-      </select>
-
-      <label>배송 메모:</label>
-      <textarea name="shoppingMemo" placeholder="배송 메모를 입력하세요"></textarea>
-
-      <label>결제 방법:</label>
-      <div>
-        <input type="radio" name="paymentMethod" value="card" id="card" required />
-        <label for="card">카드 결제</label>
-      </div>
-      <div>
-        <input type="radio" name="paymentMethod" value="kakao" id="kakao" />
-        <label for="kakao">카카오페이 결제</label>
-      </div>
-      <div>
-        <input type="radio" name="paymentMethod" value="toss" id="toss" />
-        <label for="toss">토스 결제</label>
-      </div>
-
-      <input type="hidden" name="productId" th:value="${product.id}"/>
-      <button type="submit">주문하기</button>
-    </form>
   </div>
 </div>
 
@@ -235,13 +180,23 @@
   }
 
   window.onload = function() {
-    const totalSlides = document.getElementById('slides').children.length;
-    if (totalSlides > 1) {
-      document.getElementById('leftArrow').style.display = 'block';
-      document.getElementById('rightArrow').style.display = 'block';
+    const slides = document.getElementById('slides');
+    const totalSlides = slides.children.length;
+
+    // 화살표 숨기기 처리
+    if (totalSlides <= 1) {
+      document.getElementById('leftArrow').style.display = 'none';
+      document.getElementById('rightArrow').style.display = 'none';
     }
   };
 </script>
-
+<script>
+  function selectPayment(element) {
+    const paymentElements = document.querySelectorAll('.payment-method div');
+    paymentElements.forEach(el => el.style.backgroundColor = '');
+    element.style.backgroundColor = '#d9f7be';
+    document.getElementById('paymentMethod').value = element.getAttribute('data-value');
+  }
+</script>
 </body>
 </html>
