@@ -1,27 +1,111 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <style>
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      text-align: center;
+      padding: 8px;
+    }
+    th {
+      background-color: #f4f4f4;
+      font-weight: bold;
+    }
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+    .btn {
+      display: inline-block;
+      padding: 5px 10px;
+      font-size: 14px;
+      text-align: center;
+      text-decoration: none;
+      border-radius: 4px;
+      margin: 2px;
+      color: white;
+      cursor: pointer;
+    }
+    .btn-edit {
+      background-color: #4CAF50; /* Green */
+    }
+    .btn-delete {
+      background-color: #f44336; /* Red */
+    }
+    .btn-delete:hover {
+      background-color: #e53935;
+    }
+    .btn-edit:hover {
+      background-color: #45a049;
+    }
+    .no-data {
+      text-align: center;
+      color: gray;
+      font-style: italic;
+    }
+    .pName {
+        color: #333;
+        text-decoration: none;
+    }
+    .pName:hover {
+        color: #f48585;
+        text-decoration: none;
+    }
+  </style>
+</head>
 <table>
+  <thead th:if="${!orders.isEmpty()}">
   <tr>
     <th>상품명</th>
     <th>가격</th>
-    <th>확정 버튼</th>
+    <th>상태</th>
+    <th>관리</th>
   </tr>
-  <tr th:each="order : ${orders}">
-    <td th:text="${order.product.pName}"></td>
-    <td th:text="${order.product.pPrice}"></td>
-    <!-- 배송 완료 시에만 구매확정 버튼 표시 -->
-    <td th:if="${order.deliveryStatus == 'f'}">
-      <a th:href="@{'/order/finish/' + ${order.product.id}}">구매확정</a>
-    </td>
-    <!-- 배송 전일 때 상품 취소 버튼 표시 -->
-     <td th:if="${order.deliveryStatus == 'w'}">
-       <a th:href="@{'/order/cancel/' + ${order.product.id}}">상품취소</a>
-     </td>
-    <td th:if="${order.deliveryStatus == 'd'}">
-      <form th:action="@{'/order/delete/' + ${order.id}}" method="post" style="display:inline;">
-        <button type="submit" onclick="return confirm('정말 삭제하시겠습니까?');">삭제하기</button>
-      </form>
-    </td>
+  </thead>
+  <tbody>
+    <tr th:if="${!orders.isEmpty()}" th:each="order : ${orders}">
+      <td><a class="pName" th:href="@{'/product/productDetail/' + ${order.product.id}}" th:text="${order.product.pName}">상품명</a></td>
+      <td data-th-text="${#numbers.formatInteger(order.product.pPrice, 3, 'COMMA') + '원'}"></td>
+      <td>
+        <span th:if="${order.deliveryStatus == 'w'}">배송 대기중</span>
+        <span th:if="${order.deliveryStatus == 'ing'}">배송중</span>
+        <span th:if="${order.deliveryStatus == 'f'}">배송완료</span>
+        <span th:if="${order.deliveryStatus == 'd'}">구매확정</span>
+      </td>
 
-  </tr>
+      <td>
+        <!-- 수정 버튼 -->
+        <a class="btn btn-edit"
+           th:if="${order.deliveryStatus == 'f'}"
+           th:href="@{'/order/finish/' + ${order.product.id}}">
+          구매확정
+        </a>
+        <a class="btn btn-edit"
+           th:if="${order.deliveryStatus == 'w'}"
+           th:href="@{'/order/cancel/' + ${order.product.id}}">
+          구매 취소
+        </a>
+        <!-- 삭제 버튼 -->
+        <form th:action="@{'/order/delete/' + ${order.id}}" method="post" style="display:inline;">
+          <button type="submit" class="btn btn-delete"
+                  onclick="return confirm('정말 삭제하시겠습니까?');"
+                  th:if="${order.deliveryStatus == 'd'}">
+            삭제하기
+          </button>
+        </form>
+      </td>
+    </tr>
+    <tr th:if="${orders.isEmpty()}">
+      <td colspan="4" class="no-data">
+        <span th:if="${status == 'w'}">배송전인 상품이 없습니다.</span>
+        <span th:if="${status == 'ing'}">배송중인 상품이 없습니다.</span>
+        <span th:if="${status == 'f'}">배송완료된 상품이 없습니다.</span>
+        <span th:if="${status == 'd'}">구매확정된 상품이 없습니다.</span>
+      </td>
+    </tr>
+  </tbody>
 </table>

@@ -154,6 +154,7 @@ public class ProductController {
     public String productDetail(@PathVariable("id") Long id, Model model, HttpSession session, HttpServletRequest request, HttpServletResponse response) {
         MemberDTO loggedInUserDTO = (MemberDTO) session.getAttribute("loggedInUser");
         ProductEntity product = productService.findById(id);
+        product.setPContent(product.getPContent().replace("\n", "<br>"));
         model.addAttribute("product", product);
         product.getMember().getId();
         boolean mine = false;
@@ -202,11 +203,23 @@ public class ProductController {
         model.addAttribute("memberName", loggedInUserDTO.getMemberName());
         model.addAttribute("memberPhone", loggedInUserDTO.getMemberPhone());
         model.addAttribute("memberEmail", loggedInUserDTO.getMemberEmail());
+        String formattedPhone = Integer.toString(loggedInUserDTO.getMemberPhone());
+        formattedPhone = formatPhoneNumber("0"+formattedPhone);
+        model.addAttribute("formattedPhone", formattedPhone);
         List<AddressEntity> addresses = addressService.getAddressesByMemberId(loggedInUserDTO.getId());
         model.addAttribute("addresses",addresses);
         model.addAttribute("order", new OrderDTO());
         model.addAttribute("mine", mine);
         return "productDetail";
+    }
+
+    //전화번호 형식 변경 함수
+    private String formatPhoneNumber(String phone) {
+        // 전화번호를 "010-XXXX-XXXX" 형식으로 변환
+         if (phone.length() == 11) {
+            return phone.replaceFirst("(\\d{3})(\\d{4})(\\d+)", "$1-$2-$3");
+        }
+        return phone; // 길이가 맞지 않으면 그대로 반환
     }
 
     // 찜하기 버튼 클릭 시 처리
@@ -248,7 +261,6 @@ public class ProductController {
         productDTO.setPPrice(product.getPPrice());
         productDTO.setPType1(product.getPType1());
         productDTO.setPType2(product.getPType2());
-
         model.addAttribute("productDTO", productDTO);
         model.addAttribute("check", check);
         return "editProduct"; // 수정 페이지의 HTML 파일 이름
@@ -256,9 +268,11 @@ public class ProductController {
 
     //제품 수정 완료
     @PostMapping("/product/update/{check}")
-    public String updateProduct(@ModelAttribute ProductDTO productDTO,@PathVariable int check, @RequestParam("pic") MultipartFile pic, Model model) {
+    public String updateProduct(@ModelAttribute ProductDTO productDTO,@PathVariable int check, @RequestParam("pic") MultipartFile pic,
+                                @RequestParam(value = "pic1", required = false) MultipartFile pic1,
+                                @RequestParam(value = "pic2", required = false) MultipartFile pic2, Model model) {
         try {
-            productService.updateProduct(productDTO, pic);
+            productService.updateProduct(productDTO, pic, pic1, pic2);
             if(check == 1){
                 return "redirect:/";
             }
@@ -273,7 +287,6 @@ public class ProductController {
             return "redirect:/";
         }
     }
-
 
     //제품 삭제
     @PostMapping("/product/delete/{id}/{num}")

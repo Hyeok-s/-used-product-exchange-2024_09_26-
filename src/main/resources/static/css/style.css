@@ -298,6 +298,10 @@ ul.navbar-nav li a {
     font-size: 23px;
 }
 
+.pName:hover {
+    text-decoration: none;
+}
+
 .pTime{
   color: #898d90;
 }

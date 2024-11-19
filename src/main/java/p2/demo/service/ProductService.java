@@ -93,6 +93,8 @@ public class ProductService {
         }
     }
 
+
+
     //사진 파일 저장
     private String saveFile(MultipartFile file) throws IOException {
         String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
@@ -110,6 +112,7 @@ public class ProductService {
     public List<ProductEntity> getProductsByType1(String type1) {
         return productRepository.findBypType1(type1);
     }
+
     public List<ProductEntity> getProductsByType2(String type2) {
         return productRepository.findBypType2(type2);
     }
@@ -129,6 +132,7 @@ public class ProductService {
     public void updateProductState(Long id, String newState) {
         ProductEntity product = findById(id);
         product.setPState(newState);  // 상태 변경
+        product.setPTime(LocalDateTime.now());
         productRepository.save(product);
     }
 
@@ -143,7 +147,7 @@ public class ProductService {
     }
 
     //상품정보 업데이트
-    public void updateProduct(ProductDTO productDTO, MultipartFile pic) throws IOException {
+    public void updateProduct(ProductDTO productDTO, MultipartFile pic, MultipartFile pic1, MultipartFile pic2) throws IOException {
 
         ProductEntity productEntity = productRepository.findById(productDTO.getId())
                 .orElseThrow(() -> new IllegalArgumentException("상품을 찾을 수 없습니다."));
@@ -164,6 +168,7 @@ public class ProductService {
                 Path oldFilePath = Paths.get(uploadDir + File.separator + oldFileName);
                 Files.deleteIfExists(oldFilePath);  // 기존 파일 삭제
             }
+
             // 랜덤한 이름으로 파일 저장
             String fileName = UUID.randomUUID() + "_" + pic.getOriginalFilename();
             Path savePath = Paths.get(uploadDir + File.separator + fileName);
@@ -176,6 +181,24 @@ public class ProductService {
             pic.transferTo(savePath.toFile());
 
             productEntity.setPic(fileName);  // 파일 이름 저장
+        }
+        if (pic1 != null && !pic1.isEmpty()) {
+            String oldFileName = productEntity.getPic1();
+            if (oldFileName != null && !oldFileName.isEmpty()) {
+                Path oldFilePath = Paths.get(uploadDir + File.separator + oldFileName);
+                Files.deleteIfExists(oldFilePath);  // 기존 파일 삭제
+            }
+            String fileName1 = saveFile(pic1);
+            productEntity.setPic1(fileName1);
+        }
+        if (pic2 != null && !pic2.isEmpty()) {
+            String oldFileName = productEntity.getPic2();
+            if (oldFileName != null && !oldFileName.isEmpty()) {
+                Path oldFilePath = Paths.get(uploadDir + File.separator + oldFileName);
+                Files.deleteIfExists(oldFilePath);  // 기존 파일 삭제
+            }
+            String fileName2 = saveFile(pic2);
+            productEntity.setPic2(fileName2);
         }
         productRepository.save(productEntity);
 
@@ -193,6 +216,7 @@ public class ProductService {
         List<ProductEntity> products = productRepository.findBypStateAndMemberId("C", memberId);
         return !products.isEmpty();
     }
+
     @Transactional
     public void updateMemberIdToNull(Long memberId) {
         // products의 memberId를 null로 업데이트

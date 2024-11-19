@@ -29,18 +29,19 @@ public class MypageController {
     @GetMapping("/demo/mypage")
     public String mypage(HttpSession session, Model model) {
         MemberDTO loggedInUserDTO = (MemberDTO) session.getAttribute("loggedInUser");
-        if (loggedInUserDTO != null) {
-            MemberEntity member = new MemberEntity();
-            member.setMemberEmail(loggedInUserDTO.getMemberEmail());
-            member.setMemberName(loggedInUserDTO.getMemberName());
-            member.setMemberBir(loggedInUserDTO.getMemberBir());
-            member.setMemberPhone(loggedInUserDTO.getMemberPhone());
-
-            List<AddressEntity> addresses = addressService.getAddressesByMemberId(loggedInUserDTO.getId());
-
-            model.addAttribute("member", member);
-            model.addAttribute("addresses", addresses);
+        if (loggedInUserDTO == null) {
+            return "redirect:/demo/errorMessage/1";
         }
+        MemberEntity member = new MemberEntity();
+        member.setMemberEmail(loggedInUserDTO.getMemberEmail());
+        member.setMemberName(loggedInUserDTO.getMemberName());
+        member.setMemberBir(loggedInUserDTO.getMemberBir());
+        member.setMemberPhone(loggedInUserDTO.getMemberPhone());
+
+        List<AddressEntity> addresses = addressService.getAddressesByMemberId(loggedInUserDTO.getId());
+
+        model.addAttribute("member", member);
+        model.addAttribute("addresses", addresses);
         return "mypage";
     }
 
@@ -94,6 +95,7 @@ public class MypageController {
         Long id = loggedInUserDTO.getId();
         List<ProductEntity> products = productService.getProductsByStatusAndMemberIdAndFalse(status, id);
         model.addAttribute("products", products);
+        model.addAttribute("state", status);
         return "myProduct";
     }
 
@@ -104,6 +106,7 @@ public class MypageController {
         Long id = loggedInUserDTO.getId();
         List<OrderEntity> orders = orderService.getOrdersByStatusAndMemberIdAndFalse(status, id);
         model.addAttribute("orders", orders);
+        model.addAttribute("status", status);
         return "myPurchase";
     }
 
