@@ -11,8 +11,11 @@ Spring Tool Suite, java, gradle, thymeleaf, mysql, Google OAuth, spring security
 ## 구현
 메인페이지
 ![5-1](https://github.com/user-attachments/assets/daf177b2-b5b8-44ec-bfd7-15c972f440dc)
+<br/>
 ![5-2](https://github.com/user-attachments/assets/95d07843-3923-4e9c-87ea-c6239122f69b)
+<br/>
 ![5-3](https://github.com/user-attachments/assets/0edfb9a0-eeac-4b2b-b9eb-b7cac9d3392e)
+<br/>
 관리자 페이지 메인
 ![5-4](https://github.com/user-attachments/assets/34c46936-e77a-4c57-9ec1-eb4263428378)
 
