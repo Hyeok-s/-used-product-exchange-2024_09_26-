@@ -5,7 +5,7 @@ Spring Tool Suite, java, gradle, thymeleaf, mysql, Google OAuth, spring security
 
 
 ## 개발 목적
-중고 물품을 보다 안전하게 거래할 수 있는 증게거레 웹을 만들고자 하였다.<br/>
+중고 물품을 보다 안전하게 거래할 수 있는 중개거래 웹을 만들고자 하였다.<br/>
 개발과정(노션링크): https://rift-icon-c56.notion.site/10d89200cbe88021a7caea1133d490fc
 
 ## 구현
